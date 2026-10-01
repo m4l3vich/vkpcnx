@@ -1,10 +1,12 @@
-![vkpcnx logo](docs/readme_logo.svg)
+<p align="center">
+  <img src="docs/readme_logo.svg" />
+</p>
 
 # VKPCNX
 
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-D97757?logo=claude&logoColor=white)](https://claude.com/claude-code) [![Borealis UI](https://img.shields.io/badge/Borealis%20UI-1E88E5?logo=github&logoColor=white)](https://github.com/xfangfang/borealis) [![Switch Homebrew](https://img.shields.io/badge/Switch%20Homebrew-E60012?logo=retroarch&logoColor=white)](https://switchbrew.org/) [![Build](https://img.shields.io/github/actions/workflow/status/m4l3vich/vkpcnx/ci.yaml?branch=main&logo=githubactions&logoColor=white&label=build)](https://github.com/m4l3vich/vkpcnx/actions/workflows/ci.yaml)
 
-[English](./README_EN.md) | [Telegram-канал](tg://resolve?domain=vkpcnx)
+[English](./README_EN.md) | [Telegram-канал](https://t.me/vkpcnx)
 
 VK Play Cloud NX — homebrew-клиент сервиса облачного гейминга VK Play Cloud для прошитых Nintendo Switch, разработанный с помощью реверс-инжиниринга официального веб-клиента. Поддерживает всё необходимое для игры на ПК в облаке через Switch. Выполнен в нативном стиле интерфейса Nintendo Switch благодаря библиотеке [Borealis (форк от xfangfang)](https://github.com/xfangfang/borealis). Содержит баги и вайбкод.
 
