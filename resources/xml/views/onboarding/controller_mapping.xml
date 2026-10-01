@@ -1,0 +1,28 @@
+<brls:Box axis="row" padding="30" width="auto" height="auto">
+  <brls:Box axis="column" marginRight="60" grow="1">
+    <brls:Label text="Сервис VK Play Cloud эмулирует контроллер Xbox. Для передачи нажатий контроллера Switch необходимо применять раскладку. Выберите, какой вариант раскладки будет использоваться." marginBottom="20"/>
+
+    <brls:Padding/>
+
+    <brls:Label text="Выберите раскладку" fontSize="15" alpha="0.5" marginBottom="20"/>
+    <brls:Box lineColor="@theme/brls/applet_frame/separator" lineBottom="1px" alpha="0.25"/>
+    <brls:RadioCell id="onboarding/gamepad_mapping/positional_radio" title="Позиционная"/>
+    <brls:RadioCell id="onboarding/gamepad_mapping/literal_radio" title="Буквальная"/>
+
+    <brls:Padding/>
+
+    <brls:Box>
+      <brls:Button id="onboarding/gamepad_mapping/next" text="Продолжить" style="primary" marginRight="20"/>
+      <brls:Button id="onboarding/gamepad_mapping/back" text="Назад" style="default"/>
+    </brls:Box>
+  </brls:Box>
+  <brls:Box axis="column" alignItems="center" width="600">
+    <brls:Box padding="20" cornerRadius="10" backgroundColor="@theme/brls/backdrop" width="420" marginBottom="30">
+      <brls:Image id="onboarding/gamepad_mapping/literal_pic" width="380" height="250" image="@res/img/mapping_literal.png"/>
+      <brls:Image id="onboarding/gamepad_mapping/positional_pic" width="380" height="250" image="@res/img/mapping_positional.png"/>
+    </brls:Box>
+
+    <brls:Label id="onboarding/gamepad_mapping/literal_desc" text="Буквальная раскладка — нажатие на Y на Joy-Con передается как нажатие на Y на виртуальном контроллере Xbox." height="120"/>
+    <brls:Label id="onboarding/gamepad_mapping/positional_desc" text="Позиционная раскладка — нажатие на верхнюю кнопку X на Joy-Con передается как нажатие на верхнюю кнопку Y на виртуальном контроллере Xbox." height="120"/>
+  </brls:Box>
+</brls:Box>

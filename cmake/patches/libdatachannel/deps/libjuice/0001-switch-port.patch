@@ -1,0 +1,118 @@
+diff --git a/src/picohash.h b/src/picohash.h
+index d9a92fc..e33efe3 100644
+--- a/src/picohash.h
++++ b/src/picohash.h
+@@ -28,7 +28,11 @@
+ #define _PICOHASH_BIG_ENDIAN
+ #endif
+ #else               // ! defined __LITTLE_ENDIAN__
++#if defined(__SWITCH__)
++#include <machine/endian.h>
++#else
+ #include <endian.h> // machine/endian.h
++#endif
+ #if BYTE_ORDER == BIG_ENDIAN
+ #define _PICOHASH_BIG_ENDIAN
+ #endif
+diff --git a/src/random.c b/src/random.c
+index 46bd8f8..e7464fd 100644
+--- a/src/random.c
++++ b/src/random.c
+@@ -49,6 +49,16 @@ static int random_bytes(void *buf, size_t size) {
+ 	return !status ? 0 : -1;
+ }
+ 
++#elif defined(__SWITCH__)
++
++// libnx: kernel CSPRNG
++#include <switch/kernel/random.h>
++
++static int random_bytes(void *buf, size_t size) {
++	randomGet(buf, size);
++	return 0;
++}
++
+ #else
+ static int random_bytes(void *buf, size_t size) {
+ 	(void)buf;
+diff --git a/src/socket.h b/src/socket.h
+index 93899f5..b1058e6 100644
+--- a/src/socket.h
++++ b/src/socket.h
+@@ -81,7 +81,7 @@ typedef ULONG nfds_t;
+ #define NO_PMTUDISC
+ #endif
+ 
+-#ifdef __ANDROID__
++#if defined(__ANDROID__) || defined(__SWITCH__)
+ #define NO_IFADDRS
+ #else
+ #include <ifaddrs.h>
+diff --git a/src/udp.c b/src/udp.c
+index fddd773..71b5a8c 100644
+--- a/src/udp.c
++++ b/src/udp.c
+@@ -396,6 +396,43 @@ static int has_duplicate_addr(struct sockaddr *addr, const addr_record_t *record
+ 	return false;
+ }
+ 
++#if defined(__SWITCH__)
++// The libnx BSD socket layer has neither getifaddrs() nor SIOCGIFCONF; the
++// console has a single network interface, so ask the stack which local
++// address it would use to reach a public host (nothing is sent: UDP connect()
++// only selects the route).
++static int get_local_default_inet4(uint16_t port, struct sockaddr_in *result) {
++	struct sockaddr_in sin;
++	memset(&sin, 0, sizeof(sin));
++	sin.sin_family = AF_INET;
++	sin.sin_port = htons(9); // discard port
++	if (inet_pton(AF_INET, "192.0.2.1", &sin.sin_addr) != 1) // TEST-NET-1, unreachable
++		return -1;
++
++	socket_t sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
++	if (sock == INVALID_SOCKET)
++		return -1;
++
++	if (connect(sock, (const struct sockaddr *)&sin, sizeof(sin)))
++		goto error;
++
++	socklen_t result_len = sizeof(*result);
++	if (getsockname(sock, (struct sockaddr *)result, &result_len))
++		goto error;
++
++	if (result_len != sizeof(*result) || result->sin_addr.s_addr == htonl(INADDR_ANY))
++		goto error;
++
++	addr_set_port((struct sockaddr *)result, port);
++	closesocket(sock);
++	return 0;
++
++error:
++	closesocket(sock);
++	return -1;
++}
++#endif
++
+ #if !defined(_WIN32) && defined(NO_IFADDRS)
+ // Helper function to get the IPv6 address of the default interface
+ static int get_local_default_inet6(uint16_t port, struct sockaddr_in6 *result) {
+@@ -553,6 +590,19 @@ int udp_get_addrs(socket_t sock, addr_record_t *records, size_t count) {
+ 
+ 	freeifaddrs(ifas);
+ 
++#elif defined(__SWITCH__)
++	struct sockaddr_in sin;
++	if (get_local_default_inet4(port, &sin) == 0 && !addr_is_local((const struct sockaddr *)&sin)) {
++		++ret;
++		if (current != end) {
++			memcpy(&current->addr, &sin, sizeof(sin));
++			current->len = sizeof(sin);
++			current->socktype = SOCK_DGRAM;
++			++current;
++		}
++	} else {
++		JLOG_WARN("No local IPv4 address available");
++	}
+ #else // NO_IFADDRS defined
+ 	char buf[4096];
+ 	struct ifconf ifc;

@@ -1,0 +1,20 @@
+<brls:Box grow="1" axis="column">
+<brls:ScrollingFrame id="touchscreen_mode_dialog/scrolling_frame" width="auto" height="auto" grow="1" alignItems="stretch">
+<brls:Box id="touchscreen_mode_dialog/content" axis="column" padding="30" width="auto" height="auto">
+  <brls:Label text="Режим сенсорного экрана" fontSize="30" marginBottom="20"/>
+  <brls:Label text="Выберите, как касание сенсорного экрана будет управлять указателем мыши." fontSize="15" alpha="0.5" marginBottom="20"/>
+  <brls:Box axis="column" alignItems="center" width="100%" marginBottom="20">
+    <vkpcnx:AnimatedWebp cornerRadius="10" id="touchscreen_mode_dialog/anim" loop="true" autoplay="true" width="380" height="220" scalingType="fill"/>
+  </brls:Box>
+  <brls:Label id="touchscreen_mode_dialog/trackpad_desc" text="Трекпад — нажмите и ведите пальцем по экрану, указатель будет повторять движение. Для левого клика быстро нажмите на экран. Чтобы перетащить что-то, нажмите и сразу снова коснитесь экрана и ведите пальцем. Для правого клика быстро нажмите на экран двумя пальцами."  marginBottom="20"/>
+  <brls:Label id="touchscreen_mode_dialog/touchscreen_desc" text="Тачскрин — при нажатии на экран указатель переместится в место нажатия и сделает левый клик мышью. Для правого клика удерживайте палец на экране."  marginBottom="20"/>
+
+  <brls:Label text="Для прокрутки нажмите и ведите по экрану двумя пальцами." marginBottom="20"/>
+
+  <brls:Label text="Выберите режим" fontSize="15" alpha="0.5" marginBottom="20"/>
+  <brls:Box lineColor="@theme/brls/applet_frame/separator" lineBottom="1px" alpha="0.25"/>
+  <brls:RadioCell id="touchscreen_mode_dialog/touchscreen_radio" title="Тачскрин"/>
+  <brls:RadioCell id="touchscreen_mode_dialog/trackpad_radio" title="Трекпад"/>
+</brls:Box>
+</brls:ScrollingFrame>
+</brls:Box>

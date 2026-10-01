@@ -1,0 +1,1 @@
+#include "view/observable_dialog.hpp"

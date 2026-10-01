@@ -1,0 +1,20 @@
+<brls:Box id="stream/root" width="100%" height="100%" backgroundColor="#000000" focusable="true" hideHighlight="true">
+  <vkpcnx:StreamView id="stream/video" positionType="absolute" positionTop="0" positionLeft="0" width="100%" height="100%"/>
+
+  <brls:Box id="stream/overlay" positionType="absolute" positionTop="0" positionLeft="0" width="100%" height="100%" axis="column" justifyContent="center" alignItems="center" backgroundColor="#000000c0">
+    <brls:ProgressSpinner size="large" width="100" height="100"/>
+    <brls:Label id="stream/status_title" text="Подключение к сессии" fontSize="28" marginTop="30"/>
+    <brls:Label id="stream/status_text" text=" " fontSize="18" marginTop="14" alpha="0.75" horizontalAlign="center" width="800"/>
+  </brls:Box>
+
+  <brls:Box id="stream/hud_box" positionType="absolute" positionTop="0" positionLeft="0" visibility="gone" backgroundColor="#00000090" padding="4">
+    <brls:Label id="stream/hud" fontSize="11" singleLine="true"/>
+  </brls:Box>
+  <brls:Label id="stream/timer" positionType="absolute" positionTop="12" positionRight="12" fontSize="16" visibility="gone" backgroundColor="#00000090" margin="6"/>
+
+  <vkpcnx:OnscreenKeyboard id="stream/osk" positionType="absolute" positionLeft="0" positionBottom="0" width="100%" height="300" visibility="gone"/>
+
+  <brls:Box id="stream/osk_button" positionType="absolute" positionTop="0" positionLeft="0" width="56" height="56" cornerRadius="28" backgroundColor="#000000a0" justifyContent="center" alignItems="center" visibility="gone">
+    <brls:Label text="&#xe312;" fontSize="30"/>
+  </brls:Box>
+</brls:Box>

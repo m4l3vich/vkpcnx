@@ -1,0 +1,21 @@
+<brls:Box axis="row" padding="30" width="auto" height="auto" alignItems="center">
+  <brls:Box axis="column" alignItems="center" justifyContent="center" grow="1" width="0">
+    <brls:Box padding="16" backgroundColor="#ffffff" cornerRadius="8" marginBottom="20">
+      <vkpcnx:QrCode width="128" height="128" text="https://github.com/m4l3vich/vkpcnx"/>
+    </brls:Box>
+    <brls:Label alpha="0.75" horizontalAlign="center" text="github.com/m4l3vich/vkpcnx" marginBottom="10"/>
+    <brls:Label fontSize="15" horizontalAlign="center" text="Репозиторий GitHub"/>
+  </brls:Box>
+
+  <brls:Box height="200" alpha="0.5">
+    <brls:Box lineColor="@theme/brls/applet_frame/separator" lineRight="1px" grow="1"/>
+  </brls:Box>
+
+  <brls:Box axis="column" alignItems="center" justifyContent="center" grow="1" width="0">
+    <brls:Box padding="16" backgroundColor="#ffffff" cornerRadius="8" marginBottom="20">
+      <vkpcnx:QrCode width="128" height="128" text="tg://resolve?domain=vkpcnx"/>
+    </brls:Box>
+    <brls:Label alpha="0.75" horizontalAlign="center" text="t.me/vkpcnx" marginBottom="10"/>
+    <brls:Label fontSize="15" horizontalAlign="center" text="Telegram-канал VKPCNX"/>
+  </brls:Box>
+</brls:Box>

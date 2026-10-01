@@ -1,0 +1,14 @@
+diff --git a/src/impl/sctptransport.cpp b/src/impl/sctptransport.cpp
+index 552ee94..695c8b0 100644
+--- a/src/impl/sctptransport.cpp
++++ b/src/impl/sctptransport.cpp
+@@ -15,6 +15,9 @@
+ #include <algorithm>
+ #include <chrono>
+ #include <cstdarg>
++#ifdef __SWITCH__
++#include <arpa/inet.h> // libnx declares htons()/htonl() only here
++#endif
+ #include <cstdio>
+ #include <exception>
+ #include <iostream>

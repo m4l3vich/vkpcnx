@@ -1,0 +1,110 @@
+syntax = "proto2";
+// client_manager.proto — client -> manager (wss://cgw.clgrtc.ru:19000)
+// Reconstructed from the VK Play Cloud WebRTC player bundle (webrtc-mailru build 48103567); original file names were not preserved in the bundle.
+// Field numbers/names/enum values are exact; enum field types were inferred (see README.md).
+
+package cg.network.protocol.cm;
+
+import "protocol_common.proto";
+
+enum ClientPlatformName {
+  NONE = 1;
+  WINDOWS = 2;
+  OSX = 3;
+  ANDROID = 4;
+  ANDROIDTV = 5;
+  WEBRTC = 6;
+  LINUX = 7;
+  WEBRTCIOS = 8;
+}
+
+message Auth {
+  optional string login = 1;
+  optional string password = 2;
+  optional int64 game_id = 3;
+  optional string game_configuration_group = 4;
+}
+
+message SelectGame {
+  optional int64 game_id = 1;
+}
+
+message ZoneServerPings {
+  message ServerPing {
+    optional string ip_address = 1;
+    optional int32 ping = 2;
+    optional int64 server_id = 3;
+  }
+  repeated ZoneServerPings.ServerPing server_pings = 1;
+}
+
+message AuthLink {
+  optional string link = 1;
+}
+
+message AuthToken {
+  enum WorkMode {
+    GAME_STREAM = 0;
+    PING_TEST = 1;
+    SPEED_TEST = 2;
+  }
+  optional string token = 1;
+  optional WorkMode mode = 2;
+}
+
+message ValidateVersion {
+  optional string software = 1;
+  optional int64 version = 2;
+}
+
+message SetLanguage {
+  optional cg.network.protocol.Language language = 1;
+}
+
+message ZoneServerPingsV2 {
+  message ServerPingV2 {
+    optional string ip_address = 1;
+    optional bool have_result = 2;
+    optional bool received_bye_from_server_flag = 3;
+    optional bool received_first_ping_packet = 4;
+    optional uint32 count_send_ping_packets = 5;
+    optional uint32 count_come_to_server_ping_packets = 6;
+    optional uint32 count_come_back_ping_packets = 7;
+    optional uint32 ping_first_ms = 8;
+    optional uint32 ping_min_ms = 9;
+    optional uint32 ping_max_ms = 10;
+    optional uint32 ping_avg_ms = 11;
+    optional uint32 ping_jitter_ms = 12;
+    optional uint32 ping_median_ms = 13;
+    optional int64 server_id = 14;
+  }
+  repeated ZoneServerPingsV2.ServerPingV2 server_pings = 1;
+}
+
+message SpeedTestResult {
+  optional bool result = 1;
+  optional uint32 avg_frame_decode_time_us = 2;
+  optional float lost_frames_percent = 3;
+}
+
+message ServerConnectionStatus {
+  optional string ip_address = 1;
+  optional int32 port = 2;
+  optional int64 session_id = 3;
+  optional int64 connect_id = 4;
+  optional bool success = 5;
+  optional string error = 6;
+}
+
+message ExecutableCmdLine {
+  optional string exe_cmd_line = 1;
+}
+
+message ServerSettings {
+  optional string gcsettings = 1;
+}
+
+message ClientPlatform {
+  optional ClientPlatformName name = 1;
+}
+

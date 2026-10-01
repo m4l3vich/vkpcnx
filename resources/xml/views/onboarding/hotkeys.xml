@@ -1,0 +1,38 @@
+<brls:Box axis="column" padding="30" width="auto" height="auto">
+  <brls:Label text="Во время игровой сессии пользуйтесь сочетаниями кнопок, чтобы завершить сессию, переключить управление или открыть экранную клавиатуру." marginBottom="20"/>
+
+  <brls:Padding/>
+
+  <brls:Box axis="column" paddingLeft="40" paddingRight="40" alignSelf="center" width="1000">
+    <brls:Box axis="row" paddingTop="20" paddingBottom="20" lineColor="@theme/brls/text_disabled" lineTop="1px" lineBottom="1px">
+      <brls:Label fontSize="40" text="&#xEB97;" marginTop="6"/>
+      <brls:Box axis="column" marginLeft="20" marginRight="20" grow="1">
+        <brls:Label fontSize="25" text="Открыть настройки стрима"/>
+        <brls:Label fontSize="15" text="Статистика, все настройки управления, завершение сессии" alpha="0.5" marginTop="5"/>
+      </brls:Box>
+      <brls:Label fontSize="30" text="&#xE0E4; + &#xE0E5; + &#xE0E3;"/>
+      <brls:Label id="onboarding/hotkeys/overlay_check" marginLeft="20" fontSize="40" text="&#xE835;" marginTop="6" textColor="@theme/brls/text_disabled"/>
+    </brls:Box>
+    <brls:Box axis="row" paddingTop="20" paddingBottom="20" lineColor="@theme/brls/text_disabled">
+      <brls:Label fontSize="40" text="&#xE312;" marginTop="6"/>
+      <brls:Label fontSize="25" text="Переключить экранную клавиатуру" marginLeft="20" marginRight="20" grow="1"/>
+      <brls:Label fontSize="30" text="&#xE0E4; + &#xE0E5; + &#xE0F0;"/>
+      <brls:Label id="onboarding/hotkeys/keyboard_check" marginLeft="20" fontSize="40" text="&#xE835;" marginTop="6" textColor="@theme/brls/text_disabled"/>
+    </brls:Box>
+    <brls:Box axis="row" paddingTop="20" paddingBottom="20" lineColor="@theme/brls/text_disabled" lineTop="1px" lineBottom="1px">
+      <brls:Label fontSize="40" text="&#xE323;" marginTop="6"/>
+      <brls:Label fontSize="25" text="Переключить управление мышью с геймпада" marginLeft="20" marginRight="20" grow="1"/>
+      <brls:Label fontSize="30" text="&#xE0E4; + &#xE0E5; + &#xE0EF;"/>
+      <brls:Label id="onboarding/hotkeys/pointer_check" marginLeft="20" fontSize="40" text="&#xE835;" marginTop="6" textColor="@theme/brls/text_disabled"/>
+    </brls:Box>
+  </brls:Box>
+
+  <brls:Padding/>
+
+  <brls:Label text="Прежде чем продолжить, попробуйте нажать все доступные сочетания кнопок." marginBottom="20"/>
+
+  <brls:Box>
+    <brls:Button state="disabled" id="onboarding/hotkeys/next" text="Продолжить" style="primary" marginRight="20"/>
+    <brls:Button id="onboarding/hotkeys/back" text="Назад" style="default"/>
+  </brls:Box>
+</brls:Box>

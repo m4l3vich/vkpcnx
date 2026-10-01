@@ -1,0 +1,914 @@
+syntax = "proto2";
+// protocol_common.proto — shared messages/enums (framing-level, errors, WebRTC, video settings)
+// Reconstructed from the VK Play Cloud WebRTC player bundle (webrtc-mailru build 48103567); original file names were not preserved in the bundle.
+// Field numbers/names/enum values are exact; enum field types were inferred (see README.md).
+
+package cg.network.protocol;
+
+enum MessageType {
+  M_NOTIFICATION = 1;
+  M_ERROR = 2;
+  M_ACCEPT = 3;
+  M_KEEP_ALIVE = 4;
+  M_MESSAGE_NOT_CORRECT = 5;
+  M_FILE = 6;
+  M_DATA_SPEED = 7;
+  M_LOG = 8;
+  M_SET_LOG_LEVEL = 9;
+  M_TOKEN = 10;
+  M_TOKEN_ACCEPTED = 11;
+  M_IDENTIFICATION = 12;
+  M_IDENTIFICATION_SUCCESS = 13;
+  M_OPERATION_CONFIRM = 14;
+  M_UPDATE = 15;
+  M_DEVICE_LIST_ACCEPTED = 16;
+  M_CAPABILITIES = 17;
+  M_UNSUPPORTED = 18;
+  M_DEBUG = 19;
+  M_BYE = 20;
+  M_CLIENT_BEFORE_CLOSE = 21;
+  M_CLIENT_BEFORE_CLOSE_CONFIRMATION = 22;
+  M_ERROR_INFO = 23;
+  M_RECONNECT = 24;
+  SM_REQUEST_CONFIG = 257;
+  SM_START = 258;
+  SM_GAME_SESSION_ALIVE = 259;
+  SM_GAME_SESSION_LOST = 260;
+  SM_READY = 261;
+  SM_BACKUP_INIT = 262;
+  SM_BACKUP_COMPLETED = 263;
+  SM_RESTORE_INIT = 264;
+  SM_PLAY_SESSION = 265;
+  SM_GAME_SESSION_END = 266;
+  SM_USER_SESSION_BEGIN = 267;
+  SM_USER_SESSION_END = 268;
+  SM_DEVICE_INFO = 269;
+  SM_CONNECT_STATUS = 270;
+  SM_NAT_APPEND = 271;
+  SM_NAT_DELETE = 272;
+  SM_NO_ACTIVE_SESSIONS = 273;
+  SM_STARTED = 274;
+  SM_EXTEND_SUBSCRIPTION = 275;
+  SM_USER_SESSION_BEGIN_COMPLETE = 276;
+  SM_UPDATE_DIRECTORY_PROGRESS = 277;
+  SM_UPDATE_DIRECTORY_COMPLETE = 278;
+  SM_REQUEST_UPDATE_GAMES = 279;
+  SM_EXTEND_LIMIT = 280;
+  SM_REQUEST_IGNORE_FILES = 281;
+  SM_REMOUNT_DRIVES_REQUEST = 282;
+  SM_DISABLE_DRIVES_COMPLETE = 283;
+  SM_ENABLE_DRIVES_COMPLETE = 284;
+  SM_STOP_GAME_SESSION = 285;
+  SM_STAGE_LOG_BY_CONNECT = 286;
+  SM_BLOCK_SERVER = 287;
+  SM_PROFILES_CLONED = 288;
+  SM_LOADING_PROFILES = 289;
+  SM_LOAD_INFO = 290;
+  SM_RESUME_SUBSCRIPTION = 291;
+  SM_BACKUP_CANCELED = 292;
+  SM_USER_STATUS_SYNC = 293;
+  SM_REQUEST_BACKUP_FILES = 294;
+  SM_ALLOW_CLOSE_SESSION = 295;
+  SM_UPDATE_SERVER_DRIVE_STATE = 296;
+  SM_DRIVE_VERSIONS_REQUEST = 297;
+  SM_REQUEST_BACKUP_SETTINGS = 298;
+  SM_USER_PROFILE_BACKUP_INIT = 299;
+  SM_BACKUP_USER_PROFILE_COMPLETE = 300;
+  SM_GAME_PROFILE_BACKUP_INIT = 301;
+  SM_BACKUP_GAME_PROFILE_COMPLETE = 302;
+  SM_BLOCK = 303;
+  SM_UNBLOCK = 304;
+  SM_REMOTE_PLAY_SERVER_UDP_ENDPOINTS = 305;
+  SM_REMOTE_PLAY_SETTINGS = 306;
+  SM_HOST_COMMAND_RESULT = 307;
+  SM_REMOTE_PLAY_SESSION_END = 308;
+  MS_SERVER_REGISTER_DATA = 513;
+  MS_LOST_SESSIONS = 514;
+  MS_SERVER_CONFIG = 515;
+  MS_VALID = 516;
+  MS_BACKUP_USER_LIST_FILES = 517;
+  MS_BACKUP_LIST_FILES = 518;
+  MS_BACKUP_NOT_REQUIRED = 519;
+  MS_CREATE_SESSION = 520;
+  MS_RESTORE_LIST_FILES = 521;
+  MS_RESTORE_NOT_REQUIRED = 522;
+  MS_CHANGE_USER = 523;
+  MS_CLOSE_SESSION = 524;
+  MS_UPDATE_SOFTWARE = 525;
+  MS_SYNC_DATA = 526;
+  MS_CREATE_SPEED_TEST = 527;
+  MS_NAT_TABLE = 528;
+  MS_MAIL_CONFIRMED = 529;
+  MS_USER_SESSION_BEGIN_PARAMS = 530;
+  MS_BUY_SUBSCRIPTION_RESULT = 531;
+  MS_EXTEND_SUBSCRIPTION_RESULT = 532;
+  MS_RESPONSE_UPDATE_GAMES = 533;
+  MS_RESPONSE_IGNORE_FILES = 534;
+  MS_DISABLE_DRIVES = 535;
+  MS_ENABLE_DRIVES = 536;
+  MS_ACTIVATE_PROMOCODE_RESULT = 537;
+  MS_DRIVE_LETTERS = 538;
+  MS_USER_STATUS_SYNC = 539;
+  MS_RESPONSE_BACKUP_FILES = 540;
+  MS_CHECKING_FILES_COMPLETE = 541;
+  MS_DRIVE_VERSIONS_RESPONSE = 542;
+  MS_SESSION_EVENT = 543;
+  MS_CHECKING_USER_PROFILE_COMPLETE = 544;
+  MS_CHECKING_GAME_PROFILE_COMPLETE = 545;
+  MS_CANCEL_BACKUP_USER_PROFILE = 546;
+  MS_RESPONSE_BACKUP_SETTINGS = 547;
+  MS_RESTART = 548;
+  MS_CLIENT_SETTINGS = 549;
+  MS_REMOTE_PLAY_START_UDP = 550;
+  MS_REMOTE_PLAY_CLIENT_UDP_ENDPOINTS = 551;
+  MS_REMOTE_PLAY_SETTINGS = 552;
+  MS_HOST_COMMAND = 553;
+  CS_AUTH = 769;
+  CS_SET_BITRATE = 772;
+  CS_WAIT_PLAY = 773;
+  CS_DEVICE_LIST = 774;
+  CS_CHANGE_LAYOUT = 775;
+  CS_USER_ASSESSMENT = 776;
+  CS_INPUT_STREAM_DISCONNECTED = 778;
+  CS_EXTEND_SUBSCRIPTION = 779;
+  CS_SUBSCRIPTION_LIMIT_CONTINUE = 781;
+  CS_SUBSCRIPTION_CONTINUE = 782;
+  CS_STREAMS_STATUS = 783;
+  CS_CONNECT_GAME_CONTROLLER = 784;
+  CS_BUY_DISCOUNT_AT_PLAYKEY = 785;
+  CS_INPUT_INIT = 786;
+  CS_RECONNECT = 787;
+  CS_REDIRECT_PRINTER = 788;
+  CS_INPUT_INIT_V2 = 789;
+  CS_USB_INIT = 790;
+  CS_USB_DATA = 791;
+  CS_SDP_OFFER = 792;
+  CS_ICE_CANDIDATE = 793;
+  CS_WEBDAV_INIT = 794;
+  CS_WEBDAV_START_FILE_TRANSFER = 795;
+  CS_WEBDAV_STOP = 796;
+  CS_CLIPBOARD_INIT = 797;
+  CB_FORMAT_LIST = 1017;
+  CB_FORMAT_DATA_REQUEST = 1018;
+  CB_FORMAT_DATA_RESPONSE = 1019;
+  CB_FILE_CONTENTS_SIZE_REQUEST = 1020;
+  CB_FILE_CONTENTS_SIZE_RESPONSE = 1021;
+  CB_FILE_CONTENTS_REQUEST = 1022;
+  CB_FILE_CONTENTS_RESPONSE = 1023;
+  CB_RELEASE_CLIPBOARD = 1024;
+  SC_AUTH_SUCCESS = 1025;
+  SC_PLAY = 1027;
+  SC_DEMO_PLAY_END = 1028;
+  SC_CHANGE_CLIENT = 1029;
+  SC_INACTIVE_TIMEOUT = 1030;
+  SC_EXIT_GAME = 1031;
+  SC_OPEN_URL_IN_BROWSER = 1033;
+  SC_SEND_CLIPBOARD_DATA = 1034;
+  SC_ASSESSMENT_ACCEPTED = 1035;
+  SC_QUALITY_VERDICT = 1036;
+  SC_LEFT_DEMO_TIME = 1037;
+  SC_DISCONNECT_STREAMS = 1038;
+  SC_RECONNECT_STREAMS = 1039;
+  SC_TRIAL_TIME_FINISHED = 1040;
+  SC_TRIAL_GAME_CONTINUE = 1041;
+  SC_TRIAL_GAME_EXIT = 1042;
+  SC_RECONNECT_INPUT_STREAM = 1043;
+  SC_EXTEND_SUBSCRIPTION_SUCCESS = 1044;
+  SC_EXTEND_SUBSCRIPTION_PROCESSING = 1045;
+  SC_EXTEND_SUBSCRIPTION_ERROR = 1046;
+  SC_LEFT_GAME_TIME = 1047;
+  SC_GAME_PLAY_END = 1048;
+  SC_INPUT_STREAM_STATS = 1049;
+  SC_GAME_DISABLE_TIMER = 1050;
+  SC_SUBSCRIPTION_LIMIT_TIME_EXPIRED = 1052;
+  SC_SUBSCRIPTION_LIMIT_PAYMENT_SUCCESSFUL = 1053;
+  SC_SUBSCRIPTION_LIMIT_PAYMENT_FAILED = 1054;
+  SC_SUBSCRIPTION_LIMIT_TIME_LEFT = 1055;
+  SC_SUBSCRIPTION_PART_OF_DAY_LEFT = 1056;
+  SC_SUBSCRIPTION_EXPIRED = 1057;
+  SC_SUBSCRIPTION_PART_OF_DAY_EXPIRED = 1058;
+  SC_SUBSCRIPTION_PAYMENT_SUCCESSFUL = 1059;
+  SC_SUBSCRIPTION_PAYMENT_FAILED = 1060;
+  SC_INPUT_REPORT = 1061;
+  SC_CONNECT_GAME_CONTROLLER_CONFIRMATION = 1062;
+  SC_BONUS_TIME_LEFT = 1063;
+  SC_USER_NO_GAME = 1064;
+  SC_GAME_WAS_LAUNCHED = 1065;
+  SC_CURSOR = 1066;
+  SC_GAME_SESSION_LAUNCHER = 1067;
+  SC_GAME_SESSION_EVENT = 1068;
+  SC_VM_NAME = 1069;
+  SC_SESSION_EVENT = 1070;
+  SC_GAME_UPDATE_BEGIN = 1071;
+  SC_GAMEPAD_PRESENCE_CONFIRMATION = 1072;
+  SC_PASTE_SUBSCRIBE_KEY_CONFIRMATION = 1073;
+  SC_WEBRTC_SETTINGS = 1074;
+  SC_WEBRTC_INPUT_REPORT = 1075;
+  SC_VM_REBOOT = 1076;
+  SC_PRINT_DOCUMENT = 1077;
+  SC_USB_INIT = 1078;
+  SC_USB_DATA = 1079;
+  SC_CLOSE_SESSION = 1080;
+  SC_SDP_ANSWER = 1081;
+  SC_ICE_CANDIDATE = 1082;
+  SC_CLIPBOARD_READY = 1083;
+  SG_INIT_SESSION = 1281;
+  SG_CHANGE_TOKEN = 1282;
+  SG_FILES = 1283;
+  SG_REGISTRY_VALUES = 1284;
+  SG_CLOSE_SESSION = 1285;
+  SG_SESSION_CONFIG = 1286;
+  SG_BITRATE_CONFIG = 1287;
+  SG_SERVER_STAT_RESPONSE = 1288;
+  SG_CHANGE_PORTS = 1289;
+  SG_NAT_TABLE = 1290;
+  SG_MAIL_CONFIRMED = 1291;
+  SG_EXIT = 1292;
+  SG_USING_SUBSCRIPTION = 1293;
+  SG_BUY_SUBSCRIPTION_RESULT = 1294;
+  SG_CHECK_USER_REQUEST = 1295;
+  SG_ACTIVATE_PROMOCODE_RESULT = 1296;
+  GS_SESSION_INFO = 1537;
+  GS_SESSION_STARTED = 1538;
+  GS_SESSION_END = 1539;
+  GS_USER_CONNECT = 1540;
+  GS_USER_DISCONNECT = 1541;
+  GS_SESSION_PLAYED = 1542;
+  GS_LARGE_LOSSES_UDP = 1543;
+  GS_USER_ASSESSMENT = 1544;
+  GS_SERVER_STAT_REQUEST = 1545;
+  GS_CHANGE_PORTS_REQUEST = 1546;
+  GS_NAT_APPEND = 1547;
+  GS_NAT_DELETE = 1548;
+  GS_NEED_GAME_UPDATE = 1549;
+  GS_SET_PORTS_REQUEST = 1550;
+  GS_EXTEND_SUBSCRIPTION = 1551;
+  GS_CHANGE_PORTS = 1552;
+  GS_EXTEND_LIMIT = 1553;
+  GS_CHECK_USER_RESPONSE = 1554;
+  GS_STOP_GAME_SESSION = 1555;
+  GS_RESUME_SUBSCRIPTION = 1556;
+  GS_RESTART_USER_SESSION = 1557;
+  GS_STREAMING_SUCCESS = 1558;
+  CM_AUTH = 1793;
+  CM_SELECT_GAME = 1794;
+  CM_ZONE_SERVER_PINGS = 1795;
+  CM_AUTH_LINK = 1796;
+  CM_VALIDATE_VERSION = 1797;
+  CM_SET_LANGUAGE = 1798;
+  CM_AUTH_TOKEN = 1799;
+  CM_SYSTEM_INFO = 1800;
+  CM_VIDEO_SETTINGS = 1801;
+  CM_ZONE_SERVER_PINGS_V2 = 1802;
+  CM_AUTH_TOKEN_MAILRU = 1803;
+  CM_CONNECT_SERVER = 1804;
+  CM_QUEUE_DOWNGRADE_ACCEPTED = 1805;
+  CM_EXE_CMD_LINE = 1806;
+  CM_SPEEDTEST_RESULT = 1807;
+  CM_SERVER_SETTINGS = 1808;
+  CM_CLIENT_PLATFORM = 1809;
+  CM_FORCE_START = 1810;
+  CM_REMOTE_PLAY_CONNECT = 1811;
+  CM_REMOTE_PLAY_CLIENT_UDP_ENDPOINTS = 1812;
+  MC_AUTH_SUCCESS = 2049;
+  MC_AUTH_FAILED = 2050;
+  MC_ZONE_SERVER_LIST = 2051;
+  MC_ALL_BUSY = 2052;
+  MC_DIRECTION_PLAY = 2053;
+  MC_VALIDATE_VERSION_RESPONSE = 2054;
+  MC_DIRECTION_SPEED_TEST = 2055;
+  MC_ZONE_SERVER_LIST_V2 = 2056;
+  MC_SERVER_LOADING = 2057;
+  MC_SERVER_LOAD_COMPLETE = 2058;
+  MC_IN_SERVER_QUEUE = 2059;
+  MC_LOADING_PROFILES = 2060;
+  MC_SUBSCRIPTION_PART_OF_DAY_EXPIRED = 2061;
+  MC_CONNECT_SERVER_CONFIRMATION = 2062;
+  MC_GAME_LOAD_INFO = 2063;
+  MC_QUEUE_DOWNGRADE_PROMPT = 2064;
+  MC_USER_QUEUE_POSITION = 2065;
+  MC_SPEEDTEST_SERVER = 2066;
+  MC_SPEEDTEST_DONE = 2067;
+  MC_WAITING = 2068;
+  MC_WAITING_COMPLETED = 2069;
+  MC_REMOTE_PLAY_START_UDP = 2070;
+  MC_REMOTE_PLAY_SERVER_UDP_ENDPOINTS = 2071;
+  PM_REQUEST_CONFIG = 2309;
+  PM_READY = 2310;
+  PM_STRANGE_RESERVED_SESSIONS = 2311;
+  PM_FILES_NOT_FOUND = 2312;
+  PM_CHECK_PROFILES_CONFIRM = 2313;
+  MP_GET_FREE_SPACE = 2561;
+  MP_DELETE_FILE = 2562;
+  MP_CLEAR_SESSION = 2563;
+  MP_CHECK_PROFILES = 2564;
+  MP_PROFILER_CONFIG = 2565;
+  MP_RELEASE_SPACE = 2566;
+  MP_SYNC_DATA = 2567;
+  MP_OLD_RESERVED_SESSIONS = 2568;
+  MP_CHECK_PROFILES_CONFIRM = 2569;
+  MP_RELEASE_LOCK = 2570;
+  SP_SESSION_INFO = 2817;
+  SP_FILE_REQUEST = 2818;
+  SP_FILE_REQUEST_END = 2819;
+  SP_FILE_SAVE_END = 2820;
+  SP_FILE_SAVE_CANCEL = 2821;
+  PS_FILE_SAVE_COMPLETED = 3073;
+  HG_REQUEST = 3329;
+  HG_POST = 3330;
+  HG_INVALID = 3331;
+  GH_RESPONSE = 3585;
+  GH_COMMAND = 3586;
+  CS_MOUSE_PRESS = 3841;
+  CS_MOUSE_RELEASE = 3842;
+  CS_MOUSE_MOVE = 3843;
+  CS_MOUSE_SCROLL = 3844;
+  CS_MOUSE_SETTINGS = 3845;
+  CS_TOUCH_DOWN = 3846;
+  CS_TOUCH_UP = 3847;
+  CS_TOUCH_MOVE = 3848;
+  CS_KEYBOARD_PRESS = 3857;
+  CS_KEYBOARD_RELEASE = 3858;
+  CS_KEYBOARD_PASTE_SUBSCRIBE_KEY = 3859;
+  CS_JOYSTICK_PRESS = 3873;
+  CS_JOYSTICK_RELEASE = 3874;
+  CS_JOYSTICK_AXIS_MOVE = 3875;
+  CS_JOYSTICK_POV = 3876;
+  CS_SEND_CLIPBOARD_DATA = 3877;
+  CS_SESSION_STATISTIC_STRUCT = 3878;
+  CS_SESSION_STATISTIC = 3879;
+  CS_INPUT_MESSAGE_V2 = 3880;
+  CS_INPUT_REPORT = 3881;
+  CS_GAMEPAD_PRESENCE = 3882;
+  CS_JOYSTICK_AXES_RELEASE = 3883;
+  CS_CRYPTO_KEY = 3889;
+  SC_CRYPTO_KEY_SUCCESS = 3890;
+  CS_CRYPTO_AES_KEY = 3891;
+  CS_CRYPTO_AES_IVEC = 3892;
+  CS_XORT_ACTUAL_CARRIAGE = 3893;
+  CS_LOCALE = 3904;
+  UU_REQUEST_LIST_FILES = 4097;
+  UU_RESPONSE_LIST_FILES = 4098;
+  UU_REQUEST_FILE = 4099;
+  SW_REQUEST_ADAPTERS_INFO = 4353;
+  SW_START_MONITOR_LOAD = 4354;
+  SW_CLEAN_EXCLUDING_SESSIONS = 4355;
+  SW_CLEAN_TARGET_SESSIONS = 4356;
+  SW_CLEAN_SESSIONS_WITH_ID_LESS_THAN = 4357;
+  SW_CHECK_ACTIVE_GAMES = 4358;
+  SW_REQUEST_LOAD_INFO = 4359;
+  SW_REQUEST_LOAD_TORRENTS_INFO = 4360;
+  SW_LOAD_TORRENT_REQUEST = 4361;
+  SW_DRIVE_LETTERS = 4362;
+  WS_RESPONSE_ADAPTERS_INFO = 4609;
+  WS_INFO_LOAD = 4610;
+  WS_RESPONSE_LOAD_TORRENTS_INFO = 4611;
+  WS_LOAD_TORRENT_COMPLETE = 4612;
+  WS_LOAD_TORRENT_RESPONSE = 4613;
+  WS_LOST_DRIVE = 4614;
+  TT_GAME_CRASH = 4865;
+  TT_GAME_CRASH_EXIT = 4866;
+  TT_GAME_EXIT = 4867;
+  PP_START_DUPLICATE = 5121;
+  UM_REQUEST_DATA = 5377;
+  UM_REQUEST_COMMIT_UPDATE = 5378;
+  MU_RESPONSE_DATA = 5379;
+  MU_RESPONSE_COMMIT_UPDATE = 5380;
+  UM_COMMIT_UPDATE = 5381;
+  AS_OPERATION_REQUEST = 5634;
+  AS_CLIENT_REQUEST = 5635;
+  AS_PROFILE_INFO_REQUEST = 5636;
+  AS_SPEED_TEST_INFO_REQUEST = 5637;
+  SA_QUEUE_RESPONSE = 5889;
+  SA_OPERATION_RESPONSE = 5890;
+  SA_CLIENT_RESPONSE = 5891;
+  SA_PROFILE_INFO_RESPONSE = 5892;
+  SA_SPEED_TEST_INFO_RESPONSE = 5893;
+  INT_INJECT = 6666;
+}
+
+enum PartnerType {
+  PLAYKEY = 0;
+  MAILRU = 1;
+}
+
+enum ErrorType {
+  M_OK = 0;
+  M_TOKEN_WRONG = 1;
+  M_MISMATCH_PROTOCOL = 2;
+  M_IDENTIFICATION_FAILED = 3;
+  M_OPERATION_UNKNOWN = 4;
+  M_OPERATION_WRONG = 5;
+  M_OPERATION_FAILED = 6;
+  SM_BACKUP_FAILED = 257;
+  SM_RESTORE_FAILED = 258;
+  SM_START_SESSION_FAILED = 259;
+  SM_CHANGE_TOKENS_FAILED = 260;
+  SM_START_FAILED = 261;
+  SM_NEED_GAME_UPDATE = 262;
+  SM_GAME_FILE_NOT_EXIST = 263;
+  SM_GAME_CONTROLLER_CANNOT_START = 264;
+  SM_CHANGE_TOKEN_LATE = 265;
+  SM_CANNOT_DISABLE_DRIVES = 266;
+  SM_CANNOT_ENABLE_DRIVES = 267;
+  SM_PROFILER_OFFLINE = 268;
+  SM_PROFILER_DISCONNECT = 269;
+  SM_NO_FREE_DISK_SPACE = 270;
+  SM_CONNECT_PIPE_TIMEOUT = 271;
+  SM_GAME_CONTROLLER_EXITED_BEFORE_CONNECT_PIPE = 272;
+  SM_PORTS_POOL_ENDED = 273;
+  SM_FAILED_ALLOCATE_SPACE_ON_PROFILE_STORAGE = 274;
+  SM_REMOUNT_DRIVES_STARTED = 275;
+  SM_HAS_GAME_SESSION = 276;
+  SM_INIT_DISK_FAILED = 277;
+  SM_SESSION_CLOSED = 278;
+  MS_REGISTER_SERVER_FAILED = 513;
+  MS_FOUND_SERVER_FAILED = 514;
+  MS_NOT_FOUND_SERVER = 515;
+  MS_RESTORE_FAILED = 516;
+  MS_BACKUP_FAILED = 517;
+  MS_CONFIG_NOT_FOUND = 518;
+  MS_CONFIG_WRONG = 519;
+  MS_LOG_INFO_NOT_COMMIT = 520;
+  MS_API_DRIVE_FAILED = 521;
+  MS_CANNOT_FOUND_SERVER_TARGET_DRIVE = 522;
+  MS_SERVER_TARGET_DRIVE_DELETED = 523;
+  SC_AUTH_BAD = 1025;
+  SC_FAILED_START = 1026;
+  SC_NOT_AUTH = 1027;
+  SC_NOT_SPEED_TEST = 1028;
+  SC_TIMEOUT_SPEED_TEST = 1029;
+  SC_GAME_CRASH = 1030;
+  SC_OLD_AUTH = 1031;
+  SC_LARGE_LOSSES_UDP = 1032;
+  SC_DEMO_PLAY_ENDED = 1033;
+  SC_CONTROLS_TIMEOUT = 1034;
+  SC_AUTH_DUPLICATE = 1035;
+  SC_SPEED_TEST_RESULTS_UNSATISFACTORY = 1036;
+  SC_NEED_UPDATE_GAME = 1037;
+  SC_SUBSCRIPTION_LIMIT_TIME_EXPIRED_ERROR = 1038;
+  SC_SESSION_ERROR = 1039;
+  GS_FAILED_START = 1281;
+  GS_FAILED_END = 1282;
+  GS_PKINIT_ERROR = 1283;
+  GS_GAME_FILE_NOT_EXIST = 1284;
+  GS_STREAM_TO_CLIENT_FAILED = 1285;
+  SG_SESSION_FAILED_START = 1537;
+  SG_CANNOT_APPEND_NAT = 1538;
+  MC_GAME_NOT_FOUND = 2049;
+  MC_ERROR_IN_DEVELOPMENT = 2050;
+  MC_DEMO_NOT_AVAILABLE = 2051;
+  MC_DEMO_IN_GAME_NOT_AVAILABLE = 2052;
+  MC_UNKNOWN_CLIENT_SOFTWARE = 2053;
+  MC_PROFILE_ERROR = 2054;
+  MC_SERVICE_NOT_AVAILABLE = 2055;
+  MC_SERVICE_LEVEL_UP = 2056;
+  MC_VIP_SERVER_NOT_AVAILABLE = 2057;
+  MC_DB_NOT_AVAILABLE = 2058;
+  MC_AUTHORIZATION_FAILED = 2059;
+  MC_ALL_SERVERS_BUSY = 2060;
+  MC_CANNOT_CHANGE_PLAYER = 2061;
+  MC_CANNOT_CREATE_SESSION = 2062;
+  MC_NEED_UPDATE = 2063;
+  MC_CANNOT_CREATE_SPEED_TEST = 2064;
+  MC_VERY_BIG_PING = 2065;
+  MC_CANNOT_OPEN_SESSION = 2066;
+  MC_TOO_FREQUENT_CONNECTION = 2067;
+  MC_TRIAL_IN_GAME_NOT_AVAILABLE = 2068;
+  MC_TRIAL_END = 2069;
+  MC_AUTHORIZATION_EXPIRED = 2070;
+  MC_NO_SERVERS_FOUND = 2071;
+  MC_NEED_UPDATE_GAME = 2072;
+  MC_PART_OF_DAY_SUBSCRIPTION_NOT_AVAILABLE = 2073;
+  MC_AUTH_DUPLICATE = 2074;
+  MC_GAME_CONFIGURATION_NOT_AVAILABLE = 2075;
+  MC_NOT_EXISTS_ACTIVE_SERVERS = 2076;
+  MC_REMOUNT_DRIVES_STARTED = 2077;
+  MC_MAIN_PAYMENT_SYSTEM_NOT_EXISTS = 2078;
+  PM_ALREADY_RESERVED = 2305;
+  PM_NOT_AVAILABLE_FREE_SPACE = 2306;
+  PM_UNKNOWN_ERROR_RESERVED = 2307;
+  PM_INHERITANCE_FILE_NOT_FOUND = 2308;
+  PM_INHERITANCE_FILE_CORRUPT = 2309;
+  PM_CLEAR_SESSION_ERROR = 2310;
+  PM_CLEAR_SESSION_NOT_FOUND = 2311;
+  PM_FILE_NOT_FOUND = 2312;
+  PM_FILE_CORRUPT = 2313;
+  PM_SAVE_ALREADY_COMMITED_DIRECTORY = 2314;
+  PS_FILE_SAVE_ERROR = 3073;
+  PS_FILE_GET_ERROR = 3074;
+  UU_UPDATE_NOT_FOUND = 4097;
+  UU_FILE_NOT_FOUND = 4098;
+  UU_UPDATE_DONT_NEED = 4099;
+  UU_NOT_FOUND_PROFILER = 4100;
+  PP_REPLICATE_RESERVATION = 4353;
+}
+
+enum LogLevel {
+  LOG_LEVEL_FATAL = 1;
+  LOG_LEVEL_CRITICAL = 2;
+  LOG_LEVEL_ERROR = 3;
+  LOG_LEVEL_WARNING = 4;
+  LOG_LEVEL_INFORMATION = 5;
+  LOG_LEVEL_DEBUG = 6;
+  LOG_LEVEL_HI_DEBUG = 7;
+}
+
+enum NotificationType {
+  NOTIFY_INFORMATION = 1;
+  NOTIFY_ERROR = 2;
+}
+
+enum Language {
+  CUR_LANGUAGE = 0;
+  LANGUAGE_EN = 1;
+  LANGUAGE_RU = 2;
+  LANGUAGE_DE = 3;
+}
+
+enum BuySubscriptionState {
+  SUBSCRIPTION_SUCCESS = 0;
+  SUBSCRIPTION_PROCESSING = 1;
+  SUBSCRIPTION_ERROR = 2;
+}
+
+enum ActivatePromocodeState {
+  ACTIVATE_PROMOCODE_SUCCESS = 0;
+  ACTIVATE_PROMOCODE_ERROR = 1;
+}
+
+enum CapabilitiesType {
+  DEBUG = 0;
+  PING = 1;
+  PING_V2 = 2;
+  UDP_INPUTS = 3;
+}
+
+enum Consts {
+  DEFAULT = 0;
+  VEL_NOT_AVAILABLE = -1;
+}
+
+enum VideoFPS {
+  VIDEO_FPS_AUTO = 0;
+  VIDEO_FPS_33 = 1;
+  VIDEO_FPS_60 = 2;
+}
+
+enum VideoResolution {
+  VIDEO_RESOLUTION_AUTO = 0;
+  VIDEO_RESOLUTION_720 = 1;
+  VIDEO_RESOLUTION_1080 = 2;
+}
+
+enum StageLogType {
+  CONNECTCLIENT = 1;
+  EXCHANGEEXTENSIBLEPROTOCOL = 2;
+  COLLECTIONSYSTEMINFOBYUSERCOMPUTER = 3;
+  SAVESYSTEMINFOBYUSERCOMPUTERINDB = 4;
+  RECEIVEVIDEOSETTINGS = 5;
+  RECEIVEVERSION = 6;
+  VALIDATEVERSION = 7;
+  RECEIVEAUTH = 8;
+  AUTH = 9;
+  SELECTSERVERSFORPING = 10;
+  RECEIVEPING = 11;
+  SAVEPINGINDB = 12;
+  CHECKOLDSESSIONS = 13;
+  CHECKVIP = 14;
+  SELECTSERVERFORVIP = 15;
+  WAITINGINQUEUE = 16;
+  SELECTSERVERFORPLAY = 17;
+  CREATEPROCESSGAMECONTROLLER = 18;
+  PKINIT = 19;
+  GETPROFILESFROMDB = 20;
+  LOADINGPROFILES = 21;
+  SENDCLIENTTOSERVER = 22;
+  AUTHONSERVER = 23;
+  TCPTEST = 24;
+  UDPTEST = 25;
+  SENDCLIENTTOGAME = 26;
+  PREPARESPEEDTEST = 27;
+  GETPROFILERFROMDB = 28;
+  CHECKPROFILESONPROFILER = 29;
+}
+
+enum GameSubscriptionType {
+  NONE = 1;
+  FULL = 2;
+  DEMO = 3;
+  TRIAL = 4;
+  PARTOFDAY = 5;
+  TIMEBASED = 6;
+  LIMITED = 7;
+}
+
+enum BuySubscriptionType {
+  UNKNOWN = 1;
+  EXTENDLIMIT = 2;
+  EXTENDSUBSCRIPTION = 3;
+  RESUMESUBSCRIPTION = 4;
+}
+
+enum UserStatus {
+  CURRENT = 1;
+  FAILED = 2;
+  PLAYING = 3;
+}
+
+enum ComponentType {
+  MANAGER = 0;
+  GAME_SERVER = 1;
+  GAME_CONTROLLER = 2;
+}
+
+enum StreamType {
+  ST_AUDIO = 1;
+  ST_VIDEO = 2;
+  ST_INPUTS = 3;
+}
+
+enum VmType {
+  GAME = 1;
+  PICTURE = 2;
+}
+
+message Notification {
+  optional NotificationType notification_type = 1;
+  optional string message = 2;
+}
+
+message Confirm {
+}
+
+message DataSpeed {
+  optional int32 size_ignore_data = 1;
+  optional double time_download = 2;
+}
+
+message File {
+  optional int64 length = 1;
+  optional string hash = 2;
+  optional string path = 3;
+}
+
+message Accept {
+}
+
+message KeepAlive {
+}
+
+message Identification {
+  enum TypeServer {
+    MANAGER = 1;
+    SERVER = 2;
+    PROFILER = 3;
+    P2P = 4;
+    ADMINISTRATION = 5;
+    S3PROFILER = 6;
+    REMOTEPLAY = 7;
+  }
+  optional bytes server_name = 1;
+  optional int64 build_version = 2;
+  optional TypeServer type_server = 3;
+  optional bool is_notified = 4;
+  optional string dns_name = 5;
+}
+
+message IdentificationSuccess {
+}
+
+message Error {
+  optional ErrorType error_type = 1;
+  optional PartnerType partner_type = 2;
+  optional string error_message = 3;
+  optional string user_message = 4;
+  optional string title_message = 5;
+}
+
+message FilePresignedUrlStorage {
+  optional string profiler_name = 1;
+  optional string presigned_url = 2;
+}
+
+message FileStorage {
+  optional string name_guid = 1;
+  optional string name = 2;
+  optional int64 id = 3;
+  optional string hash = 4;
+  optional int64 length = 5;
+  optional bool is_registry = 6;
+  optional bool is_transfer = 7;
+  optional int64 zip_length = 8;
+  optional string path_file = 9;
+  optional int64 unix_timestamp = 10;
+  optional bool is_corrupted = 11;
+  repeated FilePresignedUrlStorage put_presigned_urls = 12;
+  repeated FilePresignedUrlStorage get_presigned_urls = 13;
+  optional string archive_hash = 14;
+  optional string storage_path = 15;
+}
+
+message SessionEvent {
+  optional string name = 1;
+  optional string type = 2;
+  optional string payload = 3;
+  optional int32 icon = 4;
+}
+
+message Log {
+  optional bytes msg = 1;
+  optional LogLevel level = 2;
+}
+
+message SetLogLevel {
+  optional LogLevel level = 1;
+}
+
+message Token {
+  optional int32 token = 1;
+}
+
+message TokenAccepted {
+}
+
+message DeviceListAccepted {
+}
+
+message Update {
+  optional int64 version = 1;
+  optional int32 update_type = 2;
+}
+
+message Capabilities {
+  repeated string capabilities = 1;
+  optional bool steam_bigpicture = 2;
+  optional bool modern_clipboard = 3;
+}
+
+message Unsupported {
+  optional int32 messag_type = 1;
+}
+
+message Debug {
+  optional bool debug_mode = 1;
+}
+
+message Bye {
+  optional string reason = 1;
+  optional bool has_error = 2;
+}
+
+message NATRecord {
+  optional uint64 id = 1;
+  optional uint32 realipaddress = 2;
+  optional uint32 realport = 3;
+  optional uint32 natipaddress = 4;
+  optional uint32 natport = 5;
+  optional uint64 gameid = 6;
+  optional uint64 gamesessionid = 7;
+}
+
+message Property {
+  optional string name = 1;
+  optional string value = 2;
+}
+
+message RegistryInfo {
+  optional string sub_key = 1;
+  optional string key_item = 2;
+  optional bool is_regular = 3;
+}
+
+message SessionStatisticStruct {
+  message ParameterStruct {
+    optional string name_parameter = 1;
+    optional int32 code_parameter = 2;
+  }
+  message DataStatisticStruct {
+    optional SessionStatisticStruct.ParameterStruct parameters = 1;
+    repeated string values = 2;
+  }
+  repeated SessionStatisticStruct.DataStatisticStruct data = 1;
+}
+
+message SessionStatistic {
+  message DataValue {
+    optional int64 unix_timestamp = 1;
+    repeated int32 values = 2;
+  }
+  message DataStatistic {
+    optional int32 code_parameter = 1;
+    repeated SessionStatistic.DataValue values = 2;
+  }
+  repeated SessionStatistic.DataStatistic data = 1;
+}
+
+message VideoSettings {
+  optional VideoFPS max_fps = 1;
+  optional VideoResolution max_resolution = 2;
+  optional uint32 bitrate_min_kbps = 3;
+  optional uint32 bitrate_max_kbps = 4;
+  optional uint32 number_of_slices = 5;
+  optional uint32 number_of_ref_frames = 6;
+}
+
+message SystemInfo {
+  message SystemParam {
+    optional string name = 1;
+    optional string value = 2;
+  }
+  repeated SystemInfo.SystemParam system_params = 1;
+}
+
+message InputStats {
+  optional uint32 count_messages = 1;
+  optional uint32 count_events = 2;
+  optional uint32 lost_messages = 3;
+  optional uint32 lost_events = 4;
+  optional uint32 reordered_messages = 5;
+  optional uint32 token = 6;
+}
+
+message StageLogData {
+  optional StageLogType stagelogtype = 1;
+  optional int64 durationmilliseconds = 2;
+}
+
+message NullableInt64 {
+  optional bool hasvalue = 1;
+  optional int64 value = 2;
+}
+
+message NullableDouble {
+  optional bool hasvalue = 1;
+  optional double value = 2;
+}
+
+message RawBinary {
+  optional bytes value = 1;
+}
+
+message XortActualCarriage {
+  optional int32 value = 1;
+}
+
+message ErrorInfo {
+  optional ComponentType component_type = 1;
+  optional uint32 error_code = 2;
+  optional string error_message = 3;
+}
+
+message ReconnectParamsManager {
+  optional string host = 1;
+  optional uint32 port = 2;
+  optional string auth_token = 3;
+}
+
+message Reconnect {
+  optional ComponentType type = 1;
+  optional ReconnectParamsManager manager = 2;
+}
+
+message InjectProcess {
+  optional int32 pid = 1;
+  optional bytes dllpath = 2;
+  optional bytes init = 3;
+  optional bytes initstring = 4;
+}
+
+message ProfilerInfo {
+  optional int64 id = 1;
+  optional bytes guid = 2;
+  optional string ip = 3;
+  optional Identification.TypeServer type = 4;
+  repeated Property parameters = 5;
+}
+
+message FileOnProfiler {
+  optional ProfilerInfo profiler = 1;
+  optional FileStorage file = 2;
+  optional string put_presigned_url = 3;
+  optional string get_presigned_url = 4;
+}
+
+message CarrotQuestParams {
+  optional bool enabled = 1;
+  optional string url = 2;
+  optional string path_to_browser_executable = 3;
+  optional bool visible_at_start = 4;
+  optional string token = 5;
+  optional int64 user_id = 6;
+}
+
+message WebRtcStreamSettings {
+  optional StreamType type = 1;
+  optional string ice = 2;
+  optional string offer = 3;
+}
+
+message IceCandidate {
+  optional StreamType type = 1;
+  optional string ice = 2;
+}
+

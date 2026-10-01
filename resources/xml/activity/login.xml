@@ -1,0 +1,32 @@
+<brls:AppletFrame id="login/root">
+  <brls:Box padding="30" width="auto" height="auto">
+    <brls:Box id="login/spinner" alignItems="center" justifyContent="center" grow="1">
+      <brls:ProgressSpinner id="login/spinner" size="large" width="100" height="100"/>
+    </brls:Box>
+    <brls:Box visibility="gone" id="login/content" axis="column" alignItems="center" justifyContent="center" grow="1">
+      <brls:Label text="Войдите в учетную запись VK Play Cloud" fontSize="32" marginBottom="20" />
+
+      <brls:Box axis="row" alignItems="center" justifyContent="center" grow="1" width="100%">
+        <brls:Box axis="column" alignItems="center" grow="1" width="0">
+          <brls:Label text="Считайте QR-код с помощью камеры вашего смарт-устройства" marginBottom="20" alpha="0.75" horizontalAlign="center" />
+          <brls:Box padding="16" backgroundColor="#ffffff" cornerRadius="8">
+            <vkpcnx:QrCode id="login/qrcode" width="256" height="256"/>
+          </brls:Box>
+        </brls:Box>
+
+        <brls:Box axis="column" alignItems="center" height="100%" alpha="0.5">
+          <brls:Box lineColor="@theme/brls/applet_frame/separator" lineRight="1px" grow="1"/>
+          <brls:Label text="или" margin="20"/>
+          <brls:Box lineColor="@theme/brls/applet_frame/separator" lineRight="1px" grow="1"/>
+        </brls:Box>
+
+        <brls:Box axis="column" alignItems="center" grow="1" width="0">
+          <brls:Label horizontalAlign="center" text="Откройте в браузере страницу" marginBottom="20" alpha="0.75"/>
+          <brls:Label horizontalAlign="center" text="cloud.vkplay.ru/tv" marginBottom="20" fontSize="28" />
+          <brls:Label horizontalAlign="center" text="и введите код" marginBottom="20" alpha="0.75" />
+          <brls:Label horizontalAlign="center" id="login/pairCode" marginBottom="20" fontSize="28" />
+        </brls:Box>
+      </brls:Box>
+    </brls:Box>
+  </brls:Box>
+</brls:AppletFrame>

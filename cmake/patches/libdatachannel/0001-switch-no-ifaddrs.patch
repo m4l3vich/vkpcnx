@@ -1,0 +1,13 @@
+diff --git a/src/impl/socket.hpp b/src/impl/socket.hpp
+index 7ad9b50..f53b7b4 100644
+--- a/src/impl/socket.hpp
++++ b/src/impl/socket.hpp
+@@ -81,7 +81,7 @@ typedef ULONG nfds_t;
+ #define NO_PMTUDISC
+ #endif
+ 
+-#ifdef __ANDROID__
++#if defined(__ANDROID__) || defined(__SWITCH__)
+ #define NO_IFADDRS
+ #else
+ #include <ifaddrs.h>

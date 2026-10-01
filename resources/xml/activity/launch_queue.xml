@@ -1,0 +1,18 @@
+<brls:AppletFrame id="launch_queue/root" headerHidden="true" footerHidden="true" backgroundColor="#000000" focusable="true" hideHighlight="true">
+  <brls:Box axis="column">
+    <brls:Box axis="column" padding="30" justifyContent="center" alignItems="center" grow="1">
+      <brls:Box width="560" height="320">
+        <brls:Image id="launch_queue/image" width="560" height="320" scalingType="fill" cornerRadius="10"/>
+        <brls:Box positionType="absolute" positionTop="0" positionLeft="0" width="560" height="320" backgroundColor="#0000003f" cornerRadius="10" justifyContent="center" alignItems="center">
+          <brls:ProgressSpinner size="large" width="120" height="120"/>
+        </brls:Box>
+      </brls:Box>
+
+      <brls:Label id="launch_queue/title" text="Подключение" fontSize="30" marginTop="40"/>
+      <brls:Label id="launch_queue/subtitle" text=" " marginTop="20" alpha="0.75"/>
+    </brls:Box>
+    <brls:Box justifyContent="center" padding="30">
+      <brls:Label text="&#xE0E1; Отмена" alpha="0.75"/>
+    </brls:Box>
+  </brls:Box>
+</brls:AppletFrame>

@@ -1,0 +1,26 @@
+<brls:Box axis="row" padding="30" width="auto" height="auto">
+  <brls:Box axis="column" marginRight="30">
+    <brls:Label text="Вы можете переключить геймпад в режим мыши и использовать его для управления указателем и прокруткой." marginBottom="20"/>
+
+    <brls:Padding/>
+
+    <brls:Box lineColor="@theme/brls/applet_frame/separator" lineBottom="1px" alpha="0.25"/>
+    <brls:DetailCell id="onboarding/gamepad_pointer/pointer_toggle" title="Контроллер как мышь" marginBottom="20"/>
+
+    <brls:Label text="Чтобы настроить и проверить скорость указателя и прокрутки, воспользуйтесь песочницей." fontSize="15" alpha="0.5" marginBottom="20"/>
+    <brls:Button id="onboarding/gamepad_pointer/playground" style="highlight" text="Войти в песочницу" marginBottom="20"/>
+
+    <brls:Padding/>
+
+    <brls:Box>
+      <brls:Button id="onboarding/gamepad_pointer/next" text="Продолжить" style="primary" marginRight="20"/>
+      <brls:Button id="onboarding/gamepad_pointer/back" text="Назад" style="default"/>
+    </brls:Box>
+  </brls:Box>
+
+  <brls:Box axis="column" alignItems="center" marginBottom="20" width="670">
+    <brls:Box paddingLeft="10" paddingRight="10" paddingTop="20" paddingBottom="20" cornerRadius="10" backgroundColor="@theme/brls/backdrop" width="670">
+      <brls:Image width="650" height="360" image="@res/img/gamepad_pointer.png"/>
+    </brls:Box>
+  </brls:Box>
+</brls:Box>

@@ -1,0 +1,54 @@
+name: Build vkpcnx
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  switch:
+    runs-on: ubuntu-latest
+    container:
+      image: devkitpro/devkita64
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Install dependencies
+        run: |
+          dkp-pacman -Sy --noconfirm --needed \
+            switch-curl switch-zlib switch-libopus switch-ffmpeg switch-libwebp \
+            switch-glfw switch-mesa switch-libdrm_nouveau
+      - name: Build
+        run: ./scripts/build-switch.sh
+      - name: Package symbols
+        # The .nro carries no debug info; the ELF it was made from does, and
+        # its build id is the Module Id in Atmosphère crash reports
+        run: tar -czf vkpcnx-switch-symbols.tar.gz -C build-switch vkpcnx.elf
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: vkpcnx
+          path: build-switch/vkpcnx.nro
+      - name: Upload symbols
+        uses: actions/upload-artifact@v4
+        with:
+          name: vkpcnx-switch-symbols
+          path: vkpcnx-switch-symbols.tar.gz
+          retention-days: 90
+      - name: Build debug
+        run: ./scripts/build-switch.sh --debug
+      - name: Package debug symbols
+        run: tar -czf vkpcnx-switch-debug-symbols.tar.gz -C build-switch-debug vkpcnx.elf
+      - name: Upload debug dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: vkpcnx-debug
+          path: build-switch-debug/vkpcnx.nro
+      - name: Upload debug symbols
+        uses: actions/upload-artifact@v4
+        with:
+          name: vkpcnx-switch-debug-symbols
+          path: vkpcnx-switch-debug-symbols.tar.gz
+          retention-days: 90

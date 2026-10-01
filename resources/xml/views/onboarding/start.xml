@@ -1,0 +1,15 @@
+<brls:Box grow="1" axis="row" padding="30" alignItems="center" justifyContent="center">
+  <brls:Image width="200" height="325" image="@res/img/onboarding_graphic.png"/>
+  <brls:Box axis="column" maxWidth="600" marginLeft="100" minHeight="325">
+    <brls:Label text="Перед началом игры" marginBottom="30" fontSize="40"/>
+    <brls:Label text="Чтобы комфортно играть в игры для ПК и управлять виртуальным компьютером на Switch, ознакомьтесь со схемой управления и настройте её под себя." marginBottom="30"/>
+    <brls:Label text="Изменить настройки управления можно в любой момент, даже в игре." fontSize="15" alpha="0.5"/>
+
+    <brls:Padding/>
+
+    <brls:Box>
+      <brls:Button id="onboarding/start/proceed" text="Продолжить" style="primary" marginRight="20"/>
+      <brls:Button id="onboarding/start/skip" text="Пропустить" style="default"/>
+    </brls:Box>
+  </brls:Box>
+</brls:Box>

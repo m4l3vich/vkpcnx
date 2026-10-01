@@ -1,0 +1,4473 @@
+{
+ "View": {
+  "name": "View",
+  "kind": "class",
+  "base": null,
+  "file": "include/borealis/core/view.hpp",
+  "line": 231,
+  "doc": "Superclass for all the other views Lifecycle of a view is :  new -> [willAppear -> willDisappear] -> delete Users have do to the new, the rest of the lifecycle is taken care of by the library willAppear and willDisappear can be called zero or multiple times before deletion (in case of a TabLayout for instance)",
+  "methods": [
+   {
+    "sig": "View()",
+    "name": "View",
+    "doc": ""
+   },
+   {
+    "sig": "virtual ~View()",
+    "name": "~View",
+    "doc": ""
+   },
+   {
+    "sig": "void setBackground(ViewBackground background)",
+    "name": "setBackground",
+    "doc": ""
+   },
+   {
+    "sig": "void shakeHighlight(FocusDirection direction)",
+    "name": "shakeHighlight",
+    "doc": ""
+   },
+   {
+    "sig": "Rect getFrame()",
+    "name": "getFrame",
+    "doc": ""
+   },
+   {
+    "sig": "float getX()",
+    "name": "getX",
+    "doc": ""
+   },
+   {
+    "sig": "float getY()",
+    "name": "getY",
+    "doc": ""
+   },
+   {
+    "sig": "Rect getLocalFrame()",
+    "name": "getLocalFrame",
+    "doc": ""
+   },
+   {
+    "sig": "float getLocalX()",
+    "name": "getLocalX",
+    "doc": ""
+   },
+   {
+    "sig": "float getLocalY()",
+    "name": "getLocalY",
+    "doc": ""
+   },
+   {
+    "sig": "float getWidth()",
+    "name": "getWidth",
+    "doc": ""
+   },
+   {
+    "sig": "float getHeight(bool includeCollapse = true)",
+    "name": "getHeight",
+    "doc": ""
+   },
+   {
+    "sig": "virtual void invalidate()",
+    "name": "invalidate",
+    "doc": "Triggers a layout of the whole view tree. Must be called after a yoga node property is changed. Only methods that change yoga nodes properties should call this method."
+   },
+   {
+    "sig": "virtual void onLayout() {}",
+    "name": "onLayout",
+    "doc": "Called when a layout pass ends on that view."
+   },
+   {
+    "sig": "virtual View* getView(std::string id)",
+    "name": "getView",
+    "doc": "Returns the view with the corresponding id in the view or its children, or nullptr if it hasn't been found. Research is done recursively by traversing the tree starting from this view. This view's parents are not traversed."
+   },
+   {
+    "sig": "void setWidth(float width)",
+    "name": "setWidth",
+    "doc": "Sets the preferred width of the view. Use brls::View::AUTO to have the layout automatically resize the view. If set to anything else than AUTO, the view is guaranteed to never shrink below the given width."
+   },
+   {
+    "sig": "void setHeight(float height)",
+    "name": "setHeight",
+    "doc": "Sets the preferred height of the view. Use brls::View::AUTO to have the layout automatically resize the view. If set to anything else than AUTO, the view is guaranteed to never shrink below the given height."
+   },
+   {
+    "sig": "void setSize(Size size)",
+    "name": "setSize",
+    "doc": "Sets the preferred width and height of the view. Use brls::View::AUTO to have the layout automatically resize the view. If set to anything else than AUTO, the view is guaranteed to never shrink below the given height."
+   },
+   {
+    "sig": "void setDimensions(float width, float height)",
+    "name": "setDimensions",
+    "doc": "Shortcut to setWidth + setHeight. Only does one layout pass instead of two when using the two methods separately."
+   },
+   {
+    "sig": "void setWidthPercentage(float percentage)",
+    "name": "setWidthPercentage",
+    "doc": "Sets the preferred width of the view in percentage of the parent view width. Between 0.0f and 100.0f."
+   },
+   {
+    "sig": "void setHeightPercentage(float percentage)",
+    "name": "setHeightPercentage",
+    "doc": "Sets the preferred height of the view in percentage of the parent view height. Between 0.0f and 100.0f."
+   },
+   {
+    "sig": "void setMinWidth(float minWidth)",
+    "name": "setMinWidth",
+    "doc": "Sets the minimum width of the view, in pixels. This constraint is stronger than the grow factor: the view is guaranteed to never be less than the given min width. Use View::AUTO to disable the min width constraint."
+   },
+   {
+    "sig": "void setMinHeight(float minHeight)",
+    "name": "setMinHeight",
+    "doc": "Sets the minimum height of the view, in pixels. This constraint is stronger than the grow factor: the view is guaranteed to never be less than the given max height. Use View::AUTO to disable the min height constraint."
+   },
+   {
+    "sig": "void setMinWidthPercentage(float percentage)",
+    "name": "setMinWidthPercentage",
+    "doc": "Sets the minimum width of the view, in parent width percentage. This constraint is stronger than the grow factor: the view is guaranteed to never be less than the given max width. Use View::AUTO to disable the min width constraint."
+   },
+   {
+    "sig": "void setMinHeightPercentage(float percentage)",
+    "name": "setMinHeightPercentage",
+    "doc": "Sets the minimum height of the view, in parent height percentage. This constraint is stronger than the grow factor: the view is guaranteed to never be less than the given max height. Use View::AUTO to disable the min height constraint."
+   },
+   {
+    "sig": "void setMaxWidth(float maxWidth)",
+    "name": "setMaxWidth",
+    "doc": "Sets the maximum width of the view, in pixels. This constraint is stronger than the grow factor: the view is guaranteed to never be larger than the given max width. Use View::AUTO to disable the max width constraint."
+   },
+   {
+    "sig": "void setMaxHeight(float maxHeight)",
+    "name": "setMaxHeight",
+    "doc": "Sets the maximum height of the view, in pixels. This constraint is stronger than the grow factor: the view is guaranteed to never be larger than the given max height. Use View::AUTO to disable the max height constraint."
+   },
+   {
+    "sig": "void setMaxWidthPercentage(float percentage)",
+    "name": "setMaxWidthPercentage",
+    "doc": "Sets the maximum width of the view, in parent width percentage. This constraint is stronger than the grow factor: the view is guaranteed to never be larger than the given max width. Use View::AUTO to disable the max width constraint."
+   },
+   {
+    "sig": "void setMaxHeightPercentage(float percentage)",
+    "name": "setMaxHeightPercentage",
+    "doc": "Sets the maximum height of the view, in parent height percentage. This constraint is stronger than the grow factor: the view is guaranteed to never be larger than the given max height. Use View::AUTO to disable the max height constraint."
+   },
+   {
+    "sig": "void setGrow(float grow)",
+    "name": "setGrow",
+    "doc": "Sets the grow factor of the view, aka the percentage of remaining space to give this view, in the containing box axis. Opposite of shrink. Default is 0.0f;"
+   },
+   {
+    "sig": "void setShrink(float shrink)",
+    "name": "setShrink",
+    "doc": "Sets the shrink factor of the view, aka the percentage of space the view is allowed to shrink for if there is not enough space for everyone in the contaning box axis. Opposite of grow. Default is 1.0f;"
+   },
+   {
+    "sig": "void setMargins(float top, float right, float bottom, float left)",
+    "name": "setMargins",
+    "doc": "Sets the margin of the view, aka the space that separates this view and the surrounding ones in all 4 directions. Use brls::View::AUTO to have the layout automatically select the margin. Only works with views that have parents - top level views that are pushed on the stack don't have parents. Only does one layout pass instead of four when using the four methods separately."
+   },
+   {
+    "sig": "void setMarginTop(float top)",
+    "name": "setMarginTop",
+    "doc": "Sets the top margin of the view, aka the space that separates this view and the surrounding ones. Only works with views that have parents - top level views that are pushed on the stack don't have parents. Use brls::View::AUTO to have the layout automatically select the margin."
+   },
+   {
+    "sig": "void setMarginRight(float right)",
+    "name": "setMarginRight",
+    "doc": "Sets the right margin of the view, aka the space that separates this view and the surrounding ones. Only works with views that have parents - top level views that are pushed on the stack don't have parents. Use brls::View::AUTO to have the layout automatically select the margin."
+   },
+   {
+    "sig": "float getMarginRight()",
+    "name": "getMarginRight",
+    "doc": ""
+   },
+   {
+    "sig": "float getMarginLeft()",
+    "name": "getMarginLeft",
+    "doc": ""
+   },
+   {
+    "sig": "void setMarginBottom(float right)",
+    "name": "setMarginBottom",
+    "doc": "Sets the bottom margin of the view, aka the space that separates this view and the surrounding ones. Only works with views that have parents - top level views that are pushed on the stack don't have parents. Use brls::View::AUTO to have the layout automatically select the margin."
+   },
+   {
+    "sig": "void setMarginLeft(float left)",
+    "name": "setMarginLeft",
+    "doc": "Sets the right margin of the view, aka the space that separates this view and the surrounding ones. Only works with views that have parents - top level views that are pushed on the stack don't have parents. Use brls::View::AUTO to have the layout automatically select the margin."
+   },
+   {
+    "sig": "void setVisibility(Visibility visibility)",
+    "name": "setVisibility",
+    "doc": "Sets the visibility of the view."
+   },
+   {
+    "sig": "Visibility getVisibility()",
+    "name": "getVisibility",
+    "doc": "Gets the visibility of the view."
+   },
+   {
+    "sig": "void setPositionTop(float pos)",
+    "name": "setPositionTop",
+    "doc": "Sets the top position of the view, in pixels. The behavior of this attribute changes depending on the position type of the view. If relative, it will simply offset the view by the given amount. If absolute, it will behave like the \"display: absolute;\" CSS property and move the view freely in its parent. Use 0 to snap to the parent top edge. Absolute positioning ignores padding. Use View::AUTO to disable (not the same as 0)."
+   },
+   {
+    "sig": "void setPositionRight(float pos)",
+    "name": "setPositionRight",
+    "doc": "Sets the right position of the view, in pixels. The behavior of this attribute changes depending on the position type of the view. If relative, it will simply offset the view by the given amount. If absolute, it will behave like the \"display: absolute;\" CSS property and move the view freely in its parent. Use 0 to snap to the parent right edge. Absolute positioning ignores padding. Use View::AUTO to disable (not the same as 0)."
+   },
+   {
+    "sig": "void setPositionBottom(float pos)",
+    "name": "setPositionBottom",
+    "doc": "Sets the bottom position of the view, in pixels. The behavior of this attribute changes depending on the position type of the view. If relative, it will simply offset the view by the given amount. If absolute, it will behave like the \"display: absolute;\" CSS property and move the view freely in its parent. Use 0 to snap to the parent bottom edge. Absolute positioning ignores padding. Use View::AUTO to disable (not the same as 0)."
+   },
+   {
+    "sig": "void setPositionLeft(float pos)",
+    "name": "setPositionLeft",
+    "doc": "Sets the left position of the view, in pixels. The behavior of this attribute changes depending on the position type of the view. If relative, it will simply offset the view by the given amount. If absolute, it will behave like the \"display: absolute;\" CSS property and move the view freely in its parent. Use 0 to snap to the parent left edge. Absolute positioning ignores padding. Use View::AUTO to disable (not the same as 0)."
+   },
+   {
+    "sig": "void setPositionTopPercentage(float percentage)",
+    "name": "setPositionTopPercentage",
+    "doc": "Sets the top position of the view, in percents. The behavior of this attribute changes depending on the position type of the view."
+   },
+   {
+    "sig": "void setPositionRightPercentage(float percentage)",
+    "name": "setPositionRightPercentage",
+    "doc": "Sets the right position of the view, in percents. The behavior of this attribute changes depending on the position type of the view."
+   },
+   {
+    "sig": "void setPositionBottomPercentage(float percentage)",
+    "name": "setPositionBottomPercentage",
+    "doc": "Sets the bottom position of the view, in percentage. The behavior of this attribute changes depending on the position type of the view."
+   },
+   {
+    "sig": "void setPositionLeftPercentage(float percentage)",
+    "name": "setPositionLeftPercentage",
+    "doc": "Sets the left position of the view, in percents. The behavior of this attribute changes depending on the position type of the view."
+   },
+   {
+    "sig": "void setPositionType(PositionType type)",
+    "name": "setPositionType",
+    "doc": "Sets the \"position type\" of the view, aka the behavior of the 4 position attributes. Default is RELATIVE."
+   },
+   {
+    "sig": "void setId(std::string id)",
+    "name": "setId",
+    "doc": "Sets the id of the view."
+   },
+   {
+    "sig": "void setAlignSelf(AlignSelf align)",
+    "name": "setAlignSelf",
+    "doc": "Overrides align items of the parent box. Default is AUTO."
+   },
+   {
+    "sig": "inline void setLineColor(NVGcolor color)",
+    "name": "setLineColor",
+    "doc": "Sets the line color for the view. To be used with setLineTop(), setLineRight()... The \"line\" is separate from the shape \"border\"."
+   },
+   {
+    "sig": "inline void setLineTop(float thickness)",
+    "name": "setLineTop",
+    "doc": "Sets the top line thickness. Use setLineColor() to change the line color. The \"line\" is separate from the shape \"border\"."
+   },
+   {
+    "sig": "inline void setLineRight(float thickness)",
+    "name": "setLineRight",
+    "doc": "Sets the right line thickness. Use setLineColor() to change the line color. The \"line\" is separate from the shape \"border\"."
+   },
+   {
+    "sig": "inline void setLineBottom(float thickness)",
+    "name": "setLineBottom",
+    "doc": "Sets the bottom line thickness. Use setLineColor() to change the line color. The \"line\" is separate from the shape \"border\"."
+   },
+   {
+    "sig": "inline void setLineLeft(float thickness)",
+    "name": "setLineLeft",
+    "doc": "Sets the left line thickness. Use setLineColor() to change the line color. The \"line\" is separate from the shape \"border\"."
+   },
+   {
+    "sig": "inline void setBackgroundColor(NVGcolor color)",
+    "name": "setBackgroundColor",
+    "doc": "Sets the view shape background color."
+   },
+   {
+    "sig": "inline void setBorderColor(NVGcolor color)",
+    "name": "setBorderColor",
+    "doc": "Sets the view shape border color."
+   },
+   {
+    "sig": "inline void setBorderThickness(float thickness)",
+    "name": "setBorderThickness",
+    "doc": "Sets the view shape border thickness."
+   },
+   {
+    "sig": "inline float getBorderThickness()",
+    "name": "getBorderThickness",
+    "doc": ""
+   },
+   {
+    "sig": "inline void setCornerRadius(float radius)",
+    "name": "setCornerRadius",
+    "doc": "Sets the view shape corner radius. 0 means no rounded corners."
+   },
+   {
+    "sig": "inline float getCornerRadius()",
+    "name": "getCornerRadius",
+    "doc": ""
+   },
+   {
+    "sig": "inline void setShadowType(ShadowType type)",
+    "name": "setShadowType",
+    "doc": "Sets the view shape shadow type. Default is NONE."
+   },
+   {
+    "sig": "inline void setShadowVisibility(bool visible)",
+    "name": "setShadowVisibility",
+    "doc": "Sets the shadow visibility."
+   },
+   {
+    "sig": "inline void setHideHighlightBackground(bool hide)",
+    "name": "setHideHighlightBackground",
+    "doc": "If set to true, the highlight background will be hidden for this view (the white rectangle that goes behind the view, replacing the usual background shape)."
+   },
+   {
+    "sig": "inline void setHideHighlightBorder(bool hide)",
+    "name": "setHideHighlightBorder",
+    "doc": "If set to true, the highlight border will be hidden for this view."
+   },
+   {
+    "sig": "inline void setHideHighlight(bool hide)",
+    "name": "setHideHighlight",
+    "doc": "If set to true, the highlight will be hidden for this view."
+   },
+   {
+    "sig": "inline void setHideClickAnimation(bool hide)",
+    "name": "setHideClickAnimation",
+    "doc": ""
+   },
+   {
+    "sig": "inline void setHighlightPadding(float padding)",
+    "name": "setHighlightPadding",
+    "doc": "Sets the highlight padding of the view, aka the space between the highlight rectangle and the view. The highlight rect is enlarged, the view is untouched."
+   },
+   {
+    "sig": "inline void setHighlightCornerRadius(float radius)",
+    "name": "setHighlightCornerRadius",
+    "doc": "Sets the highlight rectangle corner radius."
+   },
+   {
+    "sig": "virtual View* getNearestView(std::string id)",
+    "name": "getNearestView",
+    "doc": "Returns the \"nearest\" view with the corresponding id, or nullptr if none has been found. \"Nearest\" means the closest in the vicinity of this view. The siblings are searched as well as its children. Research is done by traversing the tree upwards, starting from this view. The current algorithm is very inefficient."
+   },
+   {
+    "sig": "static View* createFromXMLString(std::string_view xml)",
+    "name": "createFromXMLString",
+    "doc": "Creates a view from the given XML file content. The method handleXMLElement() is executed for each child node in the XML. Uses the internal lookup table to instantiate the views. Use registerXMLView() to add your own views to the table so that you can use them in your own XML files."
+   },
+   {
+    "sig": "static View* createFromXMLElement(tinyxml2::XMLElement* element)",
+    "name": "createFromXMLElement",
+    "doc": "Creates a view from the given XML element (node and attributes). The method handleXMLElement() is executed for each child node in the XML. Uses the internal lookup table to instantiate the views. Use registerXMLView() to add your own views to the table so that you can use them in your own XML files."
+   },
+   {
+    "sig": "static View* createFromXMLFile(std::string path)",
+    "name": "createFromXMLFile",
+    "doc": "Creates a view from the given XML file path. The method handleXMLElement() is executed for each child node in the XML. Uses the internal lookup table to instantiate the views. Use registerXMLView() to add your own views to the table so that you can use them in your own XML files."
+   },
+   {
+    "sig": "static View* createFromXMLResource(std::string name)",
+    "name": "createFromXMLResource",
+    "doc": "Creates a view from the given XML resource file name. The method handleXMLElement() is executed for each child node in the XML. Uses the internal lookup table to instantiate the views. Use registerXMLView() to add your own views to the table so that you can use them in your own XML files."
+   },
+   {
+    "sig": "virtual void handleXMLElement(tinyxml2::XMLElement* element)",
+    "name": "handleXMLElement",
+    "doc": "Handles a child XML element. You can redefine this method to handle child XML like as you want in your own views. If left unimplemented, will throw an exception because raw views cannot handle child XML elements (Boxes can)."
+   },
+   {
+    "sig": "virtual void applyXMLAttributes(tinyxml2::XMLElement* element)",
+    "name": "applyXMLAttributes",
+    "doc": "Applies the attributes of the given XML element to the view. You can add your own attributes to by calling registerXMLAttribute() in the view constructor."
+   },
+   {
+    "sig": "virtual bool applyXMLAttribute(std::string name, std::string value)",
+    "name": "applyXMLAttribute",
+    "doc": "Applies the given attribute to the view. You can add your own attributes to by calling registerXMLAttribute() in the view constructor."
+   },
+   {
+    "sig": "void registerAutoXMLAttribute(std::string name, AutoAttributeHandler handler)",
+    "name": "registerAutoXMLAttribute",
+    "doc": "Register a new XML attribute with the given name and handler method. You can have multiple attributes registered with the same name but different types / handlers, except if the type is string. The method will be called if the attribute has the value \"auto\"."
+   },
+   {
+    "sig": "void registerPercentageXMLAttribute(std::string name, FloatAttributeHandler handler)",
+    "name": "registerPercentageXMLAttribute",
+    "doc": "Register a new XML attribute with the given name and handler method. You can have multiple attributes registered with the same name but different types / handlers, except if the type is string. The method will be called if the attribute has a percentage value (an integer with \"%\" suffix). The given float value is guaranteed to be between 0.0f and 1.0f."
+   },
+   {
+    "sig": "void registerFloatXMLAttribute(std::string name, FloatAttributeHandler handler)",
+    "name": "registerFloatXMLAttribute",
+    "doc": "Register a new XML attribute with the given name and handler method. You can have multiple attributes registered with the same name but different types / handlers, except if the type is string. The method will be called if the attribute has an integer, float, @style or \"px\" value."
+   },
+   {
+    "sig": "void registerStringXMLAttribute(std::string name, StringAttributeHandler handler)",
+    "name": "registerStringXMLAttribute",
+    "doc": "Register a new XML attribute with the given name and handler method. You can have multiple attributes registered with the same name but different types / handlers, except if the type is string. The method will be called if the attribute has a string or @i18n value. If you use string as a type, you can only have one handler for the attribute."
+   },
+   {
+    "sig": "void registerColorXMLAttribute(std::string name, ColorAttributeHandler handler)",
+    "name": "registerColorXMLAttribute",
+    "doc": "Register a new XML attribute with the given name and handler method. You can have multiple attributes registered with the same name but different types / handlers, except if the type is string. The method will be called if the attribute has a color value (\"#XXXXXX\" or \"#XXXXXXXX\") or a @theme value."
+   },
+   {
+    "sig": "void registerBoolXMLAttribute(std::string name, BoolAttributeHandler handler)",
+    "name": "registerBoolXMLAttribute",
+    "doc": "Register a new XML attribute with the given name and handler method. You can have multiple attributes registered with the same name but different types / handlers, except if the type is string. The method will be called if the attribute has a boolean value (\"true\" or \"false\")."
+   },
+   {
+    "sig": "void registerFilePathXMLAttribute(std::string name, FilePathAttributeHandler handler)",
+    "name": "registerFilePathXMLAttribute",
+    "doc": "Register a new XML attribute with the given name and handler method. You can have multiple attributes registered with the same name but different types / handlers, except if the type is string. The method will be called if the attribute has a file path value (\"@res/\" or raw path)."
+   },
+   {
+    "sig": "static std::shared_ptr<tinyxml2::XMLDocument> getXMLCache(std::string_view path)",
+    "name": "getXMLCache",
+    "doc": "Get the XML document for the XML file, creating a new one if none is cached."
+   },
+   {
+    "sig": "bool isXMLAttributeValid(std::string attributeName)",
+    "name": "isXMLAttributeValid",
+    "doc": "Returns if the given XML attribute name is valid for that view."
+   },
+   {
+    "sig": "void setMaximumAllowedXMLElements(unsigned max)",
+    "name": "setMaximumAllowedXMLElements",
+    "doc": "Sets the maximum number of allowed children XML elements when using a view of that class in an XML file."
+   },
+   {
+    "sig": "unsigned getMaximumAllowedXMLElements()",
+    "name": "getMaximumAllowedXMLElements",
+    "doc": ""
+   },
+   {
+    "sig": "void setInFadeAnimation(bool translucent)",
+    "name": "setInFadeAnimation",
+    "doc": "If set to true, will force the view to be translucent."
+   },
+   {
+    "sig": "inline void setFocusable(bool focusable)",
+    "name": "setFocusable",
+    "doc": "Sets the view to be focusable. Required to be able to use actions that need focus on that view (such as an A press)."
+   },
+   {
+    "sig": "bool isFocusable()",
+    "name": "isFocusable",
+    "doc": ""
+   },
+   {
+    "sig": "void removeFromSuperView(bool free = true)",
+    "name": "removeFromSuperView",
+    "doc": "Removes view from it's parent"
+   },
+   {
+    "sig": "inline void setFocusSound(enum Sound sound)",
+    "name": "setFocusSound",
+    "doc": "Sets the sound to play when this view gets focused."
+   },
+   {
+    "sig": "virtual enum Sound getFocusSound()",
+    "name": "getFocusSound",
+    "doc": ""
+   },
+   {
+    "sig": "void detach()",
+    "name": "detach",
+    "doc": "Sets the detached flag to true. This action is irreversible. A detached view will, as the name suggests, not be attached to their parent Yoga node. That means that invalidation and layout need to be taken care of manually by the parent. detach() must be called before adding the view to the parent."
+   },
+   {
+    "sig": "bool isDetached()",
+    "name": "isDetached",
+    "doc": ""
+   },
+   {
+    "sig": "void setDetachedPosition(float x, float y)",
+    "name": "setDetachedPosition",
+    "doc": "Sets the position of the view, if detached."
+   },
+   {
+    "sig": "void setDetachedPositionX(float x)",
+    "name": "setDetachedPositionX",
+    "doc": "Sets the position X of the view, if detached."
+   },
+   {
+    "sig": "void setDetachedPositionY(float y)",
+    "name": "setDetachedPositionY",
+    "doc": "Sets the position Y of the view, if detached."
+   },
+   {
+    "sig": "Point getDetachedPosition() const",
+    "name": "getDetachedPosition",
+    "doc": "Gets detached position of the view."
+   },
+   {
+    "sig": "void setParent(Box* parent, void* parentUserdata = nullptr)",
+    "name": "setParent",
+    "doc": ""
+   },
+   {
+    "sig": "Box* getParent()",
+    "name": "getParent",
+    "doc": ""
+   },
+   {
+    "sig": "bool hasParent()",
+    "name": "hasParent",
+    "doc": ""
+   },
+   {
+    "sig": "void* getParentUserData()",
+    "name": "getParentUserData",
+    "doc": ""
+   },
+   {
+    "sig": "ActionIdentifier registerAction(std::string hintText, enum ControllerButton button, ActionListener actionListener, bool hidden = false, bool allowRepeating = false, enum Sound sound = SOUND_NONE)",
+    "name": "registerAction",
+    "doc": "Registers an action with the given parameters. The listener will be fired when the user presses the key when the view is focused. The listener should return true if the action was consumed, false otherwise. The sound will only be played if the listener returned true. A hidden action will not show up in the bottom-right hints. Returns the identifier for the action, so it can be unregistered later on. Returns ACTION_NONE if the action was not registered."
+   },
+   {
+    "sig": "void unregisterAction(ActionIdentifier identifier)",
+    "name": "unregisterAction",
+    "doc": "Unregisters an action with the given identifier."
+   },
+   {
+    "sig": "void registerClickAction(ActionListener actionListener)",
+    "name": "registerClickAction",
+    "doc": "Shortcut to register a generic \"A OK\" click action."
+   },
+   {
+    "sig": "void updateActionHint(enum ControllerButton button, std::string hintText)",
+    "name": "updateActionHint",
+    "doc": ""
+   },
+   {
+    "sig": "void setActionAvailable(enum ControllerButton button, bool available)",
+    "name": "setActionAvailable",
+    "doc": ""
+   },
+   {
+    "sig": "void setActionsAvailable(bool available)",
+    "name": "setActionsAvailable",
+    "doc": ""
+   },
+   {
+    "sig": "void resetClickAnimation()",
+    "name": "resetClickAnimation",
+    "doc": ""
+   },
+   {
+    "sig": "void playClickAnimation(bool reverse = false, bool animateBack = true, bool force = false)",
+    "name": "playClickAnimation",
+    "doc": ""
+   },
+   {
+    "sig": "std::string getClassString() const",
+    "name": "getClassString",
+    "doc": ""
+   },
+   {
+    "sig": "std::string describe() const",
+    "name": "describe",
+    "doc": ""
+   },
+   {
+    "sig": "YGNode* getYGNode()",
+    "name": "getYGNode",
+    "doc": ""
+   },
+   {
+    "sig": "const std::vector<Action>& getActions()",
+    "name": "getActions",
+    "doc": ""
+   },
+   {
+    "sig": "const std::vector<GestureRecognizer*>& getGestureRecognizers()",
+    "name": "getGestureRecognizers",
+    "doc": "Get the vector of all gesture recognizers attached to that view."
+   },
+   {
+    "sig": "void interruptGestures(bool onlyIfUnsureState)",
+    "name": "interruptGestures",
+    "doc": "Interrupt every recognizer on this view. If onlyIfUnsureState == true, only recognizers with current state UNSURE will be interupted"
+   },
+   {
+    "sig": "void addGestureRecognizer(GestureRecognizer* recognizer)",
+    "name": "addGestureRecognizer",
+    "doc": "Add new gesture recognizer on this view."
+   },
+   {
+    "sig": "Sound gestureRecognizerRequest(TouchState touch, MouseState mouse, View* firstResponder)",
+    "name": "gestureRecognizerRequest",
+    "doc": "Called each frame when touch is registered. @returns sound to play invoked by touch recognizers."
+   },
+   {
+    "sig": "virtual void frame(FrameContext* ctx)",
+    "name": "frame",
+    "doc": "Called each frame Do not override it to draw your view, override draw() instead"
+   },
+   {
+    "sig": "void frameHighlight(FrameContext* ctx)",
+    "name": "frameHighlight",
+    "doc": "Called each frame"
+   },
+   {
+    "sig": "virtual void draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx) = 0",
+    "name": "draw",
+    "doc": "Called by frame() to draw the view onscreen. Views should not draw outside of their bounds (they may be clipped if they do so)."
+   },
+   {
+    "sig": "virtual void willAppear(bool resetState = false)",
+    "name": "willAppear",
+    "doc": "Called when the view will appear on screen, before or after layout(). Can be called if the view has already appeared, so be careful."
+   },
+   {
+    "sig": "virtual void willDisappear(bool resetState = false)",
+    "name": "willDisappear",
+    "doc": "Called when the view will disappear from the screen. Can be called if the view has already disappeared, so be careful."
+   },
+   {
+    "sig": "virtual void onShowAnimationEnd() {}",
+    "name": "onShowAnimationEnd",
+    "doc": "Called when the show() animation (fade in) ends"
+   },
+   {
+    "sig": "virtual void show(std::function<void(void)> cb)",
+    "name": "show",
+    "doc": "Shows the view with a fade in animation."
+   },
+   {
+    "sig": "virtual void show(std::function<void(void)> cb, bool animate, float animationDuration)",
+    "name": "show",
+    "doc": "Shows the view with a fade in animation, or no animation at all."
+   },
+   {
+    "sig": "virtual float getShowAnimationDuration(TransitionAnimation animation)",
+    "name": "getShowAnimationDuration",
+    "doc": "Returns the duration of the view show / hide animation."
+   },
+   {
+    "sig": "void collapse(bool animated = true)",
+    "name": "collapse",
+    "doc": "Hides the view in a collapse animation"
+   },
+   {
+    "sig": "bool isCollapsed()",
+    "name": "isCollapsed",
+    "doc": ""
+   },
+   {
+    "sig": "void setAlpha(float alpha)",
+    "name": "setAlpha",
+    "doc": ""
+   },
+   {
+    "sig": "void expand(bool animated = true)",
+    "name": "expand",
+    "doc": "Shows the view in a expand animation (opposite of collapse)"
+   },
+   {
+    "sig": "virtual void hide(std::function<void(void)> cb)",
+    "name": "hide",
+    "doc": "Hides the view with a fade out animation."
+   },
+   {
+    "sig": "virtual void hide(std::function<void(void)> cb, bool animate, float animationDuration)",
+    "name": "hide",
+    "doc": "Hides the view with a fade out animation, or no animation at all."
+   },
+   {
+    "sig": "bool isHidden()",
+    "name": "isHidden",
+    "doc": ""
+   },
+   {
+    "sig": "virtual bool isTranslucent()",
+    "name": "isTranslucent",
+    "doc": "Is this view translucent? If you override it please return <value> || View::isTranslucent() to keep the fadeIn transition"
+   },
+   {
+    "sig": "bool isFocused()",
+    "name": "isFocused",
+    "doc": ""
+   },
+   {
+    "sig": "virtual View* getDefaultFocus()",
+    "name": "getDefaultFocus",
+    "doc": "Returns the default view to focus when focusing this view Typically the view itself or one of its children. Returning nullptr means that the view is not focusable (and neither are its children) By default, a view is focusable if the flag is set to true with setFocusable() and if the view is visible. When pressing a key, the flow is :  1. starting from the currently focused view's parent, traverse the tree upwards and    repeatedly call getNextFocus() on every view until we find a next view to focus or meet the end of the tree  2. if a view is found, getNextFocus() will internally call getDefaultFocus() for the selected child  3. give focus to the result, if it exists"
+   },
+   {
+    "sig": "virtual View* hitTest(Point point)",
+    "name": "hitTest",
+    "doc": "Returns the view to focus with the corresponding screen coordinates in the view or its children, or nullptr if it hasn't been found. Research is done recursively by traversing the tree starting from this view. This view's parents are not traversed."
+   },
+   {
+    "sig": "virtual View* getNextFocus(FocusDirection direction, View* currentView)",
+    "name": "getNextFocus",
+    "doc": "Returns the next view to focus given the requested direction and the currently focused view (as parent user data) Returning nullptr means that there is no next view to focus in that direction - getNextFocus will then be called on our parent if any"
+   },
+   {
+    "sig": "void setCustomNavigationRoute(FocusDirection direction, View* target)",
+    "name": "setCustomNavigationRoute",
+    "doc": "Sets a custom navigation route from this view to the target one."
+   },
+   {
+    "sig": "void setCustomNavigationRoute(FocusDirection direction, std::string targetId)",
+    "name": "setCustomNavigationRoute",
+    "doc": "Sets a custom navigation route from this view to the target one, by ID. The final target view will be the \"nearest\" with the given ID. Resolution of the ID to View is made when the navigation event occurs, not when the route is registered."
+   },
+   {
+    "sig": "bool hasCustomNavigationRouteByPtr(FocusDirection direction)",
+    "name": "hasCustomNavigationRouteByPtr",
+    "doc": ""
+   },
+   {
+    "sig": "bool hasCustomNavigationRouteById(FocusDirection direction)",
+    "name": "hasCustomNavigationRouteById",
+    "doc": ""
+   },
+   {
+    "sig": "View* getCustomNavigationRoutePtr(FocusDirection direction)",
+    "name": "getCustomNavigationRoutePtr",
+    "doc": ""
+   },
+   {
+    "sig": "std::string getCustomNavigationRouteId(FocusDirection direction)",
+    "name": "getCustomNavigationRouteId",
+    "doc": ""
+   },
+   {
+    "sig": "virtual void onFocusGained()",
+    "name": "onFocusGained",
+    "doc": "Fired when focus is gained."
+   },
+   {
+    "sig": "virtual void onFocusLost()",
+    "name": "onFocusLost",
+    "doc": "Fired when focus is lost."
+   },
+   {
+    "sig": "virtual void onParentFocusGained(View* focusedView)",
+    "name": "onParentFocusGained",
+    "doc": "Fired when focus is gained on this view's parent, or the parent of the parent..."
+   },
+   {
+    "sig": "virtual void onParentFocusLost(View* focusedView)",
+    "name": "onParentFocusLost",
+    "doc": "Fired when focus is lost on one of this view's parents. Works similarly to onParentFocusGained()."
+   },
+   {
+    "sig": "virtual void onWindowSizeChanged()",
+    "name": "onWindowSizeChanged",
+    "doc": "Fired when the window size changes, after updating layout."
+   },
+   {
+    "sig": "GenericEvent* getFocusEvent()",
+    "name": "getFocusEvent",
+    "doc": ""
+   },
+   {
+    "sig": "GenericEvent* getFocusLostEvent()",
+    "name": "getFocusLostEvent",
+    "doc": ""
+   },
+   {
+    "sig": "virtual float getAlpha(bool child = false)",
+    "name": "getAlpha",
+    "doc": ""
+   },
+   {
+    "sig": "float getClickAlpha() { return this->clickAlpha; } /** * Forces this view and its children to use * the specified theme. */ void overrideTheme(Theme* newTheme)",
+    "name": "getClickAlpha",
+    "doc": ""
+   },
+   {
+    "sig": "void setCulled(bool culled)",
+    "name": "setCulled",
+    "doc": "Enables / disable culling for that view. To disable culling for all child views of a Box use setCullingEnabled on the box."
+   },
+   {
+    "sig": "bool isCulled()",
+    "name": "isCulled",
+    "doc": ""
+   },
+   {
+    "sig": "void setAspectRatio(float value)",
+    "name": "setAspectRatio",
+    "doc": ""
+   },
+   {
+    "sig": "float getAspectRatio()",
+    "name": "getAspectRatio",
+    "doc": ""
+   },
+   {
+    "sig": "void setBackgroundCornerRadii(float topLeft, float topRight, float bottomRight, float bottomLeft)",
+    "name": "setBackgroundCornerRadii",
+    "doc": "Sets the background corner radii of the view. Only for vertical linear style."
+   },
+   {
+    "sig": "void setTranslationY(float translateY)",
+    "name": "setTranslationY",
+    "doc": "Sets the Y translation of this view. Translation is applied after the layout phase. Use relative position and setPosition methods if possible instead."
+   },
+   {
+    "sig": "void setTranslationX(float translateX)",
+    "name": "setTranslationX",
+    "doc": "Sets the X translation of this view. Translation is applied after the layout phase. Use relative position and setPosition methods if possible instead."
+   },
+   {
+    "sig": "void setWireframeEnabled(bool wireframe)",
+    "name": "setWireframeEnabled",
+    "doc": "Wireframe mode allows you to see the view size and margins (and padding if applicable) directly in your app. Useful to diagnose views misplacements or display bugs."
+   },
+   {
+    "sig": "bool isWireframeEnabled()",
+    "name": "isWireframeEnabled",
+    "doc": ""
+   },
+   {
+    "sig": "static std::string getStringXMLAttributeValue(std::string value)",
+    "name": "getStringXMLAttributeValue",
+    "doc": "Resolves the value of the given XML attribute string. Applies i18n if the value is an \"@i18n/\" string, returns the string as it is otherwise."
+   },
+   {
+    "sig": "static std::string getFilePathXMLAttributeValue(std::string value)",
+    "name": "getFilePathXMLAttributeValue",
+    "doc": "Resolves the value of the given XML attribute file path. Returns the full path of the resource if it starts with \"@res/\", returns the path as it is otherwise."
+   },
+   {
+    "sig": "AppletFrameItem *getAppletFrameItem()",
+    "name": "getAppletFrameItem",
+    "doc": ""
+   },
+   {
+    "sig": "void updateAppletFrameItem()",
+    "name": "updateAppletFrameItem",
+    "doc": ""
+   },
+   {
+    "sig": "bool getClipsToBounds() const",
+    "name": "getClipsToBounds",
+    "doc": ""
+   },
+   {
+    "sig": "void setClipsToBounds(bool value)",
+    "name": "setClipsToBounds",
+    "doc": ""
+   },
+   {
+    "sig": "virtual AppletFrame* getAppletFrame()",
+    "name": "getAppletFrame",
+    "doc": ""
+   },
+   {
+    "sig": "void present(View* view)",
+    "name": "present",
+    "doc": ""
+   },
+   {
+    "sig": "virtual void dismiss(std::function<void(void)> cb = [] {})",
+    "name": "dismiss",
+    "doc": ""
+   },
+   {
+    "sig": "void ptrLock()",
+    "name": "ptrLock",
+    "doc": ""
+   },
+   {
+    "sig": "void ptrUnlock()",
+    "name": "ptrUnlock",
+    "doc": ""
+   },
+   {
+    "sig": "bool isPtrLocked()",
+    "name": "isPtrLocked",
+    "doc": ""
+   },
+   {
+    "sig": "void freeView()",
+    "name": "freeView",
+    "doc": ""
+   },
+   {
+    "sig": "Activity* getParentActivity()",
+    "name": "getParentActivity",
+    "doc": ""
+   },
+   {
+    "sig": "void setParentActivity(Activity* activity)",
+    "name": "setParentActivity",
+    "doc": ""
+   }
+  ],
+  "fields": [
+   {
+    "sig": "static constexpr float AUTO = NAN",
+    "doc": ""
+   },
+   {
+    "sig": "inline static std::string CUSTOM_RESOURCES_PATH",
+    "doc": ""
+   },
+   {
+    "sig": "Animatable alpha = 1.0f",
+    "doc": ""
+   },
+   {
+    "sig": "bool* deletionToken = nullptr",
+    "doc": ""
+   },
+   {
+    "sig": "int* deletionTokenCounter = nullptr",
+    "doc": ""
+   }
+  ],
+  "events": [],
+  "tag": null,
+  "attrs": {
+   "width": {
+    "types": [
+     "auto",
+     "number",
+     "percent"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "height": {
+    "types": [
+     "auto",
+     "number",
+     "percent"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "minWidth": {
+    "types": [
+     "auto",
+     "number",
+     "percent"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "minHeight": {
+    "types": [
+     "auto",
+     "number",
+     "percent"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "maxWidth": {
+    "types": [
+     "auto",
+     "number",
+     "percent"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "maxHeight": {
+    "types": [
+     "auto",
+     "number",
+     "percent"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "grow": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "shrink": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "margin": {
+    "types": [
+     "number",
+     "auto"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "marginTop": {
+    "types": [
+     "number",
+     "auto"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "marginRight": {
+    "types": [
+     "number",
+     "auto"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "marginBottom": {
+    "types": [
+     "number",
+     "auto"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "marginLeft": {
+    "types": [
+     "number",
+     "auto"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "lineColor": {
+    "types": [
+     "color"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "lineTop": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "lineRight": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "lineBottom": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "lineLeft": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "positionTop": {
+    "types": [
+     "number",
+     "percent"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "positionRight": {
+    "types": [
+     "number",
+     "percent"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "positionBottom": {
+    "types": [
+     "number",
+     "percent"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "positionLeft": {
+    "types": [
+     "number",
+     "percent"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "focusUp": {
+    "types": [
+     "string"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "focusRight": {
+    "types": [
+     "string"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "focusDown": {
+    "types": [
+     "string"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "focusLeft": {
+    "types": [
+     "string"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "backgroundColor": {
+    "types": [
+     "color"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "borderColor": {
+    "types": [
+     "color"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "borderThickness": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "cornerRadius": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "id": {
+    "types": [
+     "string"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "backgroundStartColor": {
+    "types": [
+     "color"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "backgroundEndColor": {
+    "types": [
+     "color"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "backgroundTopLeftRadius": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "backgroundTopRightRadius": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "backgroundBottomRightRadius": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "backgroundBottomLeftRadius": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "focusable": {
+    "types": [
+     "bool"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "wireframe": {
+    "types": [
+     "bool"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "hideHighlightBackground": {
+    "types": [
+     "bool"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "hideHighlightBorder": {
+    "types": [
+     "bool"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "hideClickAnimation": {
+    "types": [
+     "bool"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "hideHighlight": {
+    "types": [
+     "bool"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "highlightPadding": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "highlightCornerRadius": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "title": {
+    "types": [
+     "string"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "icon": {
+    "types": [
+     "path"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "detachedX": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "detachedY": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "alpha": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "clipsToBounds": {
+    "types": [
+     "bool"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "culled": {
+    "types": [
+     "bool"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "aspectRatio": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "alignSelf": {
+    "types": [
+     "enum"
+    ],
+    "values": [
+     "auto",
+     "flexStart",
+     "center",
+     "flexEnd",
+     "stretch",
+     "baseline",
+     "spaceBetween",
+     "spaceAround"
+    ],
+    "forwarded": null,
+    "enum": "AlignSelf"
+   },
+   "positionType": {
+    "types": [
+     "enum"
+    ],
+    "values": [
+     "relative",
+     "absolute"
+    ],
+    "forwarded": null,
+    "enum": "PositionType"
+   },
+   "shadowType": {
+    "types": [
+     "enum"
+    ],
+    "values": [
+     "none",
+     "generic",
+     "custom"
+    ],
+    "forwarded": null,
+    "enum": "ShadowType"
+   },
+   "visibility": {
+    "types": [
+     "enum"
+    ],
+    "values": [
+     "visible",
+     "invisible",
+     "gone"
+    ],
+    "forwarded": null,
+    "enum": "Visibility"
+   },
+   "background": {
+    "types": [
+     "enum"
+    ],
+    "values": [
+     "sidebar",
+     "backdrop",
+     "vertical_linear"
+    ],
+    "forwarded": null,
+    "enum": "ViewBackground"
+   }
+  },
+  "chain": []
+ },
+ "Box": {
+  "name": "Box",
+  "kind": "class",
+  "base": "View",
+  "file": "include/borealis/core/box.hpp",
+  "line": 61,
+  "doc": "Generic FlexBox layout",
+  "methods": [
+   {
+    "sig": "Box(Axis flexDirection)",
+    "name": "Box",
+    "doc": ""
+   },
+   {
+    "sig": "Box()",
+    "name": "Box",
+    "doc": ""
+   },
+   {
+    "sig": "~Box()",
+    "name": "~Box",
+    "doc": ""
+   },
+   {
+    "sig": "void draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx) override",
+    "name": "draw",
+    "doc": ""
+   },
+   {
+    "sig": "View* getDefaultFocus() override",
+    "name": "getDefaultFocus",
+    "doc": ""
+   },
+   {
+    "sig": "View* hitTest(Point point) override",
+    "name": "hitTest",
+    "doc": ""
+   },
+   {
+    "sig": "View* getNextFocus(FocusDirection direction, View* currentView) override",
+    "name": "getNextFocus",
+    "doc": ""
+   },
+   {
+    "sig": "void willAppear(bool resetState) override",
+    "name": "willAppear",
+    "doc": ""
+   },
+   {
+    "sig": "void willDisappear(bool resetState) override",
+    "name": "willDisappear",
+    "doc": ""
+   },
+   {
+    "sig": "void onWindowSizeChanged() override",
+    "name": "onWindowSizeChanged",
+    "doc": ""
+   },
+   {
+    "sig": "void onFocusGained() override",
+    "name": "onFocusGained",
+    "doc": ""
+   },
+   {
+    "sig": "void onFocusLost() override",
+    "name": "onFocusLost",
+    "doc": ""
+   },
+   {
+    "sig": "void onParentFocusGained(View* focusedView) override",
+    "name": "onParentFocusGained",
+    "doc": ""
+   },
+   {
+    "sig": "void onParentFocusLost(View* focusedView) override",
+    "name": "onParentFocusLost",
+    "doc": ""
+   },
+   {
+    "sig": "bool applyXMLAttribute(std::string name, std::string value) override",
+    "name": "applyXMLAttribute",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   },
+   {
+    "sig": "virtual View* getParentNavigationDecision(View* from, View* newFocus, FocusDirection direction)",
+    "name": "getParentNavigationDecision",
+    "doc": ""
+   },
+   {
+    "sig": "virtual void addView(View* view)",
+    "name": "addView",
+    "doc": "Adds a view to this Box. Returns the position the view was added at."
+   },
+   {
+    "sig": "virtual void addView(View* view, size_t position)",
+    "name": "addView",
+    "doc": "Adds a view to this Box at the given position. Returns the position the view was added at."
+   },
+   {
+    "sig": "virtual void removeView(View* view, bool free = true)",
+    "name": "removeView",
+    "doc": "Removes the given view from the Box. It will be freed."
+   },
+   {
+    "sig": "virtual void clearViews(bool free = true)",
+    "name": "clearViews",
+    "doc": "Removes all views from the Box. Them will be freed."
+   },
+   {
+    "sig": "virtual void setPadding(float padding)",
+    "name": "setPadding",
+    "doc": "Sets the padding of the view, aka the internal space to give between this view boundaries and its children. Only does one layout pass instead of four when using the four methods separately."
+   },
+   {
+    "sig": "virtual void setPadding(float top, float right, float bottom, float left)",
+    "name": "setPadding",
+    "doc": "Sets the padding of the view, aka the internal space to give between this view boundaries and its children. Only does one layout pass instead of four when using the four methods separately."
+   },
+   {
+    "sig": "virtual void setPaddingTop(float top)",
+    "name": "setPaddingTop",
+    "doc": "Sets the padding of the view, aka the internal space to give between this view boundaries and its children."
+   },
+   {
+    "sig": "float getPaddingTop()",
+    "name": "getPaddingTop",
+    "doc": ""
+   },
+   {
+    "sig": "virtual void setPaddingRight(float right)",
+    "name": "setPaddingRight",
+    "doc": "Sets the padding of the view, aka the internal space to give between this view boundaries and its children."
+   },
+   {
+    "sig": "float getPaddingRight()",
+    "name": "getPaddingRight",
+    "doc": ""
+   },
+   {
+    "sig": "virtual void setPaddingBottom(float bottom)",
+    "name": "setPaddingBottom",
+    "doc": "Sets the padding of the view, aka the internal space to give between this view boundaries and its children."
+   },
+   {
+    "sig": "float getPaddingBottom()",
+    "name": "getPaddingBottom",
+    "doc": ""
+   },
+   {
+    "sig": "virtual void setPaddingLeft(float left)",
+    "name": "setPaddingLeft",
+    "doc": "Sets the padding of the view, aka the internal space to give between this view boundaries and its children."
+   },
+   {
+    "sig": "float getPaddingLeft()",
+    "name": "getPaddingLeft",
+    "doc": ""
+   },
+   {
+    "sig": "void setJustifyContent(JustifyContent justify)",
+    "name": "setJustifyContent",
+    "doc": "Sets the children alignment along the Box axis. Default is FLEX_START."
+   },
+   {
+    "sig": "void setAlignItems(AlignItems alignment)",
+    "name": "setAlignItems",
+    "doc": "Sets the children alignment along the Box cross axis. Default is AUTO."
+   },
+   {
+    "sig": "void setDirection(Direction direction)",
+    "name": "setDirection",
+    "doc": "Sets the direction of the box, aka place the views left to right or right to left (flips the children). Default is INHERIT."
+   },
+   {
+    "sig": "void setAxis(Axis axis)",
+    "name": "setAxis",
+    "doc": ""
+   },
+   {
+    "sig": "Axis getAxis() const",
+    "name": "getAxis",
+    "doc": ""
+   },
+   {
+    "sig": "std::vector<View*>& getChildren()",
+    "name": "getChildren",
+    "doc": ""
+   },
+   {
+    "sig": "virtual void getCullingBounds(float* top, float* right, float* bottom, float* left)",
+    "name": "getCullingBounds",
+    "doc": "Returns the bounds used for culling children."
+   },
+   {
+    "sig": "void forwardXMLAttribute(std::string attributeName, View* target)",
+    "name": "forwardXMLAttribute",
+    "doc": "Registers an XML attribute to be forwarded to the given view. Works regardless of the target attribute type. Useful to expose attributes of children views in the parent box without copy pasting them individually. The forwarded attribute value will override the value of the regular attribute if it already exists in the target view."
+   },
+   {
+    "sig": "void forwardXMLAttribute(std::string attributeName, View* target, std::string targetAttributeName)",
+    "name": "forwardXMLAttribute",
+    "doc": "Registers an XML attribute to be forwarded to the given view, while changing the target attribute name. Works regardless of the target attribute type. Useful to expose attributes of children views in the parent box without copy pasting them individually, but with a different name. The forwarded attribute value will override the value of the regular attribute if it already exists in the target view."
+   },
+   {
+    "sig": "virtual void onChildFocusGained(View* directChild, View* focusedView)",
+    "name": "onChildFocusGained",
+    "doc": "Fired when focus is gained on one of this view's children, or one of the children of the children... directChild is guaranteed to be one of your children. It may not be the view that has been focused. If focusedView == directChild, then the child of yours has been focused. Otherwise, focusedView is a child of directChild."
+   },
+   {
+    "sig": "virtual void onChildFocusLost(View* directChild, View* focusedView)",
+    "name": "onChildFocusLost",
+    "doc": "Fired when focus is lost on one of this view's children. Works similarly to onChildFocusGained()."
+   },
+   {
+    "sig": "View* getView(std::string id) override",
+    "name": "getView",
+    "doc": ""
+   },
+   {
+    "sig": "void setLastFocusedView(View* view)",
+    "name": "setLastFocusedView",
+    "doc": ""
+   },
+   {
+    "sig": "void setDefaultFocusedIndex(int index)",
+    "name": "setDefaultFocusedIndex",
+    "doc": ""
+   },
+   {
+    "sig": "size_t getDefaultFocusedIndex() const",
+    "name": "getDefaultFocusedIndex",
+    "doc": ""
+   },
+   {
+    "sig": "View* getLastFocusedView() const",
+    "name": "getLastFocusedView",
+    "doc": ""
+   },
+   {
+    "sig": "virtual bool isChildFocused()",
+    "name": "isChildFocused",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": "brls:Box",
+  "attrs": {
+   "paddingTop": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "paddingRight": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "paddingBottom": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "paddingLeft": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "padding": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "axis": {
+    "types": [
+     "enum"
+    ],
+    "values": [
+     "row",
+     "column"
+    ],
+    "forwarded": null,
+    "enum": "Axis"
+   },
+   "direction": {
+    "types": [
+     "enum"
+    ],
+    "values": [
+     "inherit",
+     "leftToRight",
+     "rightToLeft"
+    ],
+    "forwarded": null,
+    "enum": "Direction"
+   },
+   "justifyContent": {
+    "types": [
+     "enum"
+    ],
+    "values": [
+     "flexStart",
+     "center",
+     "flexEnd",
+     "spaceBetween",
+     "spaceAround",
+     "spaceEvenly"
+    ],
+    "forwarded": null,
+    "enum": "JustifyContent"
+   },
+   "alignItems": {
+    "types": [
+     "enum"
+    ],
+    "values": [
+     "auto",
+     "flexStart",
+     "center",
+     "flexEnd",
+     "stretch",
+     "baseline",
+     "spaceBetween",
+     "spaceAround"
+    ],
+    "forwarded": null,
+    "enum": "AlignItems"
+   }
+  },
+  "chain": [
+   "View"
+  ]
+ },
+ "Padding": {
+  "name": "Padding",
+  "kind": "class",
+  "base": "View",
+  "file": "include/borealis/core/box.hpp",
+  "line": 300,
+  "doc": "An empty view that has auto x auto and grow=1.0 to push all the next views in its box to the right (or to the bottom)",
+  "methods": [
+   {
+    "sig": "Padding()",
+    "name": "Padding",
+    "doc": ""
+   },
+   {
+    "sig": "void draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx) override",
+    "name": "draw",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": "brls:Padding",
+  "attrs": {},
+  "chain": [
+   "View"
+  ]
+ },
+ "AppletFrame": {
+  "name": "AppletFrame",
+  "kind": "class",
+  "base": "Box",
+  "file": "include/borealis/views/applet_frame.hpp",
+  "line": 38,
+  "doc": "A Horizon settings-like frame, with header and footer (no sidebar)",
+  "methods": [
+   {
+    "sig": "AppletFrame()",
+    "name": "AppletFrame",
+    "doc": ""
+   },
+   {
+    "sig": "AppletFrame(View* contentView)",
+    "name": "AppletFrame",
+    "doc": ""
+   },
+   {
+    "sig": "~AppletFrame()",
+    "name": "~AppletFrame",
+    "doc": ""
+   },
+   {
+    "sig": "void handleXMLElement(tinyxml2::XMLElement* element) override",
+    "name": "handleXMLElement",
+    "doc": ""
+   },
+   {
+    "sig": "void pushContentView(View* view)",
+    "name": "pushContentView",
+    "doc": ""
+   },
+   {
+    "sig": "void popContentView(std::function<void(void)> cb = [] {})",
+    "name": "popContentView",
+    "doc": ""
+   },
+   {
+    "sig": "void setTitle(std::string title)",
+    "name": "setTitle",
+    "doc": ""
+   },
+   {
+    "sig": "void setIcon(std::string path)",
+    "name": "setIcon",
+    "doc": ""
+   },
+   {
+    "sig": "void setHeaderVisibility(Visibility visibility)",
+    "name": "setHeaderVisibility",
+    "doc": ""
+   },
+   {
+    "sig": "void setFooterVisibility(Visibility visibility)",
+    "name": "setFooterVisibility",
+    "doc": ""
+   },
+   {
+    "sig": "void setHeaderStyle(HeaderStyle style)",
+    "name": "setHeaderStyle",
+    "doc": ""
+   },
+   {
+    "sig": "void updateAppletFrameItem()",
+    "name": "updateAppletFrameItem",
+    "doc": ""
+   },
+   {
+    "sig": "View* getContentView()",
+    "name": "getContentView",
+    "doc": ""
+   },
+   {
+    "sig": "Box* getHeader()",
+    "name": "getHeader",
+    "doc": ""
+   },
+   {
+    "sig": "Box* getFooter()",
+    "name": "getFooter",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [
+   {
+    "sig": "inline static bool HIDE_BOTTOM_BAR = false",
+    "doc": ""
+   }
+  ],
+  "events": [],
+  "tag": "brls:AppletFrame",
+  "attrs": {
+   "headerHidden": {
+    "types": [
+     "bool"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "footerHidden": {
+    "types": [
+     "bool"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "style": {
+    "types": [
+     "enum"
+    ],
+    "values": [
+     "regular",
+     "popup"
+    ],
+    "forwarded": null,
+    "enum": "HeaderStyle"
+   },
+   "iconInterpolation": {
+    "types": [
+     "enum"
+    ],
+    "values": [
+     "linear",
+     "nearest"
+    ],
+    "forwarded": {
+     "target": "icon",
+     "as": "interpolation"
+    }
+   }
+  },
+  "chain": [
+   "Box",
+   "View"
+  ]
+ },
+ "BottomBar": {
+  "name": "BottomBar",
+  "kind": "class",
+  "base": "Box",
+  "file": "include/borealis/views/bottom_bar.hpp",
+  "line": 28,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "BottomBar()",
+    "name": "BottomBar",
+    "doc": ""
+   },
+   {
+    "sig": "void draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx) override",
+    "name": "draw",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": "brls:BottomBar",
+  "attrs": {},
+  "chain": [
+   "Box",
+   "View"
+  ]
+ },
+ "Button": {
+  "name": "Button",
+  "kind": "class",
+  "base": "Box",
+  "file": "include/borealis/views/button.hpp",
+  "line": 145,
+  "doc": "A button",
+  "methods": [
+   {
+    "sig": "Button()",
+    "name": "Button",
+    "doc": ""
+   },
+   {
+    "sig": "void onFocusGained() override",
+    "name": "onFocusGained",
+    "doc": ""
+   },
+   {
+    "sig": "void onFocusLost() override",
+    "name": "onFocusLost",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   },
+   {
+    "sig": "void setStyle(const ButtonStyle* style)",
+    "name": "setStyle",
+    "doc": "Sets the style of the button. can be a pointer to one of the BUTTONSTYLE constants or any other user created style."
+   },
+   {
+    "sig": "void setState(ButtonState state)",
+    "name": "setState",
+    "doc": "Sets the state of the button."
+   },
+   {
+    "sig": "void setText(std::string text)",
+    "name": "setText",
+    "doc": "Sets the text of the button."
+   },
+   {
+    "sig": "void setFontSize(float value)",
+    "name": "setFontSize",
+    "doc": "Sets the font sise of the button."
+   },
+   {
+    "sig": "void setTextColor(NVGcolor color)",
+    "name": "setTextColor",
+    "doc": "Override style text color of the button."
+   },
+   {
+    "sig": "std::string getText()",
+    "name": "getText",
+    "doc": "Returns the text of the button"
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": "brls:Button",
+  "attrs": {
+   "textColor": {
+    "types": [
+     "color"
+    ],
+    "values": null,
+    "forwarded": {
+     "target": "label",
+     "as": "textColor"
+    }
+   },
+   "style": {
+    "types": [
+     "enum"
+    ],
+    "values": [
+     "default",
+     "primary",
+     "highlight",
+     "bordered",
+     "borderless"
+    ],
+    "forwarded": null,
+    "enum": "const ButtonStyle*"
+   },
+   "state": {
+    "types": [
+     "enum"
+    ],
+    "values": [
+     "enabled",
+     "disabled"
+    ],
+    "forwarded": null,
+    "enum": "ButtonState"
+   },
+   "text": {
+    "types": [
+     "string"
+    ],
+    "values": null,
+    "forwarded": {
+     "target": "label",
+     "as": "text"
+    }
+   },
+   "singleLine": {
+    "types": [
+     "bool"
+    ],
+    "values": null,
+    "forwarded": {
+     "target": "label",
+     "as": "singleLine"
+    }
+   },
+   "fontSize": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": {
+     "target": "label",
+     "as": "fontSize"
+    }
+   },
+   "lineHeight": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": {
+     "target": "label",
+     "as": "lineHeight"
+    }
+   },
+   "animated": {
+    "types": [
+     "bool"
+    ],
+    "values": null,
+    "forwarded": {
+     "target": "label",
+     "as": "animated"
+    }
+   },
+   "autoAnimate": {
+    "types": [
+     "bool"
+    ],
+    "values": null,
+    "forwarded": {
+     "target": "label",
+     "as": "autoAnimate"
+    }
+   },
+   "textHorizontalAlign": {
+    "types": [
+     "enum"
+    ],
+    "values": [
+     "left",
+     "center",
+     "right"
+    ],
+    "forwarded": {
+     "target": "label",
+     "as": "horizontalAlign"
+    }
+   }
+  },
+  "chain": [
+   "Box",
+   "View"
+  ]
+ },
+ "DebugLayer": {
+  "name": "DebugLayer",
+  "kind": "class",
+  "base": "Box",
+  "file": "include/borealis/views/debug_layer.hpp",
+  "line": 24,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "DebugLayer()",
+    "name": "DebugLayer",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": null,
+  "attrs": {},
+  "chain": [
+   "Box",
+   "View"
+  ]
+ },
+ "DialogButton": {
+  "name": "DialogButton",
+  "kind": "class",
+  "base": null,
+  "file": "include/borealis/views/dialog.hpp",
+  "line": 31,
+  "doc": "",
+  "methods": [],
+  "fields": [
+   {
+    "sig": "std::string label",
+    "doc": ""
+   },
+   {
+    "sig": "VoidEvent::Callback cb",
+    "doc": ""
+   }
+  ],
+  "events": [],
+  "tag": null,
+  "attrs": {},
+  "chain": []
+ },
+ "Dialog": {
+  "name": "Dialog",
+  "kind": "class",
+  "base": "Box",
+  "file": "include/borealis/views/dialog.hpp",
+  "line": 41,
+  "doc": "A modal dialog with zero to three buttons and anything as content Create the dialog then use open() and close()",
+  "methods": [
+   {
+    "sig": "Dialog(std::string text)",
+    "name": "Dialog",
+    "doc": ""
+   },
+   {
+    "sig": "Dialog(Box* contentView)",
+    "name": "Dialog",
+    "doc": ""
+   },
+   {
+    "sig": "~Dialog()",
+    "name": "~Dialog",
+    "doc": ""
+   },
+   {
+    "sig": "AppletFrame* getAppletFrame() override",
+    "name": "getAppletFrame",
+    "doc": ""
+   },
+   {
+    "sig": "void addButton(std::string label, VoidEvent::Callback cb)",
+    "name": "addButton",
+    "doc": "Adds a button to this dialog, with a maximum of three The position depends on the add order Adding a button after the dialog has been opened is NOT SUPPORTED"
+   },
+   {
+    "sig": "void setCancelable(bool cancelable)",
+    "name": "setCancelable",
+    "doc": "A cancelable dialog is closed when the user presses B (defaults to true) A dialog without any buttons cannot be cancelable"
+   },
+   {
+    "sig": "virtual void open()",
+    "name": "open",
+    "doc": ""
+   },
+   {
+    "sig": "void close(std::function<void(void)> cb = [] {})",
+    "name": "close",
+    "doc": ""
+   },
+   {
+    "sig": "bool isTranslucent() override",
+    "name": "isTranslucent",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": null,
+  "attrs": {},
+  "chain": [
+   "Box",
+   "View"
+  ]
+ },
+ "EditTextDialog": {
+  "name": "EditTextDialog",
+  "kind": "class",
+  "base": "Box",
+  "file": "include/borealis/views/edit_text_dialog.hpp",
+  "line": 8,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "EditTextDialog()",
+    "name": "EditTextDialog",
+    "doc": ""
+   },
+   {
+    "sig": "~EditTextDialog() override",
+    "name": "~EditTextDialog",
+    "doc": ""
+   },
+   {
+    "sig": "void open()",
+    "name": "open",
+    "doc": ""
+   },
+   {
+    "sig": "void setText(const std::string& value)",
+    "name": "setText",
+    "doc": ""
+   },
+   {
+    "sig": "void setHeaderText(const std::string& value)",
+    "name": "setHeaderText",
+    "doc": ""
+   },
+   {
+    "sig": "void setHintText(const std::string& value)",
+    "name": "setHintText",
+    "doc": ""
+   },
+   {
+    "sig": "void setCountText(const std::string& value)",
+    "name": "setCountText",
+    "doc": ""
+   },
+   {
+    "sig": "void setCursor(int cursor)",
+    "name": "setCursor",
+    "doc": ""
+   },
+   {
+    "sig": "bool isTranslucent() override",
+    "name": "isTranslucent",
+    "doc": ""
+   },
+   {
+    "sig": "void onLayout() override",
+    "name": "onLayout",
+    "doc": ""
+   },
+   {
+    "sig": "void updateUI()",
+    "name": "updateUI",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [
+   {
+    "name": "getLayoutEvent",
+    "payload": "Point",
+    "doc": ""
+   },
+   {
+    "name": "getBackspaceEvent",
+    "payload": "void",
+    "doc": ""
+   },
+   {
+    "name": "getCancelEvent",
+    "payload": "void",
+    "doc": ""
+   },
+   {
+    "name": "getSubmitEvent",
+    "payload": "void",
+    "doc": ""
+   },
+   {
+    "name": "getClipboardEvent",
+    "payload": "std::string",
+    "doc": ""
+   }
+  ],
+  "tag": null,
+  "attrs": {},
+  "chain": [
+   "Box",
+   "View"
+  ]
+ },
+ "HScrollingFrame": {
+  "name": "HScrollingFrame",
+  "kind": "class",
+  "base": "Box",
+  "file": "include/borealis/views/h_scrolling_frame.hpp",
+  "line": 29,
+  "doc": "A vertical-only frame that can scroll if its content overflows. This frame can only contain one child view. The content view is detached from the rest of the tree so that its height can grow as much as possible.",
+  "methods": [
+   {
+    "sig": "HScrollingFrame()",
+    "name": "HScrollingFrame",
+    "doc": ""
+   },
+   {
+    "sig": "~HScrollingFrame()",
+    "name": "~HScrollingFrame",
+    "doc": ""
+   },
+   {
+    "sig": "void draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx) override",
+    "name": "draw",
+    "doc": ""
+   },
+   {
+    "sig": "void onFocusGained() override",
+    "name": "onFocusGained",
+    "doc": ""
+   },
+   {
+    "sig": "void onChildFocusGained(View* directChild, View* focusedView) override",
+    "name": "onChildFocusGained",
+    "doc": ""
+   },
+   {
+    "sig": "void onChildFocusLost(View* directChild, View* focusedView) override",
+    "name": "onChildFocusLost",
+    "doc": ""
+   },
+   {
+    "sig": "void willAppear(bool resetState) override",
+    "name": "willAppear",
+    "doc": ""
+   },
+   {
+    "sig": "void addView(View* view) override",
+    "name": "addView",
+    "doc": ""
+   },
+   {
+    "sig": "void removeView(View* view, bool free = true) override",
+    "name": "removeView",
+    "doc": ""
+   },
+   {
+    "sig": "void onLayout() override",
+    "name": "onLayout",
+    "doc": ""
+   },
+   {
+    "sig": "void setPadding(float top, float right, float bottom, float left) override",
+    "name": "setPadding",
+    "doc": ""
+   },
+   {
+    "sig": "void setPaddingTop(float top) override",
+    "name": "setPaddingTop",
+    "doc": ""
+   },
+   {
+    "sig": "void setPaddingRight(float right) override",
+    "name": "setPaddingRight",
+    "doc": ""
+   },
+   {
+    "sig": "void setPaddingBottom(float bottom) override",
+    "name": "setPaddingBottom",
+    "doc": ""
+   },
+   {
+    "sig": "void setPaddingLeft(float left) override",
+    "name": "setPaddingLeft",
+    "doc": ""
+   },
+   {
+    "sig": "View* getParentNavigationDecision(View* from, View* newFocus, FocusDirection direction) override",
+    "name": "getParentNavigationDecision",
+    "doc": ""
+   },
+   {
+    "sig": "View* getNextFocus(FocusDirection direction, View* currentView) override",
+    "name": "getNextFocus",
+    "doc": ""
+   },
+   {
+    "sig": "View* getDefaultFocus() override",
+    "name": "getDefaultFocus",
+    "doc": ""
+   },
+   {
+    "sig": "Rect getVisibleFrame()",
+    "name": "getVisibleFrame",
+    "doc": ""
+   },
+   {
+    "sig": "void setContentView(View* view)",
+    "name": "setContentView",
+    "doc": "Sets the content view of this scrolling box. There can only be one content view per scrolling box at a time."
+   },
+   {
+    "sig": "void setScrollingBehavior(ScrollingBehavior behavior)",
+    "name": "setScrollingBehavior",
+    "doc": "Sets the scrolling behavior of this scrolling frame. Default is NATURAL."
+   },
+   {
+    "sig": "float getContentOffsetX() const",
+    "name": "getContentOffsetX",
+    "doc": "The point at which the origin of the content view is offset from the origin of the scroll view."
+   },
+   {
+    "sig": "void setContentOffsetX(float value, bool animated)",
+    "name": "setContentOffsetX",
+    "doc": "Sets the offset from the content view\u2019s origin that corresponds to the receiver\u2019s origin."
+   },
+   {
+    "sig": "void setScrollingIndicatorVisible(bool visible)",
+    "name": "setScrollingIndicatorVisible",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": "brls:HScrollingFrame",
+  "attrs": {
+   "scrollingBehavior": {
+    "types": [
+     "enum"
+    ],
+    "values": [
+     "natural",
+     "centered"
+    ],
+    "forwarded": null,
+    "enum": "ScrollingBehavior"
+   }
+  },
+  "chain": [
+   "Box",
+   "View"
+  ]
+ },
+ "Header": {
+  "name": "Header",
+  "kind": "class",
+  "base": "Box",
+  "file": "include/borealis/views/header.hpp",
+  "line": 29,
+  "doc": "A simple header with a title, an optional subtitle, a rectangle on the left and a separator",
+  "methods": [
+   {
+    "sig": "Header()",
+    "name": "Header",
+    "doc": ""
+   },
+   {
+    "sig": "void setTitle(std::string text)",
+    "name": "setTitle",
+    "doc": ""
+   },
+   {
+    "sig": "void setSubtitle(std::string text)",
+    "name": "setSubtitle",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": "brls:Header",
+  "attrs": {
+   "title": {
+    "types": [
+     "string"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "subtitle": {
+    "types": [
+     "string"
+    ],
+    "values": null,
+    "forwarded": null
+   }
+  },
+  "chain": [
+   "Box",
+   "View"
+  ]
+ },
+ "Hint": {
+  "name": "Hint",
+  "kind": "class",
+  "base": "Box",
+  "file": "include/borealis/views/hint.hpp",
+  "line": 28,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "Hint(Action action, bool allowAButtonTouch = false)",
+    "name": "Hint",
+    "doc": ""
+   },
+   {
+    "sig": "static std::string getKeyIcon(ControllerButton button, bool ignoreKeysSwap = false)",
+    "name": "getKeyIcon",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": null,
+  "attrs": {},
+  "chain": [
+   "Box",
+   "View"
+  ]
+ },
+ "Hints": {
+  "name": "Hints",
+  "kind": "class",
+  "base": "Box",
+  "file": "include/borealis/views/hint.hpp",
+  "line": 41,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "Hints()",
+    "name": "Hints",
+    "doc": ""
+   },
+   {
+    "sig": "~Hints()",
+    "name": "~Hints",
+    "doc": ""
+   },
+   {
+    "sig": "void setAddUnableAButtonAction(bool value)",
+    "name": "setAddUnableAButtonAction",
+    "doc": ""
+   },
+   {
+    "sig": "bool getAddUnableAButtonAction() const",
+    "name": "getAddUnableAButtonAction",
+    "doc": ""
+   },
+   {
+    "sig": "void setAllowAButtonTouch(bool value)",
+    "name": "setAllowAButtonTouch",
+    "doc": ""
+   },
+   {
+    "sig": "bool getAllowAButtonTouch() const",
+    "name": "getAllowAButtonTouch",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": "brls:Hints",
+  "attrs": {
+   "addBaseAction": {
+    "types": [
+     "bool"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "allowAButtonTouch": {
+    "types": [
+     "bool"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "forceShown": {
+    "types": [
+     "bool"
+    ],
+    "values": null,
+    "forwarded": null
+   }
+  },
+  "chain": [
+   "Box",
+   "View"
+  ]
+ },
+ "Image": {
+  "name": "Image",
+  "kind": "class",
+  "base": "View",
+  "file": "include/borealis/views/image.hpp",
+  "line": 63,
+  "doc": "An image. The view will try to grow as much as possible to fit the image. The scaling type dictates what to do with the image if there is not enough or too much space for the view compared to the image inside. Supported formats are: JPG, PNG, TGA, BMP and GIF (not animated).",
+  "methods": [
+   {
+    "sig": "Image()",
+    "name": "Image",
+    "doc": ""
+   },
+   {
+    "sig": "~Image()",
+    "name": "~Image",
+    "doc": ""
+   },
+   {
+    "sig": "void draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx) override",
+    "name": "draw",
+    "doc": ""
+   },
+   {
+    "sig": "void onLayout() override",
+    "name": "onLayout",
+    "doc": ""
+   },
+   {
+    "sig": "void setInterpolation(ImageInterpolation interpolation)",
+    "name": "setInterpolation",
+    "doc": "Sets the interpolation method for the image. Default is LINEAR. As the interpolation is set when the texture is created, and since we don't want to always store the image buffer in the view, this only takes effect after (re) loading the image using the setImage* methods. If you are using the interpolation XML attribute, you have to set it before the actual image attribute."
+   },
+   {
+    "sig": "void setImageFromRes(const std::string& name)",
+    "name": "setImageFromRes",
+    "doc": "Sets the image from the given resource name. See Image class documentation for the list of supported image formats."
+   },
+   {
+    "sig": "void setImageFromFile(const std::string& path)",
+    "name": "setImageFromFile",
+    "doc": "Sets the image from the given file path. See Image class documentation for the list of supported image formats."
+   },
+   {
+    "sig": "void setImageFromMem(const unsigned char* data, int size)",
+    "name": "setImageFromMem",
+    "doc": "Sets the image from memory. See Image class documentation for the list of supported image formats."
+   },
+   {
+    "sig": "virtual void innerSetImage(int texture)",
+    "name": "innerSetImage",
+    "doc": ""
+   },
+   {
+    "sig": "void setImageAsync(std::function<void(std::function<void(const std::string&, size_t length)>)> cb)",
+    "name": "setImageAsync",
+    "doc": ""
+   },
+   {
+    "sig": "void clear()",
+    "name": "clear",
+    "doc": ""
+   },
+   {
+    "sig": "void setScalingType(ImageScalingType scalingType)",
+    "name": "setScalingType",
+    "doc": "Sets the scaling type for this image. Default is FIT."
+   },
+   {
+    "sig": "ImageScalingType getScalingType()",
+    "name": "getScalingType",
+    "doc": ""
+   },
+   {
+    "sig": "void setImageAlign(ImageAlignment align)",
+    "name": "setImageAlign",
+    "doc": "Sets the alignment of the image inside the view. Only used if scaling it set to FIT when the aspect ratio is different or CROP, to change the region of the image to draw. Default is CENTER."
+   },
+   {
+    "sig": "void setFreeTexture(bool value)",
+    "name": "setFreeTexture",
+    "doc": "Whether to destroy the current texture before updating the image texture"
+   },
+   {
+    "sig": "bool getFreeTexture()",
+    "name": "getFreeTexture",
+    "doc": ""
+   },
+   {
+    "sig": "int getTexture()",
+    "name": "getTexture",
+    "doc": ""
+   },
+   {
+    "sig": "float getOriginalImageWidth()",
+    "name": "getOriginalImageWidth",
+    "doc": ""
+   },
+   {
+    "sig": "float getOriginalImageHeight()",
+    "name": "getOriginalImageHeight",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": "brls:Image",
+  "attrs": {
+   "image": {
+    "types": [
+     "path"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "scalingType": {
+    "types": [
+     "enum"
+    ],
+    "values": [
+     "fit",
+     "fill",
+     "stretch",
+     "center"
+    ],
+    "forwarded": null,
+    "enum": "ImageScalingType"
+   },
+   "imageAlign": {
+    "types": [
+     "enum"
+    ],
+    "values": [
+     "top",
+     "right",
+     "bottom",
+     "left",
+     "center"
+    ],
+    "forwarded": null,
+    "enum": "ImageAlignment"
+   },
+   "interpolation": {
+    "types": [
+     "enum"
+    ],
+    "values": [
+     "linear",
+     "nearest"
+    ],
+    "forwarded": null,
+    "enum": "ImageInterpolation"
+   }
+  },
+  "chain": [
+   "View"
+  ]
+ },
+ "Label": {
+  "name": "Label",
+  "kind": "class",
+  "base": "View",
+  "file": "include/borealis/views/label.hpp",
+  "line": 60,
+  "doc": "Some text. The Label will automatically grow as much as possible. If there is enough space, the label dimensions will fit the text. If there is not enough horizontal space available, it will wrap and expand its height. If there is not enough vertical space available to wrap, the text will be truncated instead. The truncated text will animate if the Label or one of its parents is focused. Animation will be disabled if the alignment is other than LEFT. Warning: to wrap, the label width MUST be constrained",
+  "methods": [
+   {
+    "sig": "Label()",
+    "name": "Label",
+    "doc": ""
+   },
+   {
+    "sig": "~Label() override",
+    "name": "~Label",
+    "doc": ""
+   },
+   {
+    "sig": "void draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx) override",
+    "name": "draw",
+    "doc": ""
+   },
+   {
+    "sig": "void onLayout() override",
+    "name": "onLayout",
+    "doc": ""
+   },
+   {
+    "sig": "void onFocusGained() override",
+    "name": "onFocusGained",
+    "doc": ""
+   },
+   {
+    "sig": "void onFocusLost() override",
+    "name": "onFocusLost",
+    "doc": ""
+   },
+   {
+    "sig": "void onParentFocusGained(View* focusedView) override",
+    "name": "onParentFocusGained",
+    "doc": ""
+   },
+   {
+    "sig": "void onParentFocusLost(View* focusedView) override",
+    "name": "onParentFocusLost",
+    "doc": ""
+   },
+   {
+    "sig": "virtual void setText(const std::string& text)",
+    "name": "setText",
+    "doc": "Sets the text of the label."
+   },
+   {
+    "sig": "void setHorizontalAlign(HorizontalAlign align)",
+    "name": "setHorizontalAlign",
+    "doc": "Sets the alignment of the text inside the view. Will not move the view, only the text inside. Default is CENTER."
+   },
+   {
+    "sig": "void setVerticalAlign(VerticalAlign align)",
+    "name": "setVerticalAlign",
+    "doc": "Sets the alignment of the text inside the view. Will not move the view, only the text inside. Only applies to single-line labels. Default is CENTER."
+   },
+   {
+    "sig": "void setFontSize(float value)",
+    "name": "setFontSize",
+    "doc": ""
+   },
+   {
+    "sig": "void setFontQuality(float value)",
+    "name": "setFontQuality",
+    "doc": ""
+   },
+   {
+    "sig": "void setLineHeight(float value)",
+    "name": "setLineHeight",
+    "doc": ""
+   },
+   {
+    "sig": "void setTextColor(NVGcolor color)",
+    "name": "setTextColor",
+    "doc": ""
+   },
+   {
+    "sig": "int getFont()",
+    "name": "getFont",
+    "doc": ""
+   },
+   {
+    "sig": "float getFontSize()",
+    "name": "getFontSize",
+    "doc": ""
+   },
+   {
+    "sig": "float getFontQuality()",
+    "name": "getFontQuality",
+    "doc": ""
+   },
+   {
+    "sig": "float getLineHeight()",
+    "name": "getLineHeight",
+    "doc": ""
+   },
+   {
+    "sig": "NVGcolor getTextColor()",
+    "name": "getTextColor",
+    "doc": ""
+   },
+   {
+    "sig": "std::string getFullText()",
+    "name": "getFullText",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   },
+   {
+    "sig": "void setRequiredWidth(float requiredWidth)",
+    "name": "setRequiredWidth",
+    "doc": ""
+   },
+   {
+    "sig": "void setEllipsisWidth(float ellipsisWidth)",
+    "name": "setEllipsisWidth",
+    "doc": ""
+   },
+   {
+    "sig": "void setAnimated(bool animated)",
+    "name": "setAnimated",
+    "doc": "If an \"animated\" label is too large to fit its bounds, the full text will be displayed in a scrolling animation instead of being truncated with an ellipsis (\"...\"). Unless the autoAnimate flag is set to false, a label will automatically be set to \"animated\" if it is focused or if one of its parent is."
+   },
+   {
+    "sig": "void setAutoAnimate(bool autoAnimate)",
+    "name": "setAutoAnimate",
+    "doc": "Controls whether focus changes automatically animates the label or not. Doesn't stop the ongoing animation should there be one."
+   },
+   {
+    "sig": "void setSingleLine(bool singleLine)",
+    "name": "setSingleLine",
+    "doc": "A single-line label will not wrap and increase its height, even if the remaining vertical space allows it. Instead, it will always be truncated (if too large) to fit the horizontal space."
+   },
+   {
+    "sig": "bool isSingleLine()",
+    "name": "isSingleLine",
+    "doc": ""
+   },
+   {
+    "sig": "void setIsWrapping(bool isWrapping)",
+    "name": "setIsWrapping",
+    "doc": "Internal flag set by the measure function."
+   },
+   {
+    "sig": "static std::string STConverter(const std::string& text)",
+    "name": "STConverter",
+    "doc": "Simplified Chinese to Traditional Chinese"
+   },
+   {
+    "sig": "void setCursor(int cursor)",
+    "name": "setCursor",
+    "doc": ""
+   }
+  ],
+  "fields": [
+   {
+    "sig": "static inline bool OPENCC_ON = true",
+    "doc": ""
+   }
+  ],
+  "events": [],
+  "tag": "brls:Label",
+  "attrs": {
+   "text": {
+    "types": [
+     "string"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "fontSize": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "fontQuality": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "textColor": {
+    "types": [
+     "color"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "lineHeight": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "animated": {
+    "types": [
+     "bool"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "autoAnimate": {
+    "types": [
+     "bool"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "singleLine": {
+    "types": [
+     "bool"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "cursor": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "horizontalAlign": {
+    "types": [
+     "enum"
+    ],
+    "values": [
+     "left",
+     "center",
+     "right"
+    ],
+    "forwarded": null,
+    "enum": "HorizontalAlign"
+   },
+   "verticalAlign": {
+    "types": [
+     "enum"
+    ],
+    "values": [
+     "baseline",
+     "top",
+     "center",
+     "bottom"
+    ],
+    "forwarded": null,
+    "enum": "VerticalAlign"
+   }
+  },
+  "chain": [
+   "View"
+  ]
+ },
+ "ProgressSpinner": {
+  "name": "ProgressSpinner",
+  "kind": "class",
+  "base": "View",
+  "file": "include/borealis/views/progress_spinner.hpp",
+  "line": 32,
+  "doc": "A progress spinner",
+  "methods": [
+   {
+    "sig": "ProgressSpinner(ProgressSpinnerSize size = ProgressSpinnerSize::NORMAL)",
+    "name": "ProgressSpinner",
+    "doc": ""
+   },
+   {
+    "sig": "void draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx) override",
+    "name": "draw",
+    "doc": ""
+   },
+   {
+    "sig": "void willAppear(bool resetState = false) override",
+    "name": "willAppear",
+    "doc": ""
+   },
+   {
+    "sig": "void willDisappear(bool resetState = false) override",
+    "name": "willDisappear",
+    "doc": ""
+   },
+   {
+    "sig": "void animate(bool animate)",
+    "name": "animate",
+    "doc": ""
+   },
+   {
+    "sig": "static brls::View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": "brls:ProgressSpinner",
+  "attrs": {
+   "size": {
+    "types": [
+     "enum"
+    ],
+    "values": [
+     "normal",
+     "large"
+    ],
+    "forwarded": null,
+    "enum": "ProgressSpinnerSize"
+   }
+  },
+  "chain": [
+   "View"
+  ]
+ },
+ "Rectangle": {
+  "name": "Rectangle",
+  "kind": "class",
+  "base": "View",
+  "file": "include/borealis/views/rectangle.hpp",
+  "line": 27,
+  "doc": "A solid color rectangle",
+  "methods": [
+   {
+    "sig": "Rectangle(NVGcolor color)",
+    "name": "Rectangle",
+    "doc": ""
+   },
+   {
+    "sig": "Rectangle()",
+    "name": "Rectangle",
+    "doc": ""
+   },
+   {
+    "sig": "~Rectangle() { } void draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx) override",
+    "name": "~Rectangle",
+    "doc": ""
+   },
+   {
+    "sig": "void setColor(NVGcolor color)",
+    "name": "setColor",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": "brls:Rectangle",
+  "attrs": {
+   "color": {
+    "types": [
+     "color"
+    ],
+    "values": null,
+    "forwarded": null
+   }
+  },
+  "chain": [
+   "View"
+  ]
+ },
+ "IndexPath": {
+  "name": "IndexPath",
+  "kind": "struct",
+  "base": null,
+  "file": "include/borealis/views/recycler.hpp",
+  "line": 32,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "IndexPath() : IndexPath(0, 0, 0)",
+    "name": "IndexPath",
+    "doc": ""
+   },
+   {
+    "sig": "IndexPath(size_t section, size_t row, size_t item)",
+    "name": "IndexPath",
+    "doc": ""
+   },
+   {
+    "sig": "IndexPath(size_t section, size_t row) : IndexPath(section, row, row)",
+    "name": "IndexPath",
+    "doc": ""
+   },
+   {
+    "sig": "bool operator==(const IndexPath& other)",
+    "name": "operator==",
+    "doc": ""
+   }
+  ],
+  "fields": [
+   {
+    "sig": "size_t section",
+    "doc": ""
+   },
+   {
+    "sig": "int row",
+    "doc": ""
+   },
+   {
+    "sig": "size_t item",
+    "doc": ""
+   }
+  ],
+  "events": [],
+  "tag": null,
+  "attrs": {},
+  "chain": []
+ },
+ "RecyclerCell": {
+  "name": "RecyclerCell",
+  "kind": "class",
+  "base": "Box",
+  "file": "include/borealis/views/recycler.hpp",
+  "line": 61,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "RecyclerCell()",
+    "name": "RecyclerCell",
+    "doc": ""
+   },
+   {
+    "sig": "~RecyclerCell()",
+    "name": "~RecyclerCell",
+    "doc": ""
+   },
+   {
+    "sig": "IndexPath getIndexPath() const { return indexPath; } /* * DO NOT USE! FOR INTERNAL USAGE ONLY! */ void setIndexPath(IndexPath value)",
+    "name": "getIndexPath",
+    "doc": "Cell's position inside recycler frame"
+   },
+   {
+    "sig": "virtual void prepareForReuse() { } static RecyclerCell* create()",
+    "name": "prepareForReuse",
+    "doc": "Prepares a reusable cell for reuse by the recycler frame's data source."
+   },
+   {
+    "sig": "void onFocusGained() override",
+    "name": "onFocusGained",
+    "doc": ""
+   },
+   {
+    "sig": "void onFocusLost() override",
+    "name": "onFocusLost",
+    "doc": ""
+   }
+  ],
+  "fields": [
+   {
+    "sig": "std::string reuseIdentifier",
+    "doc": "A string used to identify a cell that is reusable."
+   }
+  ],
+  "events": [],
+  "tag": null,
+  "attrs": {},
+  "chain": [
+   "Box",
+   "View"
+  ]
+ },
+ "RecyclerDataSource": {
+  "name": "RecyclerDataSource",
+  "kind": "class",
+  "base": null,
+  "file": "include/borealis/views/recycler.hpp",
+  "line": 113,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "virtual int numberOfSections(RecyclerFrame* recycler) { return 1; } /* * Tells the data source to return the number of rows in a recycler frame. */ virtual int numberOfRows(RecyclerFrame* recycler, int section) { return 0; } /* * Asks the data source for a cell to insert in a particular location of the recycler frame. */ virtual RecyclerCell* cellForRow(RecyclerFrame* recycler, IndexPath index) { return nullptr; } /* * Asks the data source for a cell to display in the header of the specified section of the recycler frame. */ virtual RecyclerCell* cellForHeader(RecyclerFrame* recycler, int section)",
+    "name": "numberOfSections",
+    "doc": "Asks the data source to return the number of sections in the recycler frame."
+   },
+   {
+    "sig": "virtual float heightForRow(RecyclerFrame* recycler, IndexPath index) { return -1; } /* * Asks the data source for the height to use for the header of a particular section. * Return -1 to use autoscaling. */ virtual float heightForHeader(RecyclerFrame* recycler, int section)",
+    "name": "heightForRow",
+    "doc": "Asks the data source for the height to use for a row in a specified location. Return -1 to use autoscaling."
+   },
+   {
+    "sig": "virtual std::string titleForHeader(RecyclerFrame* recycler, int section) { return \"\"; } /* * Tells the data source a row is selected. */ virtual void didSelectRowAt(RecyclerFrame* recycler, IndexPath index) { } virtual ~RecyclerDataSource() = default",
+    "name": "titleForHeader",
+    "doc": "Asks the data source for the title of the header of the specified section of the recycler frame."
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": null,
+  "attrs": {},
+  "chain": []
+ },
+ "RecyclerContentBox": {
+  "name": "RecyclerContentBox",
+  "kind": "class",
+  "base": "Box",
+  "file": "include/borealis/views/recycler.hpp",
+  "line": 161,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "RecyclerContentBox(RecyclerFrame* recycler)",
+    "name": "RecyclerContentBox",
+    "doc": ""
+   },
+   {
+    "sig": "View* getNextFocus(FocusDirection direction, View* currentView) override",
+    "name": "getNextFocus",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": null,
+  "attrs": {},
+  "chain": [
+   "Box",
+   "View"
+  ]
+ },
+ "RecyclerFrame": {
+  "name": "RecyclerFrame",
+  "kind": "class",
+  "base": "ScrollingFrame",
+  "file": "include/borealis/views/recycler.hpp",
+  "line": 172,
+  "doc": "Custom Box for propper recycling navigation",
+  "methods": [
+   {
+    "sig": "RecyclerFrame()",
+    "name": "RecyclerFrame",
+    "doc": ""
+   },
+   {
+    "sig": "~RecyclerFrame()",
+    "name": "~RecyclerFrame",
+    "doc": ""
+   },
+   {
+    "sig": "View* getNextCellFocus(FocusDirection direction, View* currentView)",
+    "name": "getNextCellFocus",
+    "doc": ""
+   },
+   {
+    "sig": "void draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx) override",
+    "name": "draw",
+    "doc": ""
+   },
+   {
+    "sig": "void onLayout() override",
+    "name": "onLayout",
+    "doc": ""
+   },
+   {
+    "sig": "void setPadding(float padding) override",
+    "name": "setPadding",
+    "doc": ""
+   },
+   {
+    "sig": "void setPadding(float top, float right, float bottom, float left) override",
+    "name": "setPadding",
+    "doc": ""
+   },
+   {
+    "sig": "void setPaddingTop(float top) override",
+    "name": "setPaddingTop",
+    "doc": ""
+   },
+   {
+    "sig": "void setPaddingRight(float right) override",
+    "name": "setPaddingRight",
+    "doc": ""
+   },
+   {
+    "sig": "void setPaddingBottom(float bottom) override",
+    "name": "setPaddingBottom",
+    "doc": ""
+   },
+   {
+    "sig": "void setPaddingLeft(float left) override",
+    "name": "setPaddingLeft",
+    "doc": ""
+   },
+   {
+    "sig": "void setDataSource(RecyclerDataSource* source, bool deleteDataSource = true)",
+    "name": "setDataSource",
+    "doc": "Set an object that acts as the data source of the recycler frame. deleteDataSource: set to false if source object deletion should NOT be handled by the RecyclerFrame."
+   },
+   {
+    "sig": "RecyclerDataSource* getDataSource() const",
+    "name": "getDataSource",
+    "doc": "Get an object that acts as the data source of the recycler frame."
+   },
+   {
+    "sig": "void reloadData()",
+    "name": "reloadData",
+    "doc": "Reloads the rows of the recycler frame."
+   },
+   {
+    "sig": "void registerCell(std::string identifier, std::function<RecyclerCell*(void)> allocation)",
+    "name": "registerCell",
+    "doc": "Registers a class for use in creating new recycler cells."
+   },
+   {
+    "sig": "RecyclerCell* dequeueReusableCell(std::string identifier)",
+    "name": "dequeueReusableCell",
+    "doc": "Returns a reusable recycler-frame cell object for the specified reuse identifier"
+   },
+   {
+    "sig": "void selectRowAt(IndexPath indexPath, bool animated)",
+    "name": "selectRowAt",
+    "doc": "Selects a row in the recycler frame identified by index path."
+   },
+   {
+    "sig": "IndexPath getDefaultCellFocus()",
+    "name": "getDefaultCellFocus",
+    "doc": ""
+   },
+   {
+    "sig": "void setDefaultCellFocus(IndexPath indexPath)",
+    "name": "setDefaultCellFocus",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [
+   {
+    "sig": "float estimatedRowHeight = 44",
+    "doc": "Used for initial recycler's frame calculation if rows autoscaling selected. To provide more accurate height implement DataSource->cellHeightForRow()."
+   }
+  ],
+  "events": [],
+  "tag": "brls:RecyclerFrame",
+  "attrs": {
+   "paddingTop": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "paddingRight": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "paddingBottom": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "paddingLeft": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   },
+   "padding": {
+    "types": [
+     "number"
+    ],
+    "values": null,
+    "forwarded": null
+   }
+  },
+  "chain": [
+   "ScrollingFrame",
+   "Box",
+   "View"
+  ]
+ },
+ "ScrollingFrame": {
+  "name": "ScrollingFrame",
+  "kind": "class",
+  "base": "Box",
+  "file": "include/borealis/views/scrolling_frame.hpp",
+  "line": 41,
+  "doc": "A vertical-only frame that can scroll if its content overflows. This frame can only contain one child view. The content view is detached from the rest of the tree so that its height can grow as much as possible.",
+  "methods": [
+   {
+    "sig": "ScrollingFrame()",
+    "name": "ScrollingFrame",
+    "doc": ""
+   },
+   {
+    "sig": "~ScrollingFrame()",
+    "name": "~ScrollingFrame",
+    "doc": ""
+   },
+   {
+    "sig": "void draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx) override",
+    "name": "draw",
+    "doc": ""
+   },
+   {
+    "sig": "void onFocusGained() override",
+    "name": "onFocusGained",
+    "doc": ""
+   },
+   {
+    "sig": "void onChildFocusGained(View* directChild, View* focusedView) override",
+    "name": "onChildFocusGained",
+    "doc": ""
+   },
+   {
+    "sig": "void onChildFocusLost(View* directChild, View* focusedView) override",
+    "name": "onChildFocusLost",
+    "doc": ""
+   },
+   {
+    "sig": "void willAppear(bool resetState) override",
+    "name": "willAppear",
+    "doc": ""
+   },
+   {
+    "sig": "void addView(View* view) override",
+    "name": "addView",
+    "doc": ""
+   },
+   {
+    "sig": "void removeView(View* view, bool free = true) override",
+    "name": "removeView",
+    "doc": ""
+   },
+   {
+    "sig": "void onLayout() override",
+    "name": "onLayout",
+    "doc": ""
+   },
+   {
+    "sig": "void setPadding(float top, float right, float bottom, float left) override",
+    "name": "setPadding",
+    "doc": ""
+   },
+   {
+    "sig": "void setPaddingTop(float top) override",
+    "name": "setPaddingTop",
+    "doc": ""
+   },
+   {
+    "sig": "void setPaddingRight(float right) override",
+    "name": "setPaddingRight",
+    "doc": ""
+   },
+   {
+    "sig": "void setPaddingBottom(float bottom) override",
+    "name": "setPaddingBottom",
+    "doc": ""
+   },
+   {
+    "sig": "void setPaddingLeft(float left) override",
+    "name": "setPaddingLeft",
+    "doc": ""
+   },
+   {
+    "sig": "View* getParentNavigationDecision(View* from, View* newFocus, FocusDirection direction) override",
+    "name": "getParentNavigationDecision",
+    "doc": ""
+   },
+   {
+    "sig": "View* getNextFocus(FocusDirection direction, View* currentView) override",
+    "name": "getNextFocus",
+    "doc": ""
+   },
+   {
+    "sig": "View* getDefaultFocus() override",
+    "name": "getDefaultFocus",
+    "doc": ""
+   },
+   {
+    "sig": "Rect getVisibleFrame()",
+    "name": "getVisibleFrame",
+    "doc": ""
+   },
+   {
+    "sig": "void setContentView(View* view)",
+    "name": "setContentView",
+    "doc": "Sets the content view of this scrolling box. There can only be one content view per scrolling box at a time."
+   },
+   {
+    "sig": "void setScrollingBehavior(ScrollingBehavior behavior)",
+    "name": "setScrollingBehavior",
+    "doc": "Sets the scrolling behavior of this scrolling frame. Default is NATURAL."
+   },
+   {
+    "sig": "float getContentOffsetY() const",
+    "name": "getContentOffsetY",
+    "doc": "The point at which the origin of the content view is offset from the origin of the scroll view."
+   },
+   {
+    "sig": "void setContentOffsetY(float value, bool animated)",
+    "name": "setContentOffsetY",
+    "doc": "Sets the offset from the content view\u2019s origin that corresponds to the receiver\u2019s origin."
+   },
+   {
+    "sig": "void setScrollingIndicatorVisible(bool visible)",
+    "name": "setScrollingIndicatorVisible",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": "brls:ScrollingFrame",
+  "attrs": {
+   "scrollingBehavior": {
+    "types": [
+     "enum"
+    ],
+    "values": [
+     "natural",
+     "centered"
+    ],
+    "forwarded": null,
+    "enum": "ScrollingBehavior"
+   }
+  },
+  "chain": [
+   "Box",
+   "View"
+  ]
+ },
+ "SidebarSeparator": {
+  "name": "SidebarSeparator",
+  "kind": "class",
+  "base": "View",
+  "file": "include/borealis/views/sidebar.hpp",
+  "line": 31,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "SidebarSeparator()",
+    "name": "SidebarSeparator",
+    "doc": ""
+   },
+   {
+    "sig": "void draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx) override",
+    "name": "draw",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": null,
+  "attrs": {},
+  "chain": [
+   "View"
+  ]
+ },
+ "SidebarItemGroup": {
+  "name": "SidebarItemGroup",
+  "kind": "class",
+  "base": null,
+  "file": "include/borealis/views/sidebar.hpp",
+  "line": 39,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "void add(SidebarItem* item)",
+    "name": "add",
+    "doc": ""
+   },
+   {
+    "sig": "void setActive(SidebarItem* item)",
+    "name": "setActive",
+    "doc": ""
+   },
+   {
+    "sig": "void clear()",
+    "name": "clear",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": null,
+  "attrs": {},
+  "chain": []
+ },
+ "SidebarItem": {
+  "name": "SidebarItem",
+  "kind": "class",
+  "base": "Box",
+  "file": "include/borealis/views/sidebar.hpp",
+  "line": 50,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "SidebarItem()",
+    "name": "SidebarItem",
+    "doc": ""
+   },
+   {
+    "sig": "void onFocusGained() override",
+    "name": "onFocusGained",
+    "doc": ""
+   },
+   {
+    "sig": "void onFocusLost() override",
+    "name": "onFocusLost",
+    "doc": ""
+   },
+   {
+    "sig": "void setGroup(SidebarItemGroup* group)",
+    "name": "setGroup",
+    "doc": ""
+   },
+   {
+    "sig": "void setLabel(std::string label)",
+    "name": "setLabel",
+    "doc": ""
+   },
+   {
+    "sig": "void setActive(bool active)",
+    "name": "setActive",
+    "doc": ""
+   },
+   {
+    "sig": "GenericEvent* getActiveEvent()",
+    "name": "getActiveEvent",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": null,
+  "attrs": {
+   "label": {
+    "types": [
+     "string"
+    ],
+    "values": null,
+    "forwarded": null
+   }
+  },
+  "chain": [
+   "Box",
+   "View"
+  ]
+ },
+ "Sidebar": {
+  "name": "Sidebar",
+  "kind": "class",
+  "base": "ScrollingFrame",
+  "file": "include/borealis/views/sidebar.hpp",
+  "line": 77,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "Sidebar()",
+    "name": "Sidebar",
+    "doc": ""
+   },
+   {
+    "sig": "void addItem(std::string label, GenericEvent::Callback focusCallback)",
+    "name": "addItem",
+    "doc": "Adds an item to this sidebar. The given callback will be called when the item becomes active."
+   },
+   {
+    "sig": "SidebarItem* getItem(int position)",
+    "name": "getItem",
+    "doc": ""
+   },
+   {
+    "sig": "void addSeparator()",
+    "name": "addSeparator",
+    "doc": "Adds a separator to this sidebar."
+   },
+   {
+    "sig": "void clearItems()",
+    "name": "clearItems",
+    "doc": "Removes all items from sidebar."
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": "brls:Sidebar",
+  "attrs": {},
+  "chain": [
+   "ScrollingFrame",
+   "Box",
+   "View"
+  ]
+ },
+ "Slider": {
+  "name": "Slider",
+  "kind": "class",
+  "base": "Box",
+  "file": "include/borealis/views/slider.hpp",
+  "line": 29,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "Slider()",
+    "name": "Slider",
+    "doc": ""
+   },
+   {
+    "sig": "void onLayout() override",
+    "name": "onLayout",
+    "doc": ""
+   },
+   {
+    "sig": "View* getDefaultFocus() override",
+    "name": "getDefaultFocus",
+    "doc": ""
+   },
+   {
+    "sig": "void draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx) override",
+    "name": "draw",
+    "doc": ""
+   },
+   {
+    "sig": "void setProgress(float progress)",
+    "name": "setProgress",
+    "doc": ""
+   },
+   {
+    "sig": "float getProgress()",
+    "name": "getProgress",
+    "doc": ""
+   },
+   {
+    "sig": "void setStep(float step)",
+    "name": "setStep",
+    "doc": ""
+   },
+   {
+    "sig": "void setPointerSize(float size)",
+    "name": "setPointerSize",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [
+   {
+    "name": "getProgressEvent",
+    "payload": "float",
+    "doc": ""
+   }
+  ],
+  "tag": "brls:Slider",
+  "attrs": {},
+  "chain": [
+   "Box",
+   "View"
+  ]
+ },
+ "TabFrame": {
+  "name": "TabFrame",
+  "kind": "class",
+  "base": "Box",
+  "file": "include/borealis/views/tab_frame.hpp",
+  "line": 32,
+  "doc": "An applet frame containing a sidebar on the left with multiple tabs which content is showing on the right. Only one tab is kept in memory at all times : when switching, the current tab is freed before the the new one is instantiated.",
+  "methods": [
+   {
+    "sig": "TabFrame()",
+    "name": "TabFrame",
+    "doc": ""
+   },
+   {
+    "sig": "void handleXMLElement(tinyxml2::XMLElement* element) override",
+    "name": "handleXMLElement",
+    "doc": ""
+   },
+   {
+    "sig": "void addTab(std::string label, TabViewCreator creator)",
+    "name": "addTab",
+    "doc": ""
+   },
+   {
+    "sig": "void focusTab(int position)",
+    "name": "focusTab",
+    "doc": ""
+   },
+   {
+    "sig": "void clearTabs()",
+    "name": "clearTabs",
+    "doc": ""
+   },
+   {
+    "sig": "void addSeparator()",
+    "name": "addSeparator",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": "brls:TabFrame",
+  "attrs": {},
+  "chain": [
+   "Box",
+   "View"
+  ]
+ },
+ "BooleanCell": {
+  "name": "BooleanCell",
+  "kind": "class",
+  "base": "DetailCell",
+  "file": "include/borealis/views/cells/cell_bool.hpp",
+  "line": 28,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "BooleanCell()",
+    "name": "BooleanCell",
+    "doc": ""
+   },
+   {
+    "sig": "void init(std::string title, bool isOn, std::function<void(bool)> callback)",
+    "name": "init",
+    "doc": ""
+   },
+   {
+    "sig": "void setOn(bool on, bool animated = true)",
+    "name": "setOn",
+    "doc": ""
+   },
+   {
+    "sig": "bool isOn()",
+    "name": "isOn",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [
+   {
+    "name": "getEvent",
+    "payload": "bool",
+    "doc": ""
+   }
+  ],
+  "tag": "brls:BooleanCell",
+  "attrs": {},
+  "chain": [
+   "DetailCell",
+   "RecyclerCell",
+   "Box",
+   "View"
+  ]
+ },
+ "DetailCell": {
+  "name": "DetailCell",
+  "kind": "class",
+  "base": "RecyclerCell",
+  "file": "include/borealis/views/cells/cell_detail.hpp",
+  "line": 27,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "DetailCell()",
+    "name": "DetailCell",
+    "doc": ""
+   },
+   {
+    "sig": "void setText(std::string title)",
+    "name": "setText",
+    "doc": ""
+   },
+   {
+    "sig": "void setTextColor(NVGcolor color)",
+    "name": "setTextColor",
+    "doc": ""
+   },
+   {
+    "sig": "void setDetailText(std::string title)",
+    "name": "setDetailText",
+    "doc": ""
+   },
+   {
+    "sig": "void setDetailTextColor(NVGcolor color)",
+    "name": "setDetailTextColor",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": "brls:DetailCell",
+  "attrs": {
+   "title": {
+    "types": [
+     "string"
+    ],
+    "values": null,
+    "forwarded": null
+   }
+  },
+  "chain": [
+   "RecyclerCell",
+   "Box",
+   "View"
+  ]
+ },
+ "InputCell": {
+  "name": "InputCell",
+  "kind": "class",
+  "base": "DetailCell",
+  "file": "include/borealis/views/cells/cell_input.hpp",
+  "line": 29,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "InputCell()",
+    "name": "InputCell",
+    "doc": ""
+   },
+   {
+    "sig": "void init(std::string title, std::string value, Event<std::string>::Callback callback = [](std::string text){}, std::string placeholder = \"\", std::string hint = \"\", int maxInputLength = 32, int kbdDisableBitmask = 0)",
+    "name": "init",
+    "doc": ""
+   },
+   {
+    "sig": "void setValue(std::string value)",
+    "name": "setValue",
+    "doc": ""
+   },
+   {
+    "sig": "std::string getValue()",
+    "name": "getValue",
+    "doc": ""
+   },
+   {
+    "sig": "void setPlaceholder(std::string placeholder)",
+    "name": "setPlaceholder",
+    "doc": ""
+   },
+   {
+    "sig": "std::string getPlaceholder()",
+    "name": "getPlaceholder",
+    "doc": ""
+   },
+   {
+    "sig": "void setHint(std::string hint)",
+    "name": "setHint",
+    "doc": ""
+   },
+   {
+    "sig": "std::string getHint()",
+    "name": "getHint",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [
+   {
+    "name": "getEvent",
+    "payload": "std::string",
+    "doc": ""
+   }
+  ],
+  "tag": "brls:InputCell",
+  "attrs": {},
+  "chain": [
+   "DetailCell",
+   "RecyclerCell",
+   "Box",
+   "View"
+  ]
+ },
+ "InputNumericCell": {
+  "name": "InputNumericCell",
+  "kind": "class",
+  "base": "DetailCell",
+  "file": "include/borealis/views/cells/cell_input.hpp",
+  "line": 76,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "InputNumericCell()",
+    "name": "InputNumericCell",
+    "doc": ""
+   },
+   {
+    "sig": "void init(std::string title, long value, Event<long>::Callback callback, std::string hint = \"\", int maxInputLength = 18, int kbdDisableBitmask = 0)",
+    "name": "init",
+    "doc": ""
+   },
+   {
+    "sig": "void setValue(long value)",
+    "name": "setValue",
+    "doc": ""
+   },
+   {
+    "sig": "long getValue()",
+    "name": "getValue",
+    "doc": ""
+   },
+   {
+    "sig": "void setHint(std::string hint)",
+    "name": "setHint",
+    "doc": ""
+   },
+   {
+    "sig": "std::string getHint()",
+    "name": "getHint",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [
+   {
+    "name": "getEvent",
+    "payload": "long",
+    "doc": ""
+   }
+  ],
+  "tag": "brls:InputNumericCell",
+  "attrs": {},
+  "chain": [
+   "DetailCell",
+   "RecyclerCell",
+   "Box",
+   "View"
+  ]
+ },
+ "CheckBox": {
+  "name": "CheckBox",
+  "kind": "class",
+  "base": "View",
+  "file": "include/borealis/views/cells/cell_radio.hpp",
+  "line": 27,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "CheckBox()",
+    "name": "CheckBox",
+    "doc": ""
+   },
+   {
+    "sig": "virtual void draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx) override",
+    "name": "draw",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": "brls:CheckBox",
+  "attrs": {},
+  "chain": [
+   "View"
+  ]
+ },
+ "RadioCell": {
+  "name": "RadioCell",
+  "kind": "class",
+  "base": "RecyclerCell",
+  "file": "include/borealis/views/cells/cell_radio.hpp",
+  "line": 36,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "RadioCell()",
+    "name": "RadioCell",
+    "doc": ""
+   },
+   {
+    "sig": "void setSelected(bool selected)",
+    "name": "setSelected",
+    "doc": ""
+   },
+   {
+    "sig": "bool getSelected()",
+    "name": "getSelected",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": "brls:RadioCell",
+  "attrs": {
+   "title": {
+    "types": [
+     "string"
+    ],
+    "values": null,
+    "forwarded": null
+   }
+  },
+  "chain": [
+   "RecyclerCell",
+   "Box",
+   "View"
+  ]
+ },
+ "SelectorCell": {
+  "name": "SelectorCell",
+  "kind": "class",
+  "base": "DetailCell",
+  "file": "include/borealis/views/cells/cell_selector.hpp",
+  "line": 29,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "SelectorCell()",
+    "name": "SelectorCell",
+    "doc": ""
+   },
+   {
+    "sig": "void init(std::string title, std::vector<std::string> data, int selected, Event<int>::Callback callback, Event<int>::Callback dismissCb = [](int){})",
+    "name": "init",
+    "doc": ""
+   },
+   {
+    "sig": "void setData(std::vector<std::string> data)",
+    "name": "setData",
+    "doc": ""
+   },
+   {
+    "sig": "void setSelection(int selection, bool silent = false)",
+    "name": "setSelection",
+    "doc": ""
+   },
+   {
+    "sig": "int getSelection()",
+    "name": "getSelection",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [
+   {
+    "name": "getEvent",
+    "payload": "int",
+    "doc": ""
+   }
+  ],
+  "tag": "brls:SelectorCell",
+  "attrs": {},
+  "chain": [
+   "DetailCell",
+   "RecyclerCell",
+   "Box",
+   "View"
+  ]
+ },
+ "SliderCell": {
+  "name": "SliderCell",
+  "kind": "class",
+  "base": "DetailCell",
+  "file": "include/borealis/views/cells/cell_slider.hpp",
+  "line": 29,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "SliderCell()",
+    "name": "SliderCell",
+    "doc": ""
+   },
+   {
+    "sig": "void init(const std::string& title, float init, const std::function<void(float)>& callback)",
+    "name": "init",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   },
+   {
+    "sig": "View* getDefaultFocus() override",
+    "name": "getDefaultFocus",
+    "doc": ""
+   }
+  ],
+  "fields": [
+   {
+    "sig": "Slider* slider",
+    "doc": ""
+   }
+  ],
+  "events": [
+   {
+    "name": "getEvent",
+    "payload": "float",
+    "doc": ""
+   }
+  ],
+  "tag": "brls:SliderCell",
+  "attrs": {},
+  "chain": [
+   "DetailCell",
+   "RecyclerCell",
+   "Box",
+   "View"
+  ]
+ },
+ "AccountWidget": {
+  "name": "AccountWidget",
+  "kind": "class",
+  "base": "Box",
+  "file": "include/borealis/views/widgets/account.hpp",
+  "line": 27,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "AccountWidget()",
+    "name": "AccountWidget",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": "brls:Account",
+  "attrs": {},
+  "chain": [
+   "Box",
+   "View"
+  ]
+ },
+ "BatteryWidget": {
+  "name": "BatteryWidget",
+  "kind": "class",
+  "base": "Box",
+  "file": "include/borealis/views/widgets/battery.hpp",
+  "line": 27,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "BatteryWidget()",
+    "name": "BatteryWidget",
+    "doc": ""
+   },
+   {
+    "sig": "void draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx) override",
+    "name": "draw",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": "brls:Battery",
+  "attrs": {},
+  "chain": [
+   "Box",
+   "View"
+  ]
+ },
+ "WirelessWidget": {
+  "name": "WirelessWidget",
+  "kind": "class",
+  "base": "Box",
+  "file": "include/borealis/views/widgets/wireless.hpp",
+  "line": 27,
+  "doc": "",
+  "methods": [
+   {
+    "sig": "WirelessWidget()",
+    "name": "WirelessWidget",
+    "doc": ""
+   },
+   {
+    "sig": "void draw(NVGcontext* vg, float x, float y, float width, float height, Style style, FrameContext* ctx) override",
+    "name": "draw",
+    "doc": ""
+   },
+   {
+    "sig": "static View* create()",
+    "name": "create",
+    "doc": ""
+   }
+  ],
+  "fields": [],
+  "events": [],
+  "tag": "brls:Wireless",
+  "attrs": {},
+  "chain": [
+   "Box",
+   "View"
+  ]
+ }
+}

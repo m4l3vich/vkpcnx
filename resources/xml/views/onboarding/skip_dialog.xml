@@ -1,0 +1,19 @@
+<brls:Box axis="column" padding="30" width="auto" height="auto">
+  <brls:Label text="Спешите?" fontSize="30" marginBottom="20"/>
+  <brls:Label text="Будут применены настройки по умолчанию:" marginBottom="10"/>
+
+  <brls:Box axis="row" marginBottom="5">
+    <brls:Label text="· Раскладка контроллера:"/>
+    <brls:Label id="onboarding/skip_dialog/mapping_mode" marginLeft="8"/>
+  </brls:Box>
+  <brls:Box axis="row" marginBottom="5">
+    <brls:Label text="· Режим сенсорного экрана:"/>
+    <brls:Label id="onboarding/skip_dialog/touchscreen_mode" marginLeft="8"/>
+  </brls:Box>
+  <brls:Box axis="row" marginBottom="20">
+    <brls:Label text="· Контроллер как мышь:"/>
+    <brls:Label id="onboarding/skip_dialog/gamepad_pointer" marginLeft="8"/>
+  </brls:Box>
+
+  <brls:Label text="Для изменения воспользуйтесь настройками аккаунта на главном экране."/>
+</brls:Box>

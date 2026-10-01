@@ -1,0 +1,51 @@
+<brls:Box id="account_details/root" width="auto" height="auto" grow="1" axis="column">
+<brls:ScrollingFrame width="auto" height="auto" grow="1" alignItems="stretch">
+<brls:Box axis="column" padding="30" width="auto" height="auto">
+  <brls:Box marginBottom="20" alignItems="center">
+    <brls:Image id="account_details/avatar" width="60" height="60" cornerRadius="999" marginRight="20"/>
+    <brls:Label id="account_details/username" fontSize="30"/>
+  </brls:Box>
+
+  <brls:Label horizontalAlign="center" alpha="0.75" marginBottom="30" text="Управляйте аккаунтом на cloud.vkplay.ru/dashboard/settings" fontSize="14"/>
+
+  <brls:Box id="account_details/plan_container" axis="column" marginBottom="20" padding="20" cornerRadius="10" backgroundColor="@theme/brls/backdrop" focusable="true">
+    <brls:Label id="account_details/plan/name" text="plan name" marginBottom="20" fontSize="30"/>
+    <brls:Label id="account_details/plan/description" text="plan description" fontSize="15" alpha="0.75"/>
+  </brls:Box>
+
+  <brls:Box axis="column" marginBottom="30" padding="10" cornerRadius="10" focusable="true">
+    <brls:Box axis="row" alignItems="center" marginBottom="15">
+      <brls:Label text="&#xe875;" fontSize="28" marginRight="15" marginTop="6"/>
+      <brls:Label text="Нагрузка на сервера"/>
+    </brls:Box>
+
+    <brls:Box axis="row" marginBottom="20">
+      <brls:Rectangle id="account_details/server_load/bar_1" grow="1" height="5" cornerRadius="2.5" color="@theme/brls/header/border"/>
+      <brls:Rectangle id="account_details/server_load/bar_2" grow="1" height="5" cornerRadius="2.5" color="@theme/brls/header/border" marginLeft="5" />
+      <brls:Rectangle id="account_details/server_load/bar_3" grow="1" height="5" cornerRadius="2.5" color="@theme/brls/header/border" marginLeft="5" />
+    </brls:Box>
+
+    <brls:Label id="account_details/server_load/label" text="Загрузка..." fontSize="16" alpha="0.75"/>
+  </brls:Box>
+
+  <brls:Label text="Настройки управления" fontSize="15" alpha="0.5" marginBottom="20"/>
+
+  <brls:Box lineColor="@theme/brls/applet_frame/separator" lineBottom="1px" alpha="0.25"/>
+  <brls:DetailCell id="account_details/gamepad_mapping_mode" title="Раскладка контроллера"/>
+  <brls:DetailCell id="account_details/gamepad_pointer" title="Контроллер как мышь"/>
+  <brls:DetailCell id="account_details/touchscreen_mode" title="Режим сенсорного экрана" marginBottom="20"/>
+  <brls:Button id="account_details/controls_playground" text="Проверить управление" style="default" marginBottom="10"/>
+  <brls:Label text="Нажмите, чтобы войти в песочницу, эмулирующую игровую сессию. В ней можно проверить все элементы управления. Для выхода нажмите &#xE0E1;." alpha="0.5" fontSize="15" marginBottom="40"/>
+
+  <brls:Button id="account_details/feedback" text="Обратная связь (GitHub, Telegram)" style="default" marginBottom="10"/>
+
+  <!-- TODO: make the button red -->
+  <brls:Button id="account_details/logout" text="Выйти из аккаунта" style="primary" marginBottom="30"/>
+
+  <brls:Label id="account_details/version" horizontalAlign="center" fontSize="14" alpha="0.5"/>
+</brls:Box>
+</brls:ScrollingFrame>
+<brls:Box justifyContent="flexEnd" alignItems="center" padding="20" lineColor="@theme/brls/applet_frame/separator" lineTop="1px">
+  <brls:Hints/>
+</brls:Box>
+</brls:Box>

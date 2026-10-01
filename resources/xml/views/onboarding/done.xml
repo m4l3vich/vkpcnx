@@ -1,0 +1,33 @@
+<brls:Box axis="row" padding="30" width="auto" height="200">
+  <brls:Box axis="column" marginRight="30">
+    <brls:Label text="Теперь, если у вас есть подписка VK Play Cloud, вы можете начать играть." marginBottom="20"/>
+    <brls:Label text="Настроить управление и войти в песочницу вы можете в настройках игровой сессии и в настройках аккаунта на главном экране." marginBottom="20"/>
+    <brls:Label text="Если у вас возникнут вопросы или технические проблемы, оставьте обратную связь в issues на GitHub или в личные сообщения Telegram-канала." marginBottom="20"/>
+
+    <brls:Padding/>
+
+    <brls:Label text="Удачной игры!" marginBottom="20"/>
+
+    <brls:Box>
+      <brls:Button id="onboarding/done" text="На главный экран" style="primary" marginRight="20"/>
+    </brls:Box>
+  </brls:Box>
+
+  <brls:Box height="100%" alpha="0.5">
+    <brls:Box lineColor="@theme/brls/applet_frame/separator" lineRight="1px" grow="1"/>
+  </brls:Box>
+
+  <brls:Box axis="column" alignItems="center" justifyContent="center" width="600">
+    <brls:Box padding="16" backgroundColor="#ffffff" cornerRadius="8" marginBottom="20">
+      <vkpcnx:QrCode width="128" height="128" text="https://github.com/m4l3vich/vkpcnx"/>
+    </brls:Box>
+    <brls:Label alpha="0.75" horizontalAlign="center" text="github.com/m4l3vich/vkpcnx" marginBottom="10"/>
+    <brls:Label fontSize="15" horizontalAlign="center" text="Репозиторий GitHub" marginBottom="30"/>
+
+    <brls:Box padding="16" backgroundColor="#ffffff" cornerRadius="8" marginBottom="20">
+      <vkpcnx:QrCode width="128" height="128" text="tg://resolve?domain=vkpcnx"/>
+    </brls:Box>
+    <brls:Label alpha="0.75" horizontalAlign="center" text="t.me/vkpcnx" marginBottom="10"/>
+    <brls:Label fontSize="15" horizontalAlign="center" text="Telegram-канал VKPCNX"/>
+  </brls:Box>
+</brls:Box>

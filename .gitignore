@@ -1,0 +1,18 @@
+.*/
+# project skills (scripts/triage-report.py workflow) are shared; local settings aren't
+!.claude/
+.claude/*
+!.claude/skills/
+*build*/
+*~
+*.bak
+*.nro
+*.nacp
+*.elf
+.vscode
+builddir
+*.dksh
+.DS_Store
+*.suprx
+libromfs-generator
+!.github/

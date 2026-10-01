@@ -1,0 +1,274 @@
+syntax = "proto2";
+// client_server.proto — client -> game server (signalling WS + input data channel)
+// Reconstructed from the VK Play Cloud WebRTC player bundle (webrtc-mailru build 48103567); original file names were not preserved in the bundle.
+// Field numbers/names/enum values are exact; enum field types were inferred (see README.md).
+
+package cg.network.protocol.cs;
+
+import "protocol_common.proto";
+
+enum UsbAttacherMsgType {
+  INIT = 1;
+  ATTACH = 2;
+  DETACH = 3;
+  ATTACHED = 4;
+  DETACHED = 5;
+  STOP = 6;
+  LOG = 7;
+}
+
+message Auth {
+  optional int64 id_session = 1;
+  optional int64 id_user = 2;
+  optional bytes server_name = 3;
+  optional bytes token_session = 4;
+  optional int64 id_connect = 5;
+  optional bytes name = 6;
+  optional bytes domain = 7;
+  optional bytes password = 8;
+  optional LocalesList locales = 9;
+}
+
+message SpeedTest {
+  optional bytes server_name = 1;
+  optional bytes token_session = 2;
+  optional int64 id_connect = 3;
+  optional cg.network.protocol.Language language = 4;
+  optional int32 ping = 5;
+}
+
+message WaitPlay {
+  repeated cg.network.protocol.WebRtcStreamSettings webrtc_stream_settings = 1;
+  optional bool reconfigurate_flag = 2;
+}
+
+message SdpOffer {
+  optional cg.network.protocol.StreamType type = 1;
+  optional string sdp = 2;
+  optional bool reconfigurate_flag = 3;
+  optional string server_ip = 4;
+}
+
+message SetBitrate {
+  optional int32 bitrate = 1;
+}
+
+message TcpTestRequest {
+}
+
+message UdpTestRequest {
+}
+
+message CryptoKey {
+  optional bytes key = 1;
+  optional bytes ivec = 2;
+}
+
+message ChangeLayout {
+  optional string locale = 1;
+}
+
+message ClipboardData {
+  optional uint32 id = 1;
+  optional uint32 token = 2;
+  optional uint32 packets_count = 3;
+  optional uint32 packet_id = 4;
+  optional uint32 raw_size = 5;
+  optional bytes content = 6;
+}
+
+message UserAssessment {
+  optional int32 video_quality = 1;
+  optional int32 audio_quality = 2;
+  optional bool delay_attended = 3;
+}
+
+message InputStreamDisconnected {
+}
+
+message ExtendSubscriptionOptions {
+  optional bool is_auto_extend = 1;
+}
+
+message ClientBeforeClose {
+}
+
+message SubscriptionLimitContinue {
+}
+
+message SubscriptionContinue {
+}
+
+message InputReport {
+  optional uint32 token = 1;
+  optional uint32 cursor_id = 2;
+  repeated uint32 cursor_received_ids = 3;
+  optional uint32 cursor_last = 4;
+  optional uint32 clipboard_confirmed_id = 5;
+  optional uint32 clipboard_current_id = 6;
+  repeated uint32 clipboard_current_received_ids = 7;
+}
+
+message StreamsStatus {
+  optional uint32 flags = 1;
+}
+
+message GameControllerConnectionStatus {
+  optional string ip_address = 1;
+  optional int32 port = 2;
+  optional int64 session_id = 3;
+  optional bool success = 4;
+  optional string error = 5;
+}
+
+message MouseSettings {
+  optional uint32 id = 1;
+  optional uint32 token = 2;
+  optional int32 sensitivity = 3;
+  optional int32 acceleration = 4;
+  optional int32 window_width = 5;
+  optional int32 window_height = 6;
+  optional bool client_cursor = 7;
+}
+
+message BuyDiscountAtPlaykey {
+}
+
+message InputInit {
+  optional bytes token = 1;
+  optional bytes aes = 2;
+  optional bytes ivec = 3;
+  optional uint32 version = 4;
+}
+
+message GamepadPresence {
+  optional uint32 id = 1;
+  optional uint32 token = 2;
+  repeated uint32 gamepad_ids = 3;
+}
+
+message PasteSubscribeKey {
+  optional uint32 id = 1;
+  optional uint32 token = 2;
+}
+
+message InputEvent {
+  optional uint32 token = 1;
+  optional uint32 device_id = 2;
+  optional uint64 sent_timestamp = 3;
+}
+
+message KeyboardEvent {
+  optional InputEvent header = 1;
+  optional uint32 key_code = 2;
+  optional uint32 lock_keys = 3;
+}
+
+message MouseClickEvent {
+  optional InputEvent header = 1;
+  optional uint32 button = 2;
+}
+
+message MouseMoveEvent {
+  optional InputEvent header = 1;
+  optional int32 delta_x = 2;
+  optional int32 delta_y = 3;
+  optional int32 delta_z = 4;
+  optional int32 abs_x = 5;
+  optional int32 abs_y = 6;
+}
+
+message GamepadEvent {
+  optional InputEvent header = 1;
+  optional bool is_xinput = 2;
+}
+
+message GamepadButtonEvent {
+  optional GamepadEvent gamepad_header = 1;
+  optional uint32 button = 2;
+}
+
+message GamepadAxisEvent {
+  optional GamepadEvent gamepad_header = 1;
+  optional uint32 axis = 2;
+  optional int32 value = 3;
+}
+
+message GamepadPovEvent {
+  optional GamepadEvent gamepad_header = 1;
+  optional uint32 pov = 2;
+  optional uint32 value = 3;
+}
+
+message GamepadAxesReleaseEvent {
+  optional uint32 token = 1;
+  optional uint64 sent_timestamp = 2;
+}
+
+message LocaleEvent {
+  optional InputEvent header = 1;
+  optional string locale = 2;
+}
+
+message TouchEvent {
+  optional InputEvent header = 1;
+  optional int32 x = 2;
+  optional int32 y = 3;
+  optional uint32 pointer_id = 4;
+  optional bool is_absolute = 5;
+}
+
+message RedirectPrinter {
+  optional bytes name = 1;
+  optional bool is_xps = 2;
+}
+
+message UsbInit {
+  optional string instance = 1;
+  optional int32 bus = 2;
+  optional int32 port = 3;
+  optional bytes conf = 4;
+  optional bytes desc = 5;
+  optional uint32 speed = 6;
+}
+
+message UsbData {
+  optional string instance = 1;
+  optional bytes buffer = 2;
+}
+
+message UsbAttacherInit {
+  optional string modulus = 1;
+  optional string host = 2;
+  optional int32 port = 3;
+}
+
+message UsbAttacherAttach {
+  optional string instance = 1;
+}
+
+message UsbAttacherDetach {
+  optional string instance = 1;
+}
+
+message UsbAttacherStop {
+}
+
+message UsbAttacherLog {
+  optional string message = 1;
+  optional cg.network.protocol.LogLevel log_level = 2;
+}
+
+message InputInitV2 {
+  optional bytes aes_message = 1;
+  optional uint32 version = 2;
+}
+
+message InputMessageV2 {
+  optional bytes data = 1;
+}
+
+message LocalesList {
+  repeated string locale = 1;
+}
+

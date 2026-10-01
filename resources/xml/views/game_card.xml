@@ -1,0 +1,4 @@
+<brls:Box axis="column" width="280" margin="10">
+  <brls:Image id="game_card/image" height="160" scalingType="fill"/>
+  <brls:Label id="game_card/label" text="Game name" singleLine="true" margin="10"/>
+</brls:Box>

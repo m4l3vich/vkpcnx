@@ -1,0 +1,71 @@
+<brls:Box id="stream_overlay/root" width="auto" height="auto" grow="1" axis="column">
+<brls:ScrollingFrame width="auto" height="auto" grow="1" alignItems="stretch">
+<brls:Box axis="column" padding="30" width="auto" height="auto">
+  <brls:Box justifyContent="flexEnd" alignItems="center" marginBottom="20">
+    <!-- TODO: maybe try to get the real font -->
+    <brls:Label text="12:34" id="stream_overlay/clock"/>
+    <brls:Wireless marginLeft="10" marginRight="10"/>
+    <brls:Box alignItems="flexEnd" height="0">
+      <brls:Label text="100" id="stream_overlay/battery_pct"/>
+      <brls:Label text=" %" fontSize="16"/>
+    </brls:Box>
+    <brls:Battery marginLeft="10" marginRight="10"/>
+  </brls:Box>
+
+  <brls:Box lineColor="@theme/brls/applet_frame/separator" lineBottom="1px" marginBottom="20" alpha="0.5"/>
+
+  <brls:Label id="stream_overlay/stats_header" text="Статистика" fontSize="15" alpha="0.5" marginBottom="20"/>
+
+  <brls:Box id="stream_overlay/stats_short" axis="column" marginBottom="20" padding="20" cornerRadius="10" backgroundColor="@theme/brls/backdrop" focusable="true">
+    <brls:Box axis="column" marginBottom="20">
+      <brls:Box justifyContent="spaceBetween" marginBottom="20" alignItems="center">
+        <brls:Label text="Пинг до сервера" alpha="0.75" fontSize="15" marginRight="20" shrink="0"/>
+        <brls:Label id="stream_overlay/ping" singleLine="true"/>
+      </brls:Box>
+
+      <brls:Box justifyContent="spaceBetween" alignItems="center">
+        <brls:Label text="Сервер" alpha="0.75" fontSize="15" marginRight="20" shrink="0"/>
+        <brls:Label id="stream_overlay/server_name" singleLine="true"/>
+      </brls:Box>
+    </brls:Box>
+
+    <brls:Label id="stream_overlay/show_more" text="Показать больше" textColor="@theme/brls/accent" fontSize="15"/>
+  </brls:Box>
+
+  <brls:Box id="stream_overlay/stats_full" marginBottom="20" focusable="true" axis="column">
+    <vkpcnx:StripedList>
+      <vkpcnx:StripedListRow id="stream_overlay/stats_full/ping" title="Пинг до сервера"/>
+      <vkpcnx:StripedListRow id="stream_overlay/stats_full/server_name" title="Имя сервера"/>
+      <vkpcnx:StripedListRow id="stream_overlay/stats_full/session_time_elapsed" title="Длительность сессии"/>
+      <vkpcnx:StripedListRow id="stream_overlay/stats_full/session_time_left" title="Осталось времени"/>
+      <vkpcnx:StripedListRow id="stream_overlay/stats_full/dropped_frames" title="Потеряно кадров"/>
+      <vkpcnx:StripedListRow id="stream_overlay/stats_full/decode_errs" title="Ошибки декодера"/>
+      <vkpcnx:StripedListRow id="stream_overlay/stats_full/avg_decode_ms" title="Сред. время кадра"/>
+      <vkpcnx:StripedListRow id="stream_overlay/stats_full/stream_res" title="Разрешение стрима"/>
+      <vkpcnx:StripedListRow id="stream_overlay/stats_full/video_codec" title="Видеокодек"/>
+      <vkpcnx:StripedListRow id="stream_overlay/stats_full/hw_accel" title="Аппаратное ускорение"/>
+    </vkpcnx:StripedList>
+    <brls:Label id="stream_overlay/show_less" text="Показать меньше" textColor="@theme/brls/accent" fontSize="15" margin="10"/>
+  </brls:Box>
+
+  <brls:Button id="stream_overlay/show_onscreen_keyboard" text="Показать клавиатуру" style="default" marginBottom="10"/>
+  <brls:Box lineColor="@theme/brls/applet_frame/separator" lineBottom="1px" alpha="0.25"/>
+  <brls:DetailCell id="stream_overlay/onscreen_keyboard" title="Переключатель экранной клавиатуры" marginBottom="20"/>
+  <brls:Label text="Чтобы переместить переключатель, перетащите его на сенсорном экране." alpha="0.5" fontSize="15" marginBottom="40"/>
+
+  <brls:Label text="Настройки управления" fontSize="15" alpha="0.5" marginBottom="20"/>
+
+  <brls:Box lineColor="@theme/brls/applet_frame/separator" lineBottom="1px" alpha="0.25"/>
+  <brls:DetailCell id="stream_overlay/gamepad_mapping_mode" title="Раскладка контроллера"/>
+  <brls:DetailCell id="stream_overlay/gamepad_pointer" title="Контроллер как мышь"/>
+  <brls:DetailCell id="stream_overlay/touchscreen_mode" title="Режим сенсорного экрана" marginBottom="20"/>
+
+  <brls:Button id="stream_overlay/toggle_debug_overlay" text="Включить дебаг-оверлей" style="default" marginBottom="20"/>
+  <!-- TODO: make the button red -->
+  <brls:Button id="stream_overlay/end_session" text="Закончить сессию" style="primary"/>
+</brls:Box>
+</brls:ScrollingFrame>
+<brls:Box justifyContent="flexEnd" alignItems="center" padding="20" lineColor="@theme/brls/applet_frame/separator" lineTop="1px">
+  <brls:Hints/>
+</brls:Box>
+</brls:Box>

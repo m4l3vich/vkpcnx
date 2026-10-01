@@ -1,0 +1,9 @@
+<brls:AppletFrame id="onboarding/root" headerHidden="true">
+  <brls:Box width="auto" height="auto" axis="column" grow="1">
+    <brls:Label id="onboarding/title" fontSize="30" text="Первоначальная настройка" margin="30"/>
+
+    <brls:Box id="onboarding/progress" marginLeft="30" marginRight="30"/>
+
+    <vkpcnx:FillScrollingFrame id="onboarding/content" width="auto" height="auto" grow="1" alignItems="stretch"/>
+  </brls:Box>
+</brls:AppletFrame>

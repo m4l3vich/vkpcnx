@@ -1,0 +1,33 @@
+name: Сообщить об ошибке / Bug report
+description: Что-то работает не так или приложение вылетает
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: Что произошло / What happened
+      description: Что вы делали, что ожидали увидеть и что получилось вместо этого.
+    validations:
+      required: true
+  - type: textarea
+    id: report
+    attributes:
+      label: Отчёт об ошибке / Debug report
+      description: |
+        Создайте отчёт в приложении: «Обратная связь» → «Создать отчёт об ошибке»
+        (на экране входа — кнопка Y; на ПК также `vkpcnx --create-report`).
+        Перетащите сюда получившийся файл vkpcnx-report-….zip.
+        Токены, пароли и IP-адреса из него удаляются автоматически.
+      placeholder: Перетащите .zip сюда / Drop the .zip here
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Платформа / Platform
+      options:
+        - Nintendo Switch
+        - Windows
+        - macOS
+        - Linux
+    validations:
+      required: true

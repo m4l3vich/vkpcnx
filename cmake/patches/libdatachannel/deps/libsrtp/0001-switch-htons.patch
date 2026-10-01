@@ -1,0 +1,14 @@
+diff --git a/crypto/include/datatypes.h b/crypto/include/datatypes.h
+index 696defb..e7a8489 100644
+--- a/crypto/include/datatypes.h
++++ b/crypto/include/datatypes.h
+@@ -61,6 +61,9 @@
+ #else
+ #error "Platform not recognized"
+ #endif
++#ifdef __SWITCH__
++#include <arpa/inet.h> /* libnx: htons()/htonl() live here */
++#endif
+ 
+ #if defined(__SSE2__)
+ #include <emmintrin.h>

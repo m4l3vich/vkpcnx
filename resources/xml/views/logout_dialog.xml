@@ -1,0 +1,21 @@
+<brls:Box axis="column" width="auto" height="auto">
+  <brls:Box axis="column" padding="30" width="auto" height="auto">
+    <brls:Label text="Вы уверены?" fontSize="30" marginBottom="20"/>
+    <brls:Label text="После этого вам нужно будет заново войти в аккаунт VK Play. Настройки управления также будут стёрты."/>
+  </brls:Box>
+
+  <!-- Stacked by hand: brls::Dialog puts its third button on top and squeezes
+       the first two into one row, which doesn't fit labels this long -->
+  <brls:Rectangle width="auto" height="2" color="@theme/brls/sidebar/separator"/>
+  <brls:Button id="logout_dialog/wipe" width="auto" height="72" style="borderless"
+    highlightCornerRadius="6" fontSize="@style/brls/dialog/fontSize" textColor="@theme/brls/accent"
+    text="Выйти и стереть настройки"/>
+  <brls:Rectangle width="auto" height="2" color="@theme/brls/sidebar/separator"/>
+  <brls:Button id="logout_dialog/keep" width="auto" height="72" style="borderless"
+    highlightCornerRadius="6" fontSize="@style/brls/dialog/fontSize" textColor="@theme/brls/accent"
+    text="Выйти, но оставить настройки"/>
+  <brls:Rectangle width="auto" height="2" color="@theme/brls/sidebar/separator"/>
+  <brls:Button id="logout_dialog/cancel" width="auto" height="72" style="borderless"
+    highlightCornerRadius="6" fontSize="@style/brls/dialog/fontSize" textColor="@theme/brls/accent"
+    text="Отмена"/>
+</brls:Box>

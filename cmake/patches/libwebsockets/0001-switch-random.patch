@@ -1,0 +1,49 @@
+diff --git a/lib/plat/unix/unix-init.c b/lib/plat/unix/unix-init.c
+index 46f072f9b..76715f299 100644
+--- a/lib/plat/unix/unix-init.c
++++ b/lib/plat/unix/unix-init.c
+@@ -166,6 +166,11 @@ lws_plat_init(struct lws_context *context,
+ 	lwsl_cx_info(context, " mem: platform fd map: %5lu B",
+ 		    (unsigned long)(sizeof(struct lws *) * context->max_fds));
+ #endif
++#if defined(__SWITCH__)
++	/* no /dev/urandom on Horizon; lws_get_random() uses libnx randomGet() */
++	(void)fd;
++	context->fd_random = LWS_INVALID_FILE;
++#else
+ #if defined(LWS_WITH_FILE_OPS)
+ 	fd = lws_open(SYSTEM_RANDOM_FILEPATH, O_RDONLY);
+ #else
+@@ -177,6 +182,7 @@ lws_plat_init(struct lws_context *context,
+ 			 SYSTEM_RANDOM_FILEPATH, context->fd_random, errno);
+ 		return 1;
+ 	}
++#endif
+ 
+ #if defined(LWS_WITH_PLUGINS)
+ 	{
+diff --git a/lib/plat/unix/unix-misc.c b/lib/plat/unix/unix-misc.c
+index fce5e4297..35082f83e 100644
+--- a/lib/plat/unix/unix-misc.c
++++ b/lib/plat/unix/unix-misc.c
+@@ -59,12 +59,20 @@ lws_now_usecs(void)
+ #endif
+ }
+ 
++#if defined(__SWITCH__)
++void randomGet(void *buf, size_t len); /* libnx kernel/random.h */
++#endif
++
+ size_t
+ lws_get_random(struct lws_context *context, void *buf, size_t len)
+ {
+ #if defined(__COVERITY__)
+ 	memset(buf, 0, len);
+ 	return len;
++#elif defined(__SWITCH__)
++	(void)context;
++	randomGet(buf, len);
++	return len;
+ #else
+ 	/* coverity[tainted_scalar] */
+ 	return (size_t)read(context->fd_random, (char *)buf, len);

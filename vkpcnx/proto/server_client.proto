@@ -1,0 +1,332 @@
+syntax = "proto2";
+// server_client.proto — game server -> client
+// Reconstructed from the VK Play Cloud WebRTC player bundle (webrtc-mailru build 48103567); original file names were not preserved in the bundle.
+// Field numbers/names/enum values are exact; enum field types were inferred (see README.md).
+
+package cg.network.protocol.sc;
+
+import "protocol_common.proto";
+
+enum SubscribeKeyStatus {
+  NONE = 0;
+  DONE = 1;
+  INSHIPMENT = 2;
+}
+
+message UdpTestStart {
+  optional int32 port = 1;
+  optional int32 time = 2;
+}
+
+message TcpTestStart {
+  optional int32 port = 1;
+  optional int32 time = 2;
+}
+
+message Play {
+  optional int32 control_port = 1;
+  optional int32 video_port = 2;
+  optional int32 audio_port = 3;
+  optional int32 log_port = 4;
+  optional int32 control_token = 5;
+  optional int32 video_token = 6;
+  optional int32 audio_token = 7;
+  optional int32 log_token = 8;
+  optional bool need_put_assessment = 9;
+  optional string ip = 10;
+  optional SubscribeKeyStatus subscribe_key_status = 11;
+  repeated cg.network.protocol.WebRtcStreamSettings webrtc_stream_settings = 12;
+  optional bool disable_exit_note = 13;
+}
+
+message SdpAnswer {
+  optional cg.network.protocol.StreamType type = 1;
+  optional string sdp = 2;
+  optional int32 control_token = 3;
+}
+
+message AuthSuccess {
+}
+
+message CloseSession {
+}
+
+message VmReboot {
+  optional bool is_shutdown = 1;
+}
+
+message DemoPlayEnd {
+  optional string header = 1;
+  optional string message = 2;
+  optional string btn_exit = 3;
+  optional string btn_price = 4;
+  optional string btn_currency = 5;
+  optional string btn_subscribe = 6;
+  optional bytes image = 7;
+  optional string price_with_currency = 8;
+}
+
+message GamePlayEnd {
+  optional string header = 1;
+  optional string message = 2;
+  optional string btn_exit = 3;
+  optional string btn_price = 4;
+  optional string btn_currency = 5;
+  optional string btn_buy_hour = 6;
+  optional string btn_select_subscription = 7;
+  optional string btn_extend = 8;
+  optional bytes image = 9;
+  optional string url_select_subscription = 10;
+  optional bool need_show_extend_subscription = 11;
+  optional string price_with_currency = 12;
+}
+
+message InactiveTimeout {
+}
+
+message ChangeClient {
+}
+
+message ExitGame {
+}
+
+message OpenUrlInBrowser {
+  optional string url = 1;
+}
+
+message ClipboardData {
+  optional uint32 id = 1;
+  optional uint32 token = 2;
+  optional uint32 packets_count = 3;
+  optional uint32 packet_id = 4;
+  optional uint32 raw_size = 5;
+  optional bytes content = 6;
+}
+
+message AssessmentAccepted {
+}
+
+message QualityVerdict {
+  enum Mark {
+    BAD = 0;
+    NORMAL = 1;
+    GOOD = 2;
+  }
+  optional double bandwidth = 1;
+  optional double percent_lost = 2;
+  optional double percent_reorder = 3;
+  optional string text = 4;
+  optional Mark mark = 5;
+  optional string hint = 6;
+  optional Mark mark_udp = 7;
+  optional Mark mark_tcp = 8;
+}
+
+message LeftDemoTime {
+  optional int32 count_seconds = 1;
+}
+
+message LeftGameTime {
+  optional int64 count_seconds = 1;
+}
+
+message TrialTimeFinish {
+  optional string text = 1;
+  optional string hint = 2;
+  optional string btn_continue = 3;
+  optional string btn_exit = 4;
+}
+
+message TrialGameContinue {
+}
+
+message TrialGameExit {
+  optional string text = 1;
+}
+
+message ReconnectInputStream {
+  optional int32 control_port = 1;
+  optional int32 control_token = 2;
+  optional string ip = 3;
+}
+
+message ExtendSubscriptionSuccess {
+  optional string message = 1;
+}
+
+message ExtendSubscriptionProcessing {
+  optional string message = 1;
+}
+
+message ExtendSubscriptionError {
+  optional string header = 1;
+  optional string message = 2;
+}
+
+message ClientBeforeCloseConfirmation {
+}
+
+message SubscriptionLimitTimeExpired {
+  optional string header = 1;
+  optional string text = 2;
+  optional string btn_continue = 3;
+  optional string btn_cancel = 4;
+  optional bool has_payment = 5;
+  optional string url = 6;
+  optional string btn_price = 7;
+  optional string btn_currency = 8;
+}
+
+message SubscriptionLimitPaymentSuccessful {
+  optional int64 new_limit_for_playing_seconds = 1;
+  optional string notify_text = 2;
+}
+
+message SubscriptionLimitPaymentFailed {
+  optional string header = 1;
+  optional string text = 2;
+  optional string btn_continue = 3;
+  optional string btn_cancel = 4;
+}
+
+message SubscriptionLimitTimeLeft {
+  optional int64 time_left_seconds = 1;
+  optional string notify_text = 2;
+  optional double time_factor = 3;
+}
+
+message SubscriptionPartOfDayEnd {
+  optional string header = 1;
+  optional string text = 2;
+  optional string btn_continue = 3;
+  optional string btn_cancel = 4;
+  optional string url = 5;
+}
+
+message SubscriptionExpired {
+  optional string header = 1;
+  optional string text = 2;
+  optional string btn_continue = 3;
+  optional string btn_select = 4;
+  optional string btn_cancel = 5;
+  optional bool has_payment = 6;
+  optional string url = 7;
+  optional string btn_price = 8;
+  optional string btn_currency = 9;
+}
+
+message SubscriptionPartOfDayLeft {
+  optional int64 time_left_seconds = 1;
+  optional string notify_text = 2;
+}
+
+message SubscriptionPaymentSuccessful {
+  optional bool has_limit = 1;
+  optional int64 new_limit_for_playing_seconds = 2;
+  optional string notify_text = 3;
+}
+
+message SubscriptionPaymentFailed {
+  optional string header = 1;
+  optional string text = 2;
+  optional string btn_continue = 3;
+  optional string btn_cancel = 4;
+}
+
+message InputReport {
+  optional uint32 last_event_id = 1;
+  optional uint32 token = 2;
+  optional uint32 last_mouse_settings_id = 3;
+  optional uint32 clipboard_confirmed_id = 4;
+  optional uint32 clipboard_current_id = 5;
+  repeated uint32 clipboard_current_received_ids = 6;
+}
+
+message BonusTimeLeft {
+  optional int64 time_left_seconds = 1;
+  optional string main_bonus_play_title = 2;
+  optional string bonus_play_message = 3;
+  optional string bonus_replenish_message = 4;
+  optional int32 bonus_replenish_message_color_type = 5;
+}
+
+message UserNoGame {
+}
+
+message GameWasLaunched {
+  optional string executable = 1;
+}
+
+message Cursor {
+  optional uint32 token = 1;
+  optional uint32 id = 2;
+  optional uint32 packets = 3;
+  optional uint32 packet_id = 4;
+  optional uint32 last = 5;
+  optional uint32 raw_size = 6;
+  optional bytes payload = 7;
+  optional int32 x = 8;
+  optional int32 y = 9;
+}
+
+message GameSessionLauncher {
+  enum Launcher {
+    NOLAUNCHER = 0;
+    LAUNCHERORIGIN = 1;
+    LAUNCHERSOCIALCLUB = 2;
+    LAUNCHERWARGAMINGWOT = 3;
+    LAUNCHERWARGAMINGWOW = 4;
+    LAUNCHERMAILRU = 5;
+    LAUNCHERUPLAY = 6;
+    LAUNCHERBETHESDA = 7;
+    LAUNCHERBATTLENET = 8;
+    LAUNCHEREPIC = 9;
+    LAUNCHERSTEAM = 10;
+    LAUNCHERELDERSCROLLSONLINE = 11;
+    LAUNCHERLEAGUEOFLEGENDS = 12;
+    LAUNCHERBLACKDESERT = 13;
+    LAUNCHERWARTHUNDER = 14;
+    LAUNCHEREVE = 15;
+    LAUNCHERRIOT = 16;
+  }
+  optional Launcher launcher = 1;
+}
+
+message GameSessionEvent {
+  enum Event {
+    ENTRANCETOLAUNCHER = 0;
+    GAMESTARTED = 1;
+    GAMECLOSED = 2;
+    RESTARTLAUNCHER = 3;
+  }
+  optional Event event = 1;
+  optional string description = 2;
+}
+
+message VmName {
+  optional string name = 1;
+}
+
+message GameUpdateBegin {
+  optional string text = 1;
+}
+
+message GamepadPresenceConfirmation {
+  optional uint32 id = 1;
+}
+
+message PasteSubscribeKeyConfirmation {
+  optional uint32 id = 1;
+}
+
+message WebRTCInputReport {
+  optional uint32 token = 1;
+  optional uint64 sent_input_timestamp = 2;
+  optional uint32 report_delay_on_server_ms = 3;
+}
+
+message PrintDocument {
+  optional bytes name = 1;
+  optional bytes data = 2;
+}
+

@@ -1,0 +1,26 @@
+<brls:Box
+    width="auto"
+    height="auto"
+    axis="row"
+    justifyContent="flexEnd"
+    alignItems="stretch"
+    backgroundColor="@theme/brls/backdrop">
+
+    <brls:AppletFrame
+        id="sidepanel/applet"
+        width="480"
+        height="auto"
+        headerHidden="true"
+        footerHidden="true"
+        backgroundColor="@theme/brls/background">
+
+        <brls:Box
+            id="sidepanel/container"
+            width="auto"
+            height="auto"
+            grow="1"
+            axis="column"/>
+
+    </brls:AppletFrame>
+
+</brls:Box>

@@ -1,0 +1,19 @@
+<brls:Box grow="1" axis="column">
+<brls:ScrollingFrame id="gamepad_pointer_dialog/scrolling_frame" width="auto" height="auto" grow="1" alignItems="stretch">
+<brls:Box id="gamepad_pointer_dialog/content" axis="column" padding="30" width="auto" height="auto">
+  <brls:Label text="Контроллер как мышь" fontSize="30" marginBottom="20"/>
+  <brls:Label text="Вы можете переключить геймпад в режим мыши и использовать его для управления указателем и прокруткой." fontSize="15" alpha="0.5" marginBottom="20"/>
+  <brls:Box axis="column" alignItems="center" width="100%" marginBottom="20">
+    <brls:Box padding="20" cornerRadius="10" backgroundColor="@theme/brls/backdrop" width="720">
+      <brls:Image width="650" height="360" image="@res/img/gamepad_pointer.png"/>
+    </brls:Box>
+  </brls:Box>
+  <brls:Label text="Чтобы быстро переключить режим, одновременно нажмите &#xE0E4;+&#xE0E5;+&#xE0EF;." marginBottom="20"/>
+
+  <brls:Box lineColor="@theme/brls/applet_frame/separator" lineBottom="1px" alpha="0.25"/>
+  <brls:DetailCell id="gamepad_pointer_dialog/pointer_toggle" title="Контроллер как мышь"/>
+  <brls:SliderCell id="gamepad_pointer_dialog/cursor_speed" title="Скорость указателя"/>
+  <brls:SliderCell id="gamepad_pointer_dialog/scroll_speed" title="Скорость прокрутки" marginBottom="20"/>
+</brls:Box>
+</brls:ScrollingFrame>
+</brls:Box>

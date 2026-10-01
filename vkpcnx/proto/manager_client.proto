@@ -1,0 +1,147 @@
+syntax = "proto2";
+// manager_client.proto — manager -> client
+// Reconstructed from the VK Play Cloud WebRTC player bundle (webrtc-mailru build 48103567); original file names were not preserved in the bundle.
+// Field numbers/names/enum values are exact; enum field types were inferred (see README.md).
+
+package cg.network.protocol.mc;
+
+import "protocol_common.proto";
+
+message AuthFailed {
+  optional int32 reason = 1;
+}
+
+message ZoneServer {
+  optional string host = 1;
+  optional uint32 port = 2;
+  optional int64 server_id = 3;
+  optional string dns_name = 4;
+  optional string public_dns_name = 5;
+}
+
+message ZoneServerList {
+  repeated ZoneServer servers = 1;
+}
+
+message DirectionPlay {
+  optional int64 user_id = 1;
+  optional bytes token_session = 2;
+  optional int32 port = 3;
+  optional bytes name = 4;
+  optional string ip = 5;
+  optional int64 session_id = 6;
+  optional int64 connect_id = 7;
+  optional int64 ping = 8;
+  optional bool is_demo = 9;
+  optional int64 demo_time_in_seconds = 10;
+  optional bool is_time_based = 11;
+  optional int64 game_time_in_seconds = 12;
+  optional string header = 13;
+  optional string product_shipment_code = 14;
+  optional string region_code = 15;
+  repeated string kohorts = 16;
+  optional int64 zone_id = 17;
+  optional int64 video_adapter_id = 18;
+  optional int32 count_success_sessions = 19;
+  optional int64 game_id = 20;
+  optional string game_code = 21;
+  optional string dns_name = 22;
+  optional string public_dns_name = 23;
+}
+
+message AuthSuccess {
+}
+
+message AllBusy {
+  optional string faq_url = 1;
+}
+
+message ValidateVersionResponse {
+  optional int64 version = 1;
+  optional bool is_critical = 2;
+  optional string url_update = 3;
+  optional cg.network.protocol.Language language = 4;
+  optional string url_website = 5;
+  optional string url_select_payment = 6;
+}
+
+message DirectionSpeedTest {
+  optional int64 user_id = 1;
+  optional bytes token_session = 2;
+  optional int32 port = 3;
+  optional bytes name = 4;
+  optional string ip = 5;
+  optional int64 connect_id = 6;
+  optional int64 ping = 7;
+}
+
+message ZoneServerListV2 {
+  repeated ZoneServer servers = 1;
+  optional uint32 client_connection_timeout_ms = 2;
+  optional uint32 count_packets_in_test = 3;
+  optional uint32 wait_hello_from_server_timeout_ms = 4;
+  optional uint32 sleep_timeout_after_failed_ping_ms = 5;
+  optional uint32 wait_ping_from_client_timeout_ms = 6;
+  optional uint32 wait_ping_from_server_timeout_ms = 7;
+  optional uint32 wait_bye_from_client_timeout_ms = 8;
+  optional uint32 wait_bye_from_server_timeout_ms = 9;
+}
+
+message ServerLoading {
+  optional string header = 1;
+  optional string message = 2;
+}
+
+message ServerLoadComplete {
+  optional string header = 1;
+}
+
+message InServerQueue {
+  optional string header = 1;
+  optional string messagepart1 = 2;
+  optional string messagepart2 = 3;
+  optional string messagepart3 = 4;
+  optional string messagepart4 = 5;
+  optional string queuenumbermessage = 6;
+}
+
+message LoadingProfiles {
+  optional string header = 1;
+  optional string message = 2;
+  optional int32 progress = 3;
+}
+
+message QueueDowngradePrompt {
+  optional string header = 1;
+  optional string prompt = 2;
+  optional string button_text = 3;
+}
+
+message SubscriptionPartOfDayEnd {
+  optional string header = 1;
+  optional string text = 2;
+  optional string btn_continue = 3;
+  optional string btn_cancel = 4;
+  optional string url = 5;
+}
+
+message BackgroundInfo {
+  optional string url = 1;
+}
+
+message GameLoadScreenInfo {
+  repeated BackgroundInfo backgrounds = 1;
+}
+
+message UserQueuePosition {
+  optional string message = 1;
+}
+
+message WaitingSession {
+  optional string game_name = 1;
+  optional uint32 minutes = 2;
+}
+
+message WaitingSessionCompleted {
+}
+

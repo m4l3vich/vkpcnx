@@ -1,0 +1,41 @@
+diff --git a/usrsctplib/netinet/sctp_os_userspace.h b/usrsctplib/netinet/sctp_os_userspace.h
+index 69bef3b..edf5681 100755
+--- a/usrsctplib/netinet/sctp_os_userspace.h
++++ b/usrsctplib/netinet/sctp_os_userspace.h
+@@ -402,6 +402,13 @@ int win_if_nametoindex(const char *);
+ #endif
+ 
+ #if defined(__SWITCH__)
++/* libnx uses BSD sockaddrs, so struct sockaddr_conn (below and in usrsctp.h)
++ * needs the sconn_len byte, and every place that builds one must set it.
++ * Don't rely on the configure-time check, which runs against the unpatched
++ * header on the first configure. */
++#ifndef HAVE_SCONN_LEN
++#define HAVE_SCONN_LEN
++#endif
+ /* libnx ships BSD socket headers but no <netinet/ip.h>, and declares
+  * htons()/htonl() only in <arpa/inet.h> */
+ #include <netinet/in.h>
+diff --git a/usrsctplib/usrsctp.h b/usrsctplib/usrsctp.h
+index 93e89b3..0c2fb05 100644
+--- a/usrsctplib/usrsctp.h
++++ b/usrsctplib/usrsctp.h
+@@ -116,11 +116,17 @@ struct sctp_common_header {
+ #undef SCTP_PACKED
+ 
+ #define AF_CONN 123
++/* libnx uses BSD sockaddrs (sa_len + 8-bit sa_family). HAVE_SCONN_LEN tells
++ * users of this header (libdatachannel) to fill in sconn_len. */
++#if defined(__SWITCH__) && !defined(HAVE_SCONN_LEN)
++#define HAVE_SCONN_LEN
++#endif
+ /* The definition of struct sockaddr_conn MUST be in
+  * tune with other sockaddr_* structures.
+  */
+ #if defined(__APPLE__) || defined(__Bitrig__) || defined(__DragonFly__) || \
+-    defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__)
++    defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || \
++    defined(__SWITCH__)
+ struct sockaddr_conn {
+ 	uint8_t sconn_len;
+ 	uint8_t sconn_family;
