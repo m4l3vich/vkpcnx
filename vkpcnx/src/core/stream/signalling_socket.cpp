@@ -60,6 +60,24 @@ void SignallingSocket::connect(const std::string &url) {
   ws_.connect(url, opts);
 }
 
+void SignallingSocket::abandon() {
+  keepAlive_.stop();
+  if (beforeCloseTimeout_) {
+    brls::cancelDelay(beforeCloseTimeout_);
+    beforeCloseTimeout_ = 0;
+  }
+  closeDone_ = nullptr;
+  beforeCloseOutstanding_ = false;
+  closing_ = false;
+  brls::Logger::info("{}: dropping the connection", name_);
+  ws_.abandon();
+}
+
+void SignallingSocket::reconnect() {
+  abandon();
+  connect(url_);
+}
+
 void SignallingSocket::send(MessageType type, const std::string &payload) {
   sendRaw(encodeFrame(static_cast<uint32_t>(type), payload));
 }

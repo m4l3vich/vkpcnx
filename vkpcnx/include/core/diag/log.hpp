@@ -29,8 +29,10 @@ void shutdownLogging();
 void setThreadName(const char *name);
 const char *currentThreadName();
 
-// Writes everything queued so far to the file before returning.
-void flushLogs();
+// The current run's log including everything queued so far, at most the last
+// maxBytes. Read through the writer's own handle: on the Switch, a second
+// handle to a file open for writing read as empty.
+std::string readCurrentLog(size_t maxBytes, bool *truncated = nullptr);
 
 // Main-loop tick: lets the writer thread log UI stalls (deadlocks, long
 // blocking calls on the UI thread) that would otherwise look like a crash.

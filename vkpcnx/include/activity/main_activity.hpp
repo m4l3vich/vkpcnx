@@ -13,6 +13,9 @@ public:
 
   void onContentReady() override {
     overrideBackAction();
+    // + quits from the root screens only (no global quit: on the stream
+    // screen, its overlay and dialogs + belongs to the stream)
+    registerExitAction();
 
     auto &accountInfo = AccountInfo::instance();
     accountInfo.fetch();

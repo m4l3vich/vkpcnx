@@ -30,6 +30,7 @@ public:
       vkpcnx::openDebugReportDialog();
       return true;
     });
+    registerExitAction(); // + quits from the root screens only, see MainActivity
 
     vkpcnx::utils::runDetached([this] { initAuth(this); });
   }

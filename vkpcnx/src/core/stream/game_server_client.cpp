@@ -58,15 +58,20 @@ void GameServerClient::connect(const GameServerAddress &server) {
   everConnected_ = false;
   authenticated_ = false;
   needReconnection_ = false;
+  recovering_ = false;
   closing_ = false;
   reconnectAttempt_ = 0;
   socket_.connect(server.url());
 }
 
 void GameServerClient::scheduleReconnect() {
-  // §5.4: first silently, second with a modal, third → error
+  // §5.4: first silently, second with a modal, third → error. recover() gives
+  // the network time to come back instead.
+  int maxAttempts = recovering_ ? RECOVERY_MAX_ATTEMPTS : MAX_RECONNECT_ATTEMPTS;
+  int delayMs = recovering_ ? RECOVERY_RETRY_MS : 500;
   reconnectAttempt_++;
-  if (reconnectAttempt_ >= MAX_RECONNECT_ATTEMPTS) {
+  if (reconnectAttempt_ >= maxAttempts) {
+    recovering_ = false;
     SessionError e;
     e.kind = SessionError::Kind::RemoteHostNotResponding;
     e.message = "Remote host is not responding";
@@ -82,13 +87,37 @@ void GameServerClient::scheduleReconnect() {
   if (onReconnecting)
     onReconnecting(reconnectAttempt_);
   std::weak_ptr<bool> alive = alive_;
-  reconnectDelay_ = brls::delay(500, [this, alive] {
+  reconnectDelay_ = brls::delay(delayMs, [this, alive] {
     if (auto a = alive.lock(); !a || !*a)
       return;
     reconnectDelay_ = 0;
     if (!closing_)
       socket_.connect(server_.url());
   });
+}
+
+void GameServerClient::recover() {
+  brls::Logger::warning("GameServer: recovering the connection");
+  if (reconnectDelay_) {
+    brls::cancelDelay(reconnectDelay_);
+    reconnectDelay_ = 0;
+  }
+  recovering_ = true;
+  closing_ = false;
+  authenticated_ = false;
+  everConnected_ = true; // a failed connect now counts as a reconnect attempt
+  reconnectAttempt_ = 0;
+  socket_.reconnect();
+}
+
+void GameServerClient::abandon() {
+  if (reconnectDelay_) {
+    brls::cancelDelay(reconnectDelay_);
+    reconnectDelay_ = 0;
+  }
+  recovering_ = false;
+  authenticated_ = false;
+  socket_.abandon();
 }
 
 void GameServerClient::sendAuth() {
@@ -171,8 +200,14 @@ void GameServerClient::handleFrame(const Frame &frame) {
     if (needReconnection_) {
       brls::Logger::info("GameServer: -> CS_RECONNECT");
       socket_.send(MessageType::CS_RECONNECT);
-    } else if (onReadyForOffers) {
-      onReadyForOffers();
+    }
+    // recover(): CS_RECONNECT re-attaches this socket to the session (§5.4);
+    // the session then needs fresh peer connections, which StreamSession
+    // offers as a §6.4 reconfiguration
+    if (!needReconnection_ || recovering_) {
+      recovering_ = false;
+      if (onReadyForOffers)
+        onReadyForOffers();
     }
     break;
   }

@@ -14,14 +14,40 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include <borealis/core/logger.hpp>
+
 extern "C" {
 
 // pipe(2) emulated with a pair of connected UDP sockets on the loopback
 // interface: fds[0] is the read end, fds[1] the write end. Byte counts are not
 // preserved exactly (datagrams), which is fine for the wake-up-only use.
+//
+// Every UDP socket starts with the app-wide receive buffer, raised to 512 KB
+// for video (switch_socket_config.cpp). Each lws context and libjuice agent
+// owns one of these pipes, and at full size a dozen of them used up the
+// socket buffer pool: socket() failed with ENOBUFS, and the context lost its
+// wake-ups (cross-thread sends/closes then waited up to 30 s). A wake-up only
+// ever carries 1-byte datagrams, so each socket is shrunk right away, before
+// the next one is created.
+namespace {
+constexpr int kWakeSocketBufBytes = 4096;
+
+int wakeSocket() {
+  int fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+  if (fd < 0)
+    return -1;
+  int size = kWakeSocketBufBytes;
+  if (setsockopt(fd, SOL_SOCKET, SO_RCVBUF, &size, sizeof size) < 0 ||
+      setsockopt(fd, SOL_SOCKET, SO_SNDBUF, &size, sizeof size) < 0)
+    brls::Logger::warning("pipe: cannot shrink socket buffers: {}", std::strerror(errno));
+  return fd;
+}
+} // namespace
+
 int pipe(int fds[2]) {
-  int a = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-  int b = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+  const char *step = "socket";
+  int a = wakeSocket();
+  int b = a < 0 ? -1 : wakeSocket();
   if (a < 0 || b < 0)
     goto fail;
   {
@@ -30,16 +56,19 @@ int pipe(int fds[2]) {
     addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
     addr.sin_port = 0;
     socklen_t len = sizeof(addr);
+    step = "bind";
     if (bind(a, reinterpret_cast<sockaddr *>(&addr), sizeof(addr)) < 0 ||
         bind(b, reinterpret_cast<sockaddr *>(&addr), sizeof(addr)) < 0)
       goto fail;
     sockaddr_in addrA{}, addrB{};
+    step = "getsockname";
     len = sizeof(addrA);
     if (getsockname(a, reinterpret_cast<sockaddr *>(&addrA), &len) < 0)
       goto fail;
     len = sizeof(addrB);
     if (getsockname(b, reinterpret_cast<sockaddr *>(&addrB), &len) < 0)
       goto fail;
+    step = "connect";
     if (connect(a, reinterpret_cast<sockaddr *>(&addrB), sizeof(addrB)) < 0 ||
         connect(b, reinterpret_cast<sockaddr *>(&addrA), sizeof(addrA)) < 0)
       goto fail;
@@ -48,6 +77,12 @@ int pipe(int fds[2]) {
   fds[1] = b; // write end
   return 0;
 fail:
+  {
+    int err = errno;
+    // lws and libjuice carry on without their wake-up pipe: cross-thread
+    // sends/closes then wait for the poll loop's next timer
+    brls::Logger::error("pipe: loopback UDP pair failed at {}: {}", step, std::strerror(err));
+  }
   if (a >= 0)
     close(a);
   if (b >= 0)

@@ -516,6 +516,14 @@ void StreamActivity::setupSession() {
   };
   session->onNotification = [](const std::string &m) { brls::Application::notify(m); };
   session->onError = [this](const SessionError &e) {
+    // Not every source logs before reporting; what the user saw belongs in the log
+    brls::Logger::warning(
+      "Stream: session error kind={} state={}: {}{}",
+      static_cast<int>(e.kind),
+      static_cast<int>(session_->state()),
+      e.title.empty() ? "" : e.title + ": ",
+      e.message
+    );
     if (session_->state() == StreamSession::State::Failed ||
         e.kind == SessionError::Kind::SessionTimeout ||
         e.kind == SessionError::Kind::DuplicateClient) {

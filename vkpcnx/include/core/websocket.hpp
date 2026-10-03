@@ -63,6 +63,15 @@ public:
   // Starts a clean close handshake; onClose fires once it completes.
   void close(int code = 1000, const std::string &reason = "");
 
+  // Drops the current connection at once: no close handshake, no further
+  // callbacks from it, and its service thread is joined in the background.
+  // For a connection that is dead without knowing it (every socket after a
+  // Switch sleep): close() would wait on it, and so would the destructor.
+  // state() is Closed afterwards and connect() can be called right away.
+  // Not for Options::directCallbacks sockets: a direct callback already running
+  // when this is called may still complete.
+  void abandon();
+
   State state() const;
   bool isOpen() const { return state() == State::Open; }
 

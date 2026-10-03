@@ -118,6 +118,9 @@ int main(int argc, char **argv) {
   };
 
   session.start(cfg);
+  // The screen can capture (focus) before the data channel opens and the
+  // input channel starts; the focus must survive that start
+  session.input().setFocus(true);
 
   // Both peer connections up → Negotiating; the view normally reports the first
   // frame — here we do it once the decoder produced one.
@@ -139,7 +142,7 @@ int main(int argc, char **argv) {
   bool inputsUp = waitFor([&] { return session.input().isStarted(); }, 10000);
   CHECK(inputsUp);
   auto &in = session.input();
-  in.setFocus(true);
+  CHECK(in.hasFocus());
   in.keyEvent(0x1E, true, "en-US"); // A
   in.keyEvent(0x1E, false, "en-US");
   in.mouseMove(10, -5);

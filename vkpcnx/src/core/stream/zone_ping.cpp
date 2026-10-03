@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <borealis.hpp>
 
+#include "core/utils/thread.hpp"
 #include "core/utils/tls.hpp"
 
 namespace vkpcnx::stream {
@@ -22,6 +23,9 @@ struct ZonePing::Probe {
   std::vector<double> rttMs;
   bool done = false;
   int32_t result = PING_FAILED;
+  // Fired once, mutex held, when the probe has its result. Doesn't wait for
+  // the socket to finish closing: that can take far longer than the ping.
+  std::function<void()> onDone;
 
   static std::vector<uint8_t> encodeId(uint32_t id) {
     return {
@@ -47,6 +51,8 @@ struct ZonePing::Probe {
     done = true;
     result = value;
     ws.close(1000, "done");
+    if (onDone)
+      onDone();
   }
 
   void onEcho(const std::vector<uint8_t> &data) {
@@ -92,7 +98,10 @@ struct ZonePing::Probe {
 
 ZonePing::ZonePing() = default;
 
-ZonePing::~ZonePing() { cancel(); }
+ZonePing::~ZonePing() {
+  *alive_ = false;
+  cancel();
+}
 
 void ZonePing::run(const std::vector<Server> &servers, Callback done) {
   cancel();
@@ -104,7 +113,10 @@ void ZonePing::run(const std::vector<Server> &servers, Callback done) {
   }
 
   if (servers.empty()) {
-    brls::sync([this] { checkDone(); });
+    brls::sync([this, alive = alive_] {
+      if (*alive)
+        checkDone();
+    });
     return;
   }
 
@@ -112,6 +124,12 @@ void ZonePing::run(const std::vector<Server> &servers, Callback done) {
     auto probe = std::make_shared<Probe>();
     probe->server = server;
     std::weak_ptr<Probe> weak = probe;
+    probe->onDone = [this, alive = alive_] {
+      brls::sync([this, alive] {
+        if (*alive)
+          checkDone();
+      });
+    };
 
     probe->ws.onOpen = [weak] {
       if (auto p = weak.lock()) {
@@ -131,17 +149,10 @@ void ZonePing::run(const std::vector<Server> &servers, Callback done) {
         p->finish(PING_FAILED);
       }
     };
-    probe->ws.onClose = [this, weak](int, const std::string &) {
+    probe->ws.onClose = [weak](int, const std::string &) {
       if (auto p = weak.lock()) {
-        {
-          std::lock_guard<std::mutex> lock(p->mutex);
-          if (!p->done) {
-            p->done = true;
-            p->result = PING_FAILED;
-          }
-        }
-        // The service thread is about to exit; hop to the UI thread to finish
-        brls::sync([this] { checkDone(); });
+        std::lock_guard<std::mutex> lock(p->mutex);
+        p->finish(PING_FAILED); // no-op if it already has a result
       }
     };
 
@@ -187,7 +198,11 @@ void ZonePing::cancel() {
     std::lock_guard<std::mutex> lock(p->mutex);
     p->finish(PING_FAILED);
   }
-  // Probes are destroyed here, which joins their socket threads
+  // Destroying a probe joins its socket thread, which can block until the
+  // socket finishes closing (tens of seconds on a bad connection): never on
+  // the caller's thread, which is usually the UI thread.
+  if (!probes.empty())
+    vkpcnx::utils::runDetached([probes = std::move(probes)]() mutable { probes.clear(); });
 }
 
 void ZonePing::checkDone() {

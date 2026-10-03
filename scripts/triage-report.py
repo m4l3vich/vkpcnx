@@ -10,7 +10,10 @@ A report is what the app's "Create debug report" button (or
 `vkpcnx --create-report`) writes: report.txt, logs/*.log, settings.json and
 crash_reports/*. Crash sections in the logs ("*** CRASH") print frames as
 module+0xoffset; frames in vkpcnx itself are resolved against the symbols CI
-archived for that commit (artifact / release asset vkpcnx-<platform>-symbols).
+archived for that commit and build type (artifact / release asset
+vkpcnx-<platform>-symbols, vkpcnx-<platform>-debug-symbols for Debug builds).
+Symbols whose build id differs from the report's are refused: they would
+resolve to unrelated functions.
 
 Symbol files looked for in --symbols / the fetch cache:
   switch-aarch64  vkpcnx.elf                      (aarch64-none-elf-addr2line, llvm-addr2line or Docker)
@@ -116,15 +119,17 @@ def artifact_platform(platform):
     return platform
 
 
-def fetch_symbols(repo, sha, platform):
-    """Downloads vkpcnx-<platform>-symbols for `sha` from CI artifacts or a release."""
-    dest = CACHE / sha / platform
+def fetch_symbols(repo, sha, platform, debug):
+    """Downloads vkpcnx-<platform>[-debug]-symbols for `sha` from CI artifacts or a release."""
+    dest = CACHE / sha / (platform + ("-debug" if debug else ""))
     if dest.exists() and any(dest.iterdir()):
+        if find_symbol_file(dest, platform) is None:
+            unpack_archives(dest)
         return dest
     if not shutil.which("gh"):
         print("  (gh not installed, can't fetch symbols)")
         return None
-    name = f"vkpcnx-{artifact_platform(platform)}-symbols"
+    name = f"vkpcnx-{artifact_platform(platform)}{'-debug' if debug else ''}-symbols"
     dest.mkdir(parents=True, exist_ok=True)
 
     runs = gh("run", "list", "-R", repo, "--commit", sha, "--json", "databaseId,status,conclusion")
@@ -148,9 +153,17 @@ def fetch_symbols(repo, sha, platform):
 
 
 def unpack_archives(d):
-    for f in list(d.iterdir()):
-        if f.name.endswith((".tar.gz", ".tgz", ".zip")):
-            shutil.unpack_archive(str(f), str(d))
+    """Unpacks every archive under `d`, including archives inside archives
+    (CI release assets are a .zip wrapping the .tar.gz)."""
+    done = set()
+    while True:
+        pending = [f for f in Path(d).rglob("*")
+                   if f.name.endswith((".tar.gz", ".tgz", ".zip")) and f not in done]
+        if not pending:
+            return
+        for f in pending:
+            done.add(f)
+            shutil.unpack_archive(str(f), str(f.parent))
 
 
 def find_symbol_file(d, platform):
@@ -176,6 +189,62 @@ def pe_image_base(path):
     magic = struct.unpack_from("<H", data, pe + 24)[0]
     return struct.unpack_from("<Q", data, pe + 24 + 24)[0] if magic == 0x20B else \
         struct.unpack_from("<I", data, pe + 24 + 28)[0]
+
+
+def elf_build_id(path):
+    """Hex GNU build id from the ELF's note sections, or None (not an ELF, no note)."""
+    with open(path, "rb") as f:
+        eh = f.read(64)
+        if eh[:4] != b"\x7fELF" or eh[4] != 2:  # ELF64 only
+            return None
+        e = "<" if eh[5] == 1 else ">"
+        shoff = struct.unpack_from(e + "Q", eh, 0x28)[0]
+        shentsize, shnum = struct.unpack_from(e + "HH", eh, 0x3A)
+        f.seek(shoff)
+        sh = f.read(shentsize * shnum)
+        for i in range(shnum):
+            sh_type = struct.unpack_from(e + "I", sh, i * shentsize + 4)[0]
+            if sh_type != 7:  # SHT_NOTE
+                continue
+            offset, size = struct.unpack_from(e + "QQ", sh, i * shentsize + 0x18)
+            f.seek(offset)
+            notes = f.read(size)
+            pos = 0
+            while pos + 12 <= len(notes):
+                namesz, descsz, ntype = struct.unpack_from(e + "III", notes, pos)
+                pos += 12
+                name = notes[pos:pos + namesz]
+                pos += (namesz + 3) & ~3
+                desc = notes[pos:pos + descsz]
+                pos += (descsz + 3) & ~3
+                if ntype == 3 and name.rstrip(b"\0") == b"GNU":  # NT_GNU_BUILD_ID
+                    return desc.hex()
+    return None
+
+
+def resolve_symbols(args, info, cache):
+    """Symbol file for the build a log header describes, or None. Refuses one
+    whose build id isn't the report's (other build type, a local build)."""
+    platform = info.get("platform", "")
+    sha = commit_of(info.get("git", ""))
+    debug = info.get("build type") == "Debug"
+    if args.symbols:
+        symfile = find_symbol_file(Path(args.symbols), platform)
+    elif args.fetch and sha and platform:
+        key = (sha, platform, debug)
+        if key not in cache:
+            cache[key] = find_symbol_file(fetch_symbols(args.repo, sha, platform, debug), platform)
+        symfile = cache[key]
+    else:
+        return None
+    if symfile is None or not symfile.is_file():
+        return symfile
+    want = info.get("build id", "").lower()
+    have = elf_build_id(symfile)
+    if have and re.fullmatch(r"[0-9a-f]{16,}", want) and not want.startswith(have[:32]):
+        print(f"  {symfile}: build id {have} is not the report's {want}; not symbolizing")
+        return None
+    return symfile
 
 
 def addr2line_tool(platform):
@@ -258,22 +327,24 @@ def short_path(p):
 
 
 def atmosphere_offsets(text, build_ids):
-    """Module-relative offsets of addresses in an Atmosphère report that fall
-    inside the vkpcnx module (matched by its Module/Build Id)."""
+    """(module base, module-relative offsets, matched build id) for addresses in
+    an Atmosphère report that fall inside the vkpcnx module (matched by its
+    Module/Build Id)."""
     lowered = text.lower()
-    start = end = None
+    start = end = matched = None
     for m in re.finditer(r"address:\s+([0-9a-f]{8,16})-([0-9a-f]{8,16})(.*?)(?:module|build) id:\s+([0-9a-f]+)",
                          lowered, re.S):
-        if any(m.group(4).startswith(b[:32]) for b in build_ids):
-            start, end = int(m.group(1), 16), int(m.group(2), 16)
+        for b in build_ids:
+            if m.group(4).startswith(b[:32]):
+                start, end, matched = int(m.group(1), 16), int(m.group(2), 16), b
     if start is None:
-        return None, []
+        return None, [], None
     offsets = []
     for m in re.finditer(r"(?:0x)?([0-9a-f]{10,16})\b", lowered):
         v = int(m.group(1), 16)
         if start <= v < end:
             offsets.append(v - start)
-    return start, sorted(set(offsets))
+    return start, sorted(set(offsets)), matched
 
 
 # ---------------------------------------------------------------- report
@@ -331,15 +402,7 @@ def summarize_log(name, text, args, symbols_cache, current=False):
         return info
 
     platform = info.get("platform", "")
-    sha = commit_of(info.get("git", ""))
-    symfile = None
-    if args.symbols:
-        symfile = find_symbol_file(Path(args.symbols), platform)
-    elif args.fetch and sha and platform:
-        key = (sha, platform)
-        if key not in symbols_cache:
-            symbols_cache[key] = find_symbol_file(fetch_symbols(args.repo, sha, platform), platform)
-        symfile = symbols_cache[key]
+    symfile = resolve_symbols(args, info, symbols_cache)
     if (info.get("git", "").endswith("-dirty")):
         print("  note: built from a dirty tree; CI symbols may not match exactly")
 
@@ -401,15 +464,13 @@ def main():
         print(files["report.txt"].split("\nfiles:")[0].rstrip())
 
     symbols_cache = {}
-    build_ids, platform, sha = set(), None, None
+    build_infos = {}
     m = re.search(r"^current log:\s+(\S+)", files.get("report.txt", ""), re.M)
     current_log = "logs/" + m.group(1) if m else None
     for name in sorted((n for n in files if n.startswith("logs/")), reverse=True):
         info = summarize_log(name, files[name], args, symbols_cache, current=name == current_log)
         if info.get("build id", "unknown") != "unknown":
-            build_ids.add(info["build id"].lower())
-            platform = platform or info.get("platform")
-            sha = sha or commit_of(info.get("git", ""))
+            build_infos.setdefault(info["build id"].lower(), info)
 
     for name in sorted(n for n in files if n.startswith("crash_reports/")):
         text = files[name]
@@ -418,16 +479,12 @@ def main():
             # macOS: the system report already has symbol names for each thread
             print("  macOS crash report; see the faulting thread's frames in the file")
             continue
-        base, offsets = atmosphere_offsets(text, build_ids)
+        base, offsets, build_id = atmosphere_offsets(text, build_infos)
         if base is None:
             print("  no vkpcnx module with a matching build id in this report")
             continue
         print(f"  vkpcnx module at {base:#x}; {len(offsets)} addresses inside it")
-        symfile = None
-        if args.symbols:
-            symfile = find_symbol_file(Path(args.symbols), "switch-aarch64")
-        elif args.fetch and sha:
-            symfile = find_symbol_file(fetch_symbols(args.repo, sha, "switch-aarch64"), "switch-aarch64")
+        symfile = resolve_symbols(args, build_infos[build_id], symbols_cache)
         for off, where in sorted(symbolize("switch-aarch64", symfile, offsets, 0).items()):
             print(f"    +{off:#x}  {where}")
 

@@ -34,9 +34,7 @@ GamesDataSource::cellForRow(brls::RecyclerFrame *recycler, brls::IndexPath index
 
   int numberOfRows = this->numberOfRows(recycler, index.section);
   if (index.row >= numberOfRows - 2) {
-    brls::Logger::info("calling need more");
     this->needMoreCallback([this](GamesList moreGames) {
-      brls::Logger::info("inserting");
       this->games.reserve(this->games.size() + moreGames.size());
       this->games.insert(
         this->games.end(),

@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <atomic>
+#include <cerrno>
 #include <chrono>
 #include <condition_variable>
 #include <cstdarg>
@@ -37,30 +38,45 @@ namespace vkpcnx::diag {
 
 namespace {
 
+// Opened read+write (readCurrentLog() reads back through this handle) and
+// without O_APPEND: libnx implements O_APPEND by asking the file system for
+// the file size before every write, and a size that lags behind the last
+// write makes the next batch overwrite it, silently. The log is this
+// handle's alone, so its own offset is the end of the file; readCurrentLog()
+// puts it back after reading.
 #ifdef _WIN32
 int osOpen(const std::string &path) {
-  return _open(path.c_str(), _O_WRONLY | _O_CREAT | _O_APPEND | _O_BINARY, _S_IREAD | _S_IWRITE);
+  return _open(path.c_str(), _O_RDWR | _O_CREAT | _O_BINARY, _S_IREAD | _S_IWRITE);
 }
 long osWrite(int fd, const char *data, size_t size) {
   return _write(fd, data, static_cast<unsigned>(size));
 }
+long osRead(int fd, char *data, size_t size) { return _read(fd, data, static_cast<unsigned>(size)); }
+long long osSeek(int fd, long long offset, int whence) { return _lseeki64(fd, offset, whence); }
 void osSync(int fd) { _commit(fd); }
+void osClose(int fd) { _close(fd); }
 constexpr int kStderr = 2;
 #else
-int osOpen(const std::string &path) { return open(path.c_str(), O_WRONLY | O_CREAT | O_APPEND, 0644); }
+int osOpen(const std::string &path) { return open(path.c_str(), O_RDWR | O_CREAT, 0644); }
 long osWrite(int fd, const char *data, size_t size) { return write(fd, data, size); }
+long osRead(int fd, char *data, size_t size) { return read(fd, data, size); }
+long long osSeek(int fd, long long offset, int whence) { return lseek(fd, offset, whence); }
 void osSync(int fd) { fsync(fd); }
+void osClose(int fd) { close(fd); }
 constexpr int kStderr = STDERR_FILENO;
 #endif
 
-void writeAll(int fd, const char *data, size_t size) {
-  while (size > 0) {
-    long n = osWrite(fd, data, size);
+// Bytes written; stops at the first error (errno says why). No allocation:
+// the crash path uses it too.
+size_t writeAll(int fd, const char *data, size_t size) {
+  size_t done = 0;
+  while (done < size) {
+    long n = osWrite(fd, data + done, size - done);
     if (n <= 0)
-      return;
-    data += n;
-    size -= static_cast<size_t>(n);
+      break;
+    done += static_cast<size_t>(n);
   }
+  return done;
 }
 
 constexpr auto kFlushInterval = std::chrono::milliseconds(500);
@@ -84,8 +100,11 @@ struct State {
   bool capped = false;
   bool urgent = false;
   bool stop = false;
+  bool consoleFailed = false; // stdout threw; only touched under borealis' logger mutex
 
   int fd = -1;
+  bool writeFailing = false; // the last drain couldn't write everything
+  bool closed = false;       // by shutdownLogging(); guarded by writeMutex
   std::string dir, path, markerPath;
   std::thread writer;
   brls::LogLevel consoleLevel = brls::LogLevel::LOG_INFO;
@@ -145,19 +164,6 @@ const char *levelTag(brls::LogLevel level) {
   }
 }
 
-// Same look as borealis' own console output, which this replaces
-void printConsole(const std::tm &tm, int ms, brls::LogLevel level, const std::string &message) {
-  static const char *names[] = {"ERROR", "WARNING", "INFO", "DEBUG", "VERBOSE"};
-  static const char *colors[] = {
-    BRLS_ERROR_COLOR, BRLS_WARNING_COLOR, BRLS_INFO_COLOR, BRLS_DEBUG_COLOR, BRLS_VERBOSE_COLOR
-  };
-  int i = std::min(static_cast<int>(level), 4);
-  fmt::print(stdout, "{:%H:%M:%S}.{:03d}\033{}[{}]\033[0m {}\n", tm, ms, colors[i], names[i], message);
-#ifdef _WIN32
-  std::fflush(stdout);
-#endif
-}
-
 void enqueue(std::string text, bool urgent) {
   {
     std::lock_guard<std::mutex> lock(state->queueMutex);
@@ -169,16 +175,7 @@ void enqueue(std::string text, bool urgent) {
     state->cv.notify_one();
 }
 
-// Runs under borealis' logger mutex, so lines arrive one at a time and in order
-void onLog(brls::Logger::TimePoint when, brls::LogLevel level, std::string message) {
-  auto ms = static_cast<int>(
-    std::chrono::duration_cast<std::chrono::milliseconds>(when.time_since_epoch()).count() % 1000
-  );
-  std::tm tm = fmt::localtime(std::chrono::system_clock::to_time_t(when));
-
-  if (level <= state->consoleLevel)
-    printConsole(tm, ms, level, message);
-
+void logToFile(const std::tm &tm, int ms, brls::LogLevel level, const std::string &message) {
   // borealis' GLFW input logs every key press; in a stream that is whatever
   // the user types on the remote PC, passwords included
   if (message.rfind("Key: ", 0) == 0)
@@ -220,6 +217,51 @@ void onLog(brls::Logger::TimePoint when, brls::LogLevel level, std::string messa
   enqueue(std::move(line), important);
 }
 
+// Same look as borealis' own console output, which this replaces. stdout can
+// go away under us: debug builds on the Switch send it over nxlink's TCP
+// connection to the PC, which a sleep cuts. fmt::print reports a failed write
+// by throwing (or, on macOS, by terminating): on the Switch the exception
+// escaped this callback and borealis dropped the line before it reached the
+// file, which is how every info+ line after a sleep went missing. Plain
+// fwrite can't throw; the console is given up after its first failure.
+void printConsole(const std::tm &tm, int ms, brls::LogLevel level, const std::string &message) {
+  static const char *names[] = {"ERROR", "WARNING", "INFO", "DEBUG", "VERBOSE"};
+  static const char *colors[] = {
+    BRLS_ERROR_COLOR, BRLS_WARNING_COLOR, BRLS_INFO_COLOR, BRLS_DEBUG_COLOR, BRLS_VERBOSE_COLOR
+  };
+  if (state->consoleFailed)
+    return;
+  int i = std::min(static_cast<int>(level), 4);
+  std::string text =
+    fmt::format("{:%H:%M:%S}.{:03d}\033{}[{}]\033[0m {}\n", tm, ms, colors[i], names[i], message);
+  bool ok = std::fwrite(text.data(), 1, text.size(), stdout) == text.size();
+#ifdef _WIN32
+  ok = std::fflush(stdout) == 0 && ok;
+#endif
+  if (!ok) {
+    int err = errno;
+    state->consoleFailed = true;
+    enqueue(fmt::format("--- console output failed ({}), file only from here ---\n", std::strerror(err)), true);
+  }
+}
+
+// Runs under borealis' logger mutex, so lines arrive one at a time and in order
+void onLog(brls::Logger::TimePoint when, brls::LogLevel level, std::string message) {
+  auto ms = static_cast<int>(
+    std::chrono::duration_cast<std::chrono::milliseconds>(when.time_since_epoch()).count() % 1000
+  );
+  std::tm tm = fmt::localtime(std::chrono::system_clock::to_time_t(when));
+
+  // File first: the console can fail, and must not take the file line with it
+  logToFile(tm, ms, level, message);
+  if (level <= state->consoleLevel)
+    printConsole(tm, ms, level, message);
+}
+
+// Writes the queued lines. A write the file system refuses used to drop the
+// whole batch silently, leaving a gap in the log; now the unwritten rest goes
+// back to the front of the queue behind a note and is retried on the next
+// drain. A handle that went bad (EBADF) is reopened.
 void drain() {
   std::lock_guard<std::mutex> writeLock(state->writeMutex);
   std::string batch;
@@ -228,8 +270,37 @@ void drain() {
     batch.swap(state->pending);
     state->urgent = false;
   }
-  if (state->fd >= 0 && !batch.empty())
-    writeAll(state->fd, batch.data(), batch.size());
+  if (batch.empty() || state->closed)
+    return;
+  size_t done = state->fd >= 0 ? writeAll(state->fd, batch.data(), batch.size()) : 0;
+  int err = state->fd >= 0 ? errno : EBADF;
+  if (done < batch.size() && err == EBADF) {
+    // The handle itself is gone: open the file again and carry on
+    if (state->fd >= 0)
+      osClose(state->fd);
+    state->fd = osOpen(state->path);
+    if (state->fd >= 0) {
+      osSeek(state->fd, 0, SEEK_END);
+      std::string note = "--- log file handle became invalid, reopened ---\n";
+      writeAll(state->fd, note.data(), note.size());
+      done += writeAll(state->fd, batch.data() + done, batch.size() - done);
+      err = errno;
+    }
+  }
+  if (done == batch.size()) {
+    state->writeFailing = false;
+    return;
+  }
+  std::string rest = batch.substr(done);
+  if (!state->writeFailing)
+    rest = fmt::format("--- log write failed ({}), the lines below were written late ---\n",
+                       std::strerror(err)) +
+           rest;
+  state->writeFailing = true;
+  if (rest.size() > kMaxLogBytes)
+    return; // the file has been unwritable for a long time; don't grow without bound
+  std::lock_guard<std::mutex> lock(state->queueMutex);
+  state->pending.insert(0, rest);
 }
 
 void checkStall() {
@@ -408,15 +479,52 @@ void shutdownLogging() {
   if (state->writer.joinable())
     state->writer.join();
   drain(); // anything logged while the writer was stopping
+  {
+    // Closed explicitly: on the Switch the last lines were missing from the
+    // file when the process exited with it still open
+    std::lock_guard<std::mutex> writeLock(state->writeMutex);
+    if (state->fd >= 0) {
+      osSync(state->fd);
+      osClose(state->fd);
+      state->fd = -1;
+    }
+    state->closed = true;
+  }
   std::error_code ec;
   fs::remove(state->markerPath, ec);
 }
 
 void setThreadName(const char *name) { threadName = name; }
 
-void flushLogs() {
-  if (state)
-    drain();
+std::string readCurrentLog(size_t maxBytes, bool *truncated) {
+  if (truncated)
+    *truncated = false;
+  if (!state)
+    return {};
+  drain();
+  std::lock_guard<std::mutex> writeLock(state->writeMutex);
+  if (state->fd < 0)
+    return {};
+  // Everything written so far ends at the handle's offset (see osOpen)
+  long long end = osSeek(state->fd, 0, SEEK_CUR);
+  if (end <= 0)
+    return {};
+  long long skip = end > static_cast<long long>(maxBytes) ? end - static_cast<long long>(maxBytes) : 0;
+  if (osSeek(state->fd, skip, SEEK_SET) < 0)
+    return {};
+  if (truncated)
+    *truncated = skip > 0;
+  std::string data(static_cast<size_t>(end - skip), '\0');
+  size_t got = 0;
+  while (got < data.size()) {
+    long n = osRead(state->fd, &data[got], data.size() - got);
+    if (n <= 0)
+      break;
+    got += static_cast<size_t>(n);
+  }
+  osSeek(state->fd, end, SEEK_SET); // the next write continues from the end
+  data.resize(got);
+  return data;
 }
 
 void heartbeat() {

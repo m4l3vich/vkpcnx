@@ -98,7 +98,6 @@ int main(int argc, char *argv[]) {
   Http::init();
 
   brls::Application::createWindow("VK Play Cloud");
-  brls::Application::setGlobalQuit(true);
 
   brls::Application::getPlatform()->setThemeVariant(brls::ThemeVariant::DARK);
 

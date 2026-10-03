@@ -61,6 +61,8 @@ private:
   Callback done_;
   bool finished_ = false;
   vkpcnx::utils::PeriodicTimer tick_;
+  // Guards checkDone() hops queued with brls::sync against a destroyed ZonePing
+  std::shared_ptr<bool> alive_ = std::make_shared<bool>(true);
 };
 
 } // namespace vkpcnx::stream

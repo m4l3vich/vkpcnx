@@ -81,7 +81,28 @@ StreamSession::StreamSession() : input_(rtc_) {
   };
   gameServer_.onReadyForOffers = [this] {
     setState(State::Negotiating);
-    createPeerConnections(false, CONNECT_TIMEOUT_MS);
+    switch (recovery_) {
+    case Recovery::Reconnecting:
+      // Recovery step 1: offers on the reconnected socket, video as a §6.4
+      // reconfiguration (the real server answers that one). Its inputs offer
+      // got no answer when sent while the reconfiguration was in progress, so
+      // it waits until the video connection is up. Any answer missing for
+      // RECOVERY_ANSWER_TIMEOUT_MS → step 2.
+      recovery_ = Recovery::ReconfigureOffers;
+      createPeerConnections(true, RECOVERY_CONNECT_TIMEOUT_MS);
+      inputsOfferPending_ = false;
+      inputsAfterVideo_ = true;
+      armRecoveryTimer();
+      break;
+    case Recovery::Rejoining:
+      // Recovery step 2: the server took us back as at launch; if it won't,
+      // say so in seconds rather than minutes
+      createPeerConnections(false, RECOVERY_CONNECT_TIMEOUT_MS);
+      break;
+    default:
+      createPeerConnections(false, CONNECT_TIMEOUT_MS);
+      break;
+    }
   };
   gameServer_.onSdpAnswer = [this](StreamType type, const std::string &sdp, uint32_t token) {
     rtc_.setRemoteAnswer(type, sdp);
@@ -200,8 +221,24 @@ StreamSession::StreamSession() : input_(rtc_) {
   rtc_.onStateChange = [this](StreamType type, rtc::PeerConnection::State s) {
     sync([this, type, s] {
       if (s == rtc::PeerConnection::State::Connected) {
+        if (type == proto::ST_VIDEO && inputsAfterVideo_) {
+          inputsAfterVideo_ = false;
+          brls::Logger::info("StreamSession: video reconnected, offering inputs");
+          rtc_.createInputs();
+          armRecoveryTimer();
+        }
         checkStreamsStatus();
       } else if (s == rtc::PeerConnection::State::Failed) {
+        if (recovering_ || stopping_)
+          return;
+        if (state_ == State::Streaming || state_ == State::Reconnecting) {
+          recoverConnection(type);
+          return;
+        }
+        if (recovery_ == Recovery::ReconfigureOffers) {
+          rejoinViaManager();
+          return;
+        }
         SessionError e;
         e.kind = SessionError::Kind::RemoteHostNotResponding;
         e.message = std::string(type == proto::ST_VIDEO ? "Video" : "Input") + " connection failed";
@@ -283,6 +320,8 @@ void StreamSession::setState(State state) {
     return;
   brls::Logger::info("StreamSession: {} -> {}", streamStateName(state_), streamStateName(state));
   state_ = state;
+  if (state == State::Streaming || state == State::Ended || state == State::Failed)
+    recovery_ = Recovery::None;
   if (onStateChange)
     onStateChange(state);
 }
@@ -329,12 +368,73 @@ void StreamSession::sampleStats() {
 }
 
 void StreamSession::createPeerConnections(bool reconfigurate, int connectTimeoutMs) {
+  recovering_ = false;
+  inputsAfterVideo_ = false;
   videoAnswered_ = inputsAnswered_ = false;
   videoOfferSent_ = false;
   reconfiguring_ = reconfigurate;
   inputsOfferPending_ = true;
   startConnectTimer(connectTimeoutMs);
   rtc_.createVideo(config_.video);
+}
+
+void StreamSession::recoverConnection(StreamType lost) {
+  brls::Logger::warning(
+    "StreamSession: {} connection lost, reconnecting", lost == proto::ST_VIDEO ? "video" : "input"
+  );
+  recovering_ = true;
+  recovery_ = Recovery::Reconnecting;
+  cancelTimers();
+  input_.stop();
+  rtc_.closeAll();
+  // CS_STREAMS_STATUS goes out again once the new peer connections are up.
+  // videoStarted_ stays: the renderer reports its first frame only once.
+  streamsStatusSent_ = false;
+  reconfiguring_ = false;
+  setState(State::Reconnecting);
+  if (onStatus)
+    onStatus("", "Соединение потеряно, переподключение…", -1);
+  // The signalling socket is as dead as the peer connections; after its
+  // re-handshake onReadyForOffers creates fresh ones
+  gameServer_.recover();
+}
+
+// Recovery step 1 deadline, restarted when the deferred inputs offer goes
+// out: both answers in by then, or step 2
+void StreamSession::armRecoveryTimer() {
+  if (recoveryTimer_)
+    brls::cancelDelay(recoveryTimer_);
+  std::weak_ptr<bool> alive = alive_;
+  recoveryTimer_ = brls::delay(RECOVERY_ANSWER_TIMEOUT_MS, [this, alive] {
+    if (auto a = alive.lock(); !a || !*a)
+      return;
+    recoveryTimer_ = 0;
+    if (recovery_ != Recovery::ReconfigureOffers)
+      return;
+    if (!videoAnswered_ || inputsAfterVideo_ || !inputsAnswered_)
+      rejoinViaManager();
+  });
+}
+
+void StreamSession::rejoinViaManager() {
+  brls::Logger::warning(
+    "StreamSession: no answer on the reconnected socket, re-joining through the manager"
+  );
+  recovery_ = Recovery::Rejoining;
+  inputsAfterVideo_ = false;
+  recovering_ = true;
+  cancelTimers();
+  input_.stop();
+  rtc_.closeAll();
+  streamsStatusSent_ = false;
+  reconfiguring_ = false;
+  gameServer_.abandon();
+  setState(State::ConnectingManager);
+  if (onStatus)
+    onStatus("", "Переподключение к сессии…", -1);
+  // Same play_url as at launch: manager → MC_DIRECTION_PLAY → game server →
+  // onReadyForOffers
+  manager_.connect(config_.playUrl, config_.manager);
 }
 
 void StreamSession::reconfigureVideo(const WebRtcSession::VideoConfig &video) {
@@ -372,6 +472,10 @@ void StreamSession::cancelTimers() {
   if (noVideoTimer_) {
     brls::cancelDelay(noVideoTimer_);
     noVideoTimer_ = 0;
+  }
+  if (recoveryTimer_) {
+    brls::cancelDelay(recoveryTimer_);
+    recoveryTimer_ = 0;
   }
 }
 

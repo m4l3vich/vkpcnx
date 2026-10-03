@@ -32,6 +32,13 @@ public:
   std::function<void(const std::string &error)> onError;
 
   void connect(const std::string &url);
+  // Drops the current connection without a close handshake or waiting for it
+  // (WebSocket::abandon: after a Switch sleep its socket is dead and its
+  // thread can't be woken). No onClose for the dropped connection; connect()
+  // can be called right away.
+  void abandon();
+  // abandon(), then connect to the same URL again
+  void reconnect();
 
   void send(MessageType type, const std::string &payload = {});
   template <class Message> void send(MessageType type, const Message &msg) {

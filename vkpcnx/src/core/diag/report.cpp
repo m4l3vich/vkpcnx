@@ -197,7 +197,6 @@ std::string reportDir() {
 ReportResult createReport(const std::string &reason) {
   ReportResult result;
   brls::Logger::info("Report: creating ({})", reason);
-  flushLogs();
 
   std::vector<Item> items;
   std::set<std::string> buildIds;
@@ -205,11 +204,14 @@ ReportResult createReport(const std::string &reason) {
     buildIds.insert(lower(buildInfo().buildId));
 
   size_t budget = kLogBudget;
+  const fs::path current = fs::path(currentLogPath()).filename();
   for (const std::string &path : logFiles()) {
     if (budget == 0)
       break;
     bool truncated = false;
-    std::string data = readFile(path, budget, &truncated);
+    std::string data = fs::path(path).filename() == current
+                         ? readCurrentLog(budget, &truncated)
+                         : readFile(path, budget, &truncated);
     budget -= std::min(budget, data.size());
     auto ids = buildIdsIn(data);
     buildIds.insert(ids.begin(), ids.end());

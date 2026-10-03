@@ -1,7 +1,9 @@
 #include "core/websocket.hpp"
 #include "core/diag/log.hpp"
+#include "core/utils/thread.hpp"
 
 #include <algorithm>
+#include <chrono>
 #include <borealis.hpp>
 #include <cstring>
 #include <deque>
@@ -119,6 +121,11 @@ struct WebSocket::Impl : std::enable_shared_from_this<Impl> {
   int callback(lws *wsi, lws_callback_reasons reason, void *in, size_t len);
   void finish(int code, const std::string &reason, const std::string &error = {});
   void wake();
+  // Detaches this connection from its WebSocket (no more callbacks) and asks
+  // the service loop to exit
+  void release();
+  // Waits for the service thread, logging a slow stop
+  void joinService();
 
   // Runs `fn(WebSocket&)` on the UI thread, unless the WebSocket is gone by then
   template <class F> void post(F fn) {
@@ -476,16 +483,41 @@ void WebSocket::Impl::run() {
 
 WebSocket::WebSocket() : impl_(std::make_shared<Impl>(this)) {}
 
+void WebSocket::Impl::release() {
+  std::lock_guard<std::mutex> lock(mutex);
+  owner = nullptr;
+  stop = true;
+  if (ctx)
+    lws_cancel_service(ctx);
+}
+
+void WebSocket::Impl::joinService() {
+  if (!thread.joinable())
+    return;
+  // The service loop sees `stop` as soon as lws_cancel_service() wakes it;
+  // a slow stop means the wake-up was lost (lws then only wakes on its own
+  // timers, every 30 s when idle)
+  auto started = std::chrono::steady_clock::now();
+  thread.join();
+  auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+              std::chrono::steady_clock::now() - started
+  )
+              .count();
+  if (ms >= 1000)
+    brls::Logger::warning("WebSocket: {} took {} ms to stop", host, ms);
+}
+
 WebSocket::~WebSocket() {
-  {
-    std::lock_guard<std::mutex> lock(impl_->mutex);
-    impl_->owner = nullptr;
-    impl_->stop = true;
-    if (impl_->ctx)
-      lws_cancel_service(impl_->ctx);
-  }
-  if (impl_->thread.joinable())
-    impl_->thread.join();
+  impl_->release();
+  impl_->joinService();
+}
+
+void WebSocket::abandon() {
+  std::shared_ptr<Impl> old = std::move(impl_);
+  impl_ = std::make_shared<Impl>(this);
+  old->release();
+  if (old->thread.joinable())
+    vkpcnx::utils::runDetached([old] { old->joinService(); });
 }
 
 void WebSocket::connect(const std::string &url, const Options &options) {

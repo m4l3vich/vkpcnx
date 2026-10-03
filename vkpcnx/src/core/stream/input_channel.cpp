@@ -261,7 +261,10 @@ void InputChannel::stop() {
       thread_.join();
   }
   started_ = false;
-  focused_ = false;
+  // focused_ stays: it mirrors the stream screen's capture state, which
+  // setFocus() only reports on change. Clearing it here dropped every event
+  // when the channel (re)started after the screen had already captured:
+  // the data channel opening after Streaming, or after a reconnect.
   std::lock_guard<std::mutex> lock(mutex_);
   tx_.clear();
 }
@@ -424,6 +427,10 @@ void InputChannel::onMessage(const rtc::binary &message) {
       rateLimiter_.reset(nowMs());
       mouseSettingsId_ = 1;
       sendMouseSettingsLocked(nowMs());
+      // Captured before the channel started: what setFocus(true) would have
+      // sent on a started channel
+      if (focused_)
+        sendLockSyncLocked();
     }
     if (onTokenAccepted)
       onTokenAccepted();

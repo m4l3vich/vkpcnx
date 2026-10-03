@@ -119,7 +119,7 @@ void AccountDetails::renderAccountDetails(const nlohmann::json &account) {
   auto plan = account.at("plan");
   if (plan.is_null()) {
     this->planName->setText("Нет подписки");
-    this->planName->setText("Купите подписку в личном кабинете");
+    this->planDescription->setText("Купите подписку в личном кабинете");
   } else {
     this->planName->setText("Тариф: " + plan.at("name").get<std::string>());
     std::string description;
@@ -151,9 +151,11 @@ void AccountDetails::renderAccountDetails(const nlohmann::json &account) {
 
     // Parse prolongation price from either
     // plan.price "123.00" or plan.prolongation_discount.price "123.00 руб."
+    // (prolongation_discount is null when there is no discount)
     auto prolongPrice = plan.at("price").get<std::string_view>();
-    if (plan.contains("prolongation_discount")) {
-      prolongPrice = plan.at("prolongation_discount").at("price").get<std::string_view>();
+    if (auto discount = plan.find("prolongation_discount");
+        discount != plan.end() && discount->is_object()) {
+      prolongPrice = discount->at("price").get<std::string_view>();
     }
 
     size_t dot = prolongPrice.find('.');
@@ -178,7 +180,6 @@ void AccountDetails::renderAccountDetails(const nlohmann::json &account) {
 
     if (planType > 0) {
       auto subscribedTill = account.at("subscribed_till").get<std::string>();
-      brls::Logger::warning("test {}", subscribedTill);
       auto nextPaymentStr = vkpcnx::utils::Iso8601ToLocal(subscribedTill, "%d.%m.%Y");
       if (nextPaymentStr) {
         description +=

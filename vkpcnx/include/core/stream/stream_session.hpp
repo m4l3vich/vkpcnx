@@ -30,7 +30,7 @@ public:
     ConnectingGameServer,
     Negotiating, // offers sent, waiting for the peer connections
     Streaming,
-    Reconnecting, // signalling socket dropped, §5.4
+    Reconnecting, // signalling socket dropped (§5.4), or the whole connection is being recovered
     Ended,
     Failed,
   };
@@ -42,6 +42,9 @@ public:
   };
 
   static constexpr int CONNECT_TIMEOUT_MS = 120000;
+  static constexpr int RECOVERY_CONNECT_TIMEOUT_MS = 30000; // offers made by a recovery
+  // Recovery step 1 waits this long for each answer before step 2
+  static constexpr int RECOVERY_ANSWER_TIMEOUT_MS = 10000;
   static constexpr int VM_REBOOT_CONNECT_TIMEOUT_MS = 180000;
   static constexpr int NO_VIDEO_TIMEOUT_MS = 180000;
   // §6.4 freeze detection: seconds with no decoded frames while data still arrives
@@ -103,6 +106,16 @@ private:
   void setState(State state);
   void fail(const SessionError &error);
   void createPeerConnections(bool reconfigurate, int connectTimeoutMs);
+  // A peer connection failed mid-session (after a Switch sleep, every socket
+  // has): rebuild the signalling socket and both peer connections. The real
+  // server ignores plain fresh offers on a reconnected socket, so this is a
+  // ladder: step 1 sends the video offer as a §6.4 reconfiguration on the
+  // reconnected socket and the inputs offer once that video is up; an answer
+  // missing → step 2 (rejoinViaManager) repeats the launch handshake through
+  // the manager with the same play_url.
+  void recoverConnection(StreamType lost);
+  void rejoinViaManager();
+  void armRecoveryTimer();
   void startConnectTimer(int ms);
   void cancelTimers();
   void checkStreamsStatus();
@@ -126,6 +139,13 @@ private:
   bool videoStarted_ = false;
   bool streamsStatusSent_ = false;
   bool reconfiguring_ = false;
+  // recoverConnection() ran and the new peer connections don't exist yet:
+  // further failures are the old ones going down
+  bool recovering_ = false;
+  enum class Recovery { None, Reconnecting, ReconfigureOffers, Rejoining };
+  Recovery recovery_ = Recovery::None;
+  size_t recoveryTimer_ = 0;
+  bool inputsAfterVideo_ = false; // recovery step 1: inputs offer waits for the video PC
   uint32_t inputToken_ = 0;
   int videoRectW_ = 0, videoRectH_ = 0;
   size_t connectTimer_ = 0;
