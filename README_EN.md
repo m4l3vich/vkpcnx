@@ -65,3 +65,31 @@ openssl req -x509 -newkey rsa:2048 -nodes -keyout key.pem -out cert.pem -days 30
 venv/bin/python tests/mock_server.py --pb pb --cert cert.pem --key key.pem --end-after 30
 VKPCNX_INSECURE_TLS=1 VKPCNX_PLAY_URL='playkey:///?host=localhost&port=19000&token=test' ./build/vkpcnx
 ```
+
+## Debugging
+
+### Launch arguments
+
+The Switch has no environment variables, but arguments can be passed via nxlink: `nxlink vkpcnx.nro -- --log-level=VERBOSE`.
+
+- `--log-level=LEVEL` — console log level: `ERROR`, `WARNING`, `INFO` (default), `DEBUG` or `VERBOSE`. The log file always contains full detail. Takes precedence over `VKPCNX_LOG_LEVEL`.
+- `--create-report` — create a bug report and exit without starting the UI (for when the app can't get as far as its UI). The report path is printed to the console.
+- `--sw-decode` — force software video decoding (same as `VKPCNX_SW_DECODE=1`).
+- `--test-crash=segv|abort|throw` — crash the app on purpose 2 seconds after the UI is up, to check the crash section in the log, the report offer and symbolization.
+
+### Environment variables
+
+- `VKPCNX_LOG_LEVEL` — same as `--log-level=`.
+- `VKPCNX_SW_DECODE=1` — software video decoding only, hardware decoding is not attempted.
+- `VKPCNX_INSECURE_TLS=1` — disable certificate verification on the signalling sockets (for local mock servers with self-signed certificates).
+- `VKPCNX_PLAY_URL` — a URL like `playkey:///?host=…&port=…&token=…`: start streaming from it right away, bypassing login and the queue. Used together with `tests/mock_server.py`.
+- `VKPCNX_RTC_LOG` — WebRTC log level: `debug` or `verbose` (info by default).
+- `VKPCNX_DUMP_H264` — path to a file that every received H.264 access unit is appended to (Annex B format).
+
+### Terminal keys
+
+Available only in the desktop build (not on Switch or Windows), read from stdin while the terminal the app was launched from is focused:
+
+- `o` — open the initial setup screen (OnboardingActivity).
+- `s` — open the stream side panel (StreamOverlay) with no data.
+- `p` — open the Playground (StreamActivity::Playground).
