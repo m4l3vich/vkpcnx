@@ -17,3 +17,8 @@ builddir
 libromfs-generator
 !.github/
 __pycache__/
+# tests/mock_server.py setup (README)
+/venv/
+/pb/
+/cert.pem
+/key.pem
