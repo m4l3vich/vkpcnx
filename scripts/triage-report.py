@@ -10,19 +10,21 @@ A report is what the app's "Create debug report" button (or
 `vkpcnx --create-report`) writes: report.txt, logs/*.log, settings.json and
 crash_reports/*. Crash sections in the logs ("*** CRASH") print frames as
 module+0xoffset; frames in vkpcnx itself are resolved against the symbols CI
-archived for that commit and build type (artifact / release asset
-vkpcnx-<platform>-symbols, vkpcnx-<platform>-debug-symbols for Debug builds).
+published for that commit and build type (release asset
+vkpcnx-<platform>-symbols.elf.gz, vkpcnx-<platform>-debug-symbols.elf.gz for
+Debug builds).
 Symbols whose build id differs from the report's are refused: they would
 resolve to unrelated functions.
 
 Symbol files looked for in --symbols / the fetch cache:
-  switch-aarch64  vkpcnx.elf                      (aarch64-none-elf-addr2line, llvm-addr2line or Docker)
+  switch-aarch64  vkpcnx.elf, vkpcnx-switch*symbols.elf  (aarch64-none-elf-addr2line, llvm-addr2line or Docker)
   linux-*         vkpcnx.debug or vkpcnx          (addr2line)
   windows-*       vkpcnx.exe.debug or vkpcnx.exe  (addr2line)
   macos-*         vkpcnx.dSYM or vkpcnx           (atos)
 """
 
 import argparse
+import gzip
 import io
 import json
 import os
@@ -120,7 +122,7 @@ def artifact_platform(platform):
 
 
 def fetch_symbols(repo, sha, platform, debug):
-    """Downloads vkpcnx-<platform>[-debug]-symbols for `sha` from CI artifacts or a release."""
+    """Downloads vkpcnx-<platform>[-debug]-symbols for `sha` from a release (or an older CI artifact)."""
     dest = CACHE / sha / (platform + ("-debug" if debug else ""))
     if dest.exists() and any(dest.iterdir()):
         if find_symbol_file(dest, platform) is None:
@@ -154,23 +156,28 @@ def fetch_symbols(repo, sha, platform, debug):
 
 def unpack_archives(d):
     """Unpacks every archive under `d`, including archives inside archives
-    (CI release assets are a .zip wrapping the .tar.gz)."""
+    (old CI artifacts are a .zip wrapping a .tar.gz). A lone .gz, the release
+    asset form of a symbol file, is decompressed next to itself."""
     done = set()
     while True:
         pending = [f for f in Path(d).rglob("*")
-                   if f.name.endswith((".tar.gz", ".tgz", ".zip")) and f not in done]
+                   if f.name.endswith((".tar.gz", ".tgz", ".zip", ".gz")) and f not in done]
         if not pending:
             return
         for f in pending:
             done.add(f)
-            shutil.unpack_archive(str(f), str(f.parent))
+            if f.name.endswith((".tar.gz", ".tgz", ".zip")):
+                shutil.unpack_archive(str(f), str(f.parent))
+            else:
+                with gzip.open(f, "rb") as src, open(f.with_suffix(""), "wb") as dst:
+                    shutil.copyfileobj(src, dst)
 
 
 def find_symbol_file(d, platform):
     if d is None:
         return None
     candidates = {
-        "switch": ["vkpcnx.elf"],
+        "switch": ["vkpcnx.elf", "vkpcnx-switch*symbols.elf"],
         "linux": ["vkpcnx.debug", "vkpcnx"],
         "windows": ["vkpcnx.exe.debug", "vkpcnx.exe"],
         "macos": ["vkpcnx.dSYM", "vkpcnx.app.dSYM", "vkpcnx"],

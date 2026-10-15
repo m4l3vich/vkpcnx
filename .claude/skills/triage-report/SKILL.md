@@ -22,9 +22,9 @@ by `vkpcnx/src/core/diag/log.cpp`.
 scripts/triage-report.py report.zip --fetch --extract /tmp/report
 ```
 
-`--fetch` downloads `vkpcnx-<platform>-symbols` for the report's commit with
-`gh` (CI artifacts, 90 days; release assets for `v*` tags, permanent) into
-`~/.cache/vkpcnx-symbols/`. Without network, build the same commit and pass
+`--fetch` downloads `vkpcnx-<platform>-symbols.elf.gz` for the report's commit
+with `gh` (release assets for `v*` tags; only published releases, not drafts)
+into `~/.cache/vkpcnx-symbols/`. Without network, build the same commit and pass
 `--symbols <build dir>` (needs the exact commit: the `git:` line; a `-dirty`
 build can't be reproduced exactly, so treat its line numbers as approximate).
 Switch frames need `aarch64-none-elf-addr2line`; the script falls back to the
