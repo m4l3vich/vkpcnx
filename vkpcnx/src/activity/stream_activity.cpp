@@ -6,7 +6,7 @@
 #include <cstring>
 
 #include "core/controls.hpp"
-#include "core/platform/home_led.hpp"
+#include "core/platform/controller_alert.hpp"
 #include "core/settings.hpp"
 #include "core/stream/sdp_munging.hpp"
 #include "core/utils/display.hpp"
@@ -31,9 +31,24 @@ using namespace vkpcnx::stream;
 // runs anywhere close to this, so treat it as unlimited rather than print it.
 static constexpr int64_t kUnlimitedTimeLeftThresholdSeconds = 7LL * 24 * 3600;
 
-// Remaining play time at which the HOME LED blinks, when a time-left update
-// crosses it going down
-static constexpr int64_t kTimeLeftLedWarningsSeconds[] = {15 * 60, 5 * 60, 60};
+// Remaining play time at which a toast shows and the controllers alert (LED + rumble),
+// when a time-left update crosses it going down
+static constexpr int64_t kTimeLeftAlertsSeconds[] = {15 * 60, 5 * 60, 60};
+
+// "Осталось 5 минут игрового времени" for a warning threshold
+static std::string timeLeftWarningText(int64_t seconds) {
+  int64_t minutes = seconds / 60;
+  int64_t mod10 = minutes % 10, mod100 = minutes % 100;
+  const char *left = "Осталось";
+  const char *unit = "минут";
+  if (mod10 == 1 && mod100 != 11) {
+    left = "Осталась";
+    unit = "минута";
+  } else if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) {
+    unit = "минуты";
+  }
+  return std::string(left) + " " + std::to_string(minutes) + " " + unit + " игрового времени";
+}
 
 // ---- key mapping (§9.1): GLFW key code → DirectInput scan code ----------------
 
@@ -382,7 +397,7 @@ StreamActivity::~StreamActivity() {
   if (hudTimer_)
     brls::cancelDelay(hudTimer_);
   session_.reset();
-  platform::clearHomeLed();
+  platform::clearControllerAlert();
 }
 
 StreamSession::Config StreamActivity::buildConfig() const {
@@ -523,7 +538,7 @@ void StreamActivity::setupSession() {
   session->onNotification = [](const std::string &m, bool urgent) {
     brls::Application::notify(m);
     if (urgent)
-      platform::blinkHomeLed();
+      platform::alertControllers();
   };
   session->onError = [this](const SessionError &e) {
     // Not every source logs before reporting; what the user saw belongs in the log
@@ -547,10 +562,11 @@ void StreamActivity::setupSession() {
       leave();
   };
   session->onTimeLeft = [this](int64_t seconds) {
-    for (int64_t warning : kTimeLeftLedWarningsSeconds) {
+    for (int64_t warning : kTimeLeftAlertsSeconds) {
       if (lastTimeLeftSeconds_ > warning && seconds <= warning) {
-        brls::Logger::info("Stream: {} s of play time left, blinking HOME LED", seconds);
-        platform::blinkHomeLed();
+        brls::Logger::info("Stream: {} s of play time left, alerting controllers", seconds);
+        brls::Application::notify(timeLeftWarningText(warning));
+        platform::alertControllers();
         break;
       }
     }
