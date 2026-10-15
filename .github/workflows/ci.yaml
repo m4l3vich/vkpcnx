@@ -40,5 +40,15 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           draft: true
+          name: VKPCNX ${{ github.ref_name }}
+          body: |
+            TODO: changelog
+
+            **Скопируйте файл `vkpcnx.nro` в папку `switch` на SD-карте вашего Nintendo Switch, а затем запустите "VK Play Cloud NX" через hbmenu**
+
+            - `vkpcnx.nro` — релизная сборка, **скачивайте её**
+            - `vkpcnx-debug.nro` — отладочная сборка
+
+            Сборка выполнена через GitHub Actions: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           fail_on_unmatched_files: true
           files: release/*
