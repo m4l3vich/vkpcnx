@@ -446,7 +446,7 @@ void GameServerClient::handleFrame(const Frame &frame) {
   case MessageType::M_NOTIFICATION: {
     proto::Notification n;
     n.ParseFromString(frame.payload);
-    brls::Logger::debug("GameServer: <- M_NOTIFICATION {{ {} }}", n.ShortDebugString());
+    brls::Logger::info("GameServer: <- M_NOTIFICATION {{ {} }}", n.ShortDebugString());
     if (onNotification)
       onNotification(n.message(), n.notification_type() == proto::NOTIFY_ERROR);
     break;

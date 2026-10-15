@@ -502,6 +502,7 @@ void ManagerClient::handleFrame(const Frame &frame) {
   case MessageType::M_NOTIFICATION: {
     proto::Notification n;
     n.ParseFromString(frame.payload);
+    brls::Logger::info("Manager: <- M_NOTIFICATION {{ {} }}", n.ShortDebugString());
     if (onNotification)
       onNotification(n.message(), n.notification_type() == proto::NOTIFY_ERROR);
     break;
